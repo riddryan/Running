@@ -4,8 +4,6 @@
 
 * Calculates multi body dynamics for models for the purpose of investigating the dynamics, energetics, and control of human running.  Uses a class library in Matlab to expedite the creation of new models based on simple models.
 
-* Version 0.1
-
 ### How do I get set up? ###
 
 * You need Mathematica, Dynamics Workbench, and a recent version of Matlab to use this repository.
