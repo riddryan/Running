@@ -14,6 +14,8 @@ classdef Swing < Runner
         statestovary = [];
         statestomeasure = [];
         
+        impulsecoeff = 2;
+        
         sephips = 0;
         
         %Springs
@@ -67,7 +69,29 @@ runner.SLIPdata = SLIPdata;
 IC = SwingState;
 switch test
     
-    case 'experiment'
+        case 'experiment'
+        
+%             runner.SLIPdata(:,2:3) = 0;
+            runner.sephips = 1;
+            
+        runner.rigidlegimpulse = 0;
+        
+                    runner.kswing = 40; %0.01
+                    runner.khip = 5; %0.01
+
+                    runner.gslope = 0;
+                    runner.swingl = 0.8;
+                    runner.hipl = -1.4;
+        
+        IC.swingfoot.Angle = runner.SLIPx0(1);
+        IC.swingfoot.Length = runner.SLIPx0(2);
+        
+        IC.swingfoot.AngleDot = 0;
+        IC.swingfoot.LengthDot = 0;
+        
+        x0 = IC.getVector();
+    
+    case 'leg yank'
         
         runner.rigidlegimpulse = 1;
         runner.kswing = 0.5; %0.01
@@ -367,7 +391,7 @@ end
 %                     vels = this.getVels(tstart,x0);
 
                     [xpacc,ypacc,stanceangle,stancelength,xp,yp,xvel,yvel,angvel,lengthvel] = getSLIPstates(this.SLIPdata,tstart);
-                    x0(4) = 1*lengthvel;
+                    x0(4) = this.impulsecoeff*lengthvel;
                     
                     vels = this.getVels(tstart,x0);
                     
