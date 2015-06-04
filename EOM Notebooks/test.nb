@@ -1,0 +1,141 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 9.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       157,          7]
+NotebookDataLength[      4862,        132]
+NotebookOptionsPosition[      4617,        119]
+NotebookOutlinePosition[      4963,        134]
+CellTagsIndexPosition[      4920,        131]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{
+   "SetDirectory", "[", 
+    "\"\<C:\\\\Users\\\\Ryan\\\\Documents\\\\HBCL\\\\Model and \
+Structure\\\\dynamicWalking\\\\Branches\\\\riddryan\\\\NewStruct\\\\EOM \
+Notebooks\>\"", "]"}], ";"}], "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{
+    "SetDirectory", "[", 
+     "\"\<C:\\\\Users\\\\HBCL Student\\\\Documents\\\\Ryan\\\\Model and \
+Structure\\\\dynamicWalking\\\\Branches\\\\riddryan\\\\NewStruct\\\\EOM \
+Notebooks\>\"", "]"}], ";"}], "*)"}]}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"Needs", "[", "\"\<DynamicsWorkbench`\>\"", "]"}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"workdir", " ", "=", " ", 
+   RowBox[{"Directory", "[", "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"savename", " ", "=", " ", 
+   RowBox[{"workdir", " ", "<>", " ", "\"\<\\\\FootAchilles.m\>\""}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"NewModel", "[", "]"}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"AddBody", "[", 
+   RowBox[{"pelvisx", ",", "ground", ",", "Slider", ",", 
+    RowBox[{"TAxis", "\[Rule]", 
+     RowBox[{"ground", "[", "1", "]"}]}], ",", 
+    RowBox[{"Qdof", "\[Rule]", "1"}], ",", 
+    RowBox[{"Udof", "\[Rule]", "1"}]}], "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"AddBody", "[", 
+   RowBox[{"pelvis", ",", "pelvisx", ",", "Slider", ",", 
+    RowBox[{"TAxis", "\[Rule]", 
+     RowBox[{"ground", "[", "2", "]"}]}], ",", 
+    RowBox[{"Mass", "\[Rule]", "mpelvis"}], ",", 
+    RowBox[{"Qdof", "\[Rule]", "2"}], ",", 
+    RowBox[{"Udof", "\[Rule]", "2"}]}], "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"AddBody", "[", 
+   RowBox[{"leghinge1", ",", "pelvis", ",", "Hinge", ",", 
+    RowBox[{"Axis", "\[Rule]", 
+     RowBox[{"ground", "[", "3", "]"}]}], ",", 
+    RowBox[{"InbToJnt", "\[Rule]", "0"}], ",", 
+    RowBox[{"BodyToJnt", "\[Rule]", "0"}], ",", 
+    RowBox[{"RelativeTo", "\[Rule]", "ground"}], ",", 
+    RowBox[{"Qdof", "\[Rule]", "3"}], ",", 
+    RowBox[{"Udof", "\[Rule]", "3"}]}], "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"AddBody", "[", 
+   RowBox[{"foot1", ",", " ", "leghinge1", ",", " ", "Slider", ",", 
+    RowBox[{"TAxis", "\[Rule]", 
+     RowBox[{"leghinge1", "[", "1", "]"}]}], ",", 
+    RowBox[{"Mass", "\[Rule]", "mfoot"}], ",", 
+    RowBox[{"InbToJnt", "->", "0"}], ",", 
+    RowBox[{"BodyToJnt", "\[Rule]", "0"}], ",", 
+    RowBox[{"Qdof", "\[Rule]", "4"}], ",", 
+    RowBox[{"Udof", "\[Rule]", "4"}]}], "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"AddBody", "[", 
+   RowBox[{"heel", ",", "foot1", ",", "Hinge", ",", 
+    RowBox[{"Axis", "\[Rule]", 
+     RowBox[{"ground", "[", "3", "]"}]}], ",", 
+    RowBox[{"Mass", "\[Rule]", "mheel"}], ",", 
+    RowBox[{"InbToJnt", "\[Rule]", "0"}], ",", 
+    RowBox[{"BodyToJnt", "\[Rule]", 
+     RowBox[{
+      RowBox[{"-", "lheel"}], "*", 
+      RowBox[{"heel", "[", "1", "]"}]}]}], ",", 
+    RowBox[{"RelativeTo", "\[Rule]", "ground"}], ",", 
+    RowBox[{"Qdof", "\[Rule]", "6"}], ",", 
+    RowBox[{"Udof", "\[Rule]", "6"}]}], "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"AddBody", "[", 
+   RowBox[{"heel", ",", "toe", ",", "Hinge", ",", 
+    RowBox[{"Axis", "\[Rule]", 
+     RowBox[{"ground", "[", "3", "]"}]}], ",", 
+    RowBox[{"Mass", "\[Rule]", "mheel"}], ",", 
+    RowBox[{"InbToJnt", "\[Rule]", "0"}], ",", 
+    RowBox[{"BodyToJnt", "\[Rule]", 
+     RowBox[{
+      RowBox[{"-", "lheel"}], "*", 
+      RowBox[{"toe", "[", "1", "]"}]}]}], ",", 
+    RowBox[{"RelativeTo", "\[Rule]", "ground"}], ",", 
+    RowBox[{"Qdof", "\[Rule]", "5"}], ",", 
+    RowBox[{"Udof", "\[Rule]", "5"}]}], "]"}], ";"}], "\[IndentingNewLine]"}],
+  "Input",
+ CellChangeTimes->{{3.632612316324046*^9, 3.6326123984307423`*^9}, {
+  3.63261244752055*^9, 3.6326124876218433`*^9}, {3.6326125279861526`*^9, 
+  3.6326125589929256`*^9}, {3.6326125938889217`*^9, 3.632612684488104*^9}, {
+  3.63261272673952*^9, 3.6326127890850863`*^9}}]
+},
+WindowSize->{707, 817},
+WindowMargins->{{358, Automatic}, {56, Automatic}},
+FrontEndVersion->"9.0 for Microsoft Windows (64-bit) (November 20, 2012)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[557, 20, 4056, 97, 512, "Input"]
+}
+]
+*)
+
+(* End of internal cache information *)
