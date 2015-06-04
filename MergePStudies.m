@@ -77,11 +77,11 @@ colormap(cols1)
     colormap(cols1)
     
     for i = 1:p1
-        dexes = cnvrg(:,i)==1;
-% dexes = cnvrg(:,i)==1 & floornegs(:,i)>negtol;
-        plot(angvel0(dexes,i),lengthvel0(dexes,i),'Color',cols1(i,:),'LineWidth',2)
+%         dexes = cnvrg(:,i)==1;
+dexes = cnvrg(:,i)==1 & floornegs(:,i)>negtol;
+%         plot(angvel0(dexes,i),lengthvel0(dexes,i),'Color',cols1(i,:),'LineWidth',2)
         posdexes = floornegs(:,i)>negtol & dexes;
-        plot(angvel0(posdexes,i),lengthvel0(posdexes,i),'rx','LineWidth',2)
+        plot(angvel0(posdexes,i),lengthvel0(posdexes,i),'bx','LineWidth',2)
     end
     
         
@@ -90,9 +90,9 @@ colormap(cols1)
     colormap(cols2)
     
     for i = 1:p1
-        dexes = cnvrg(:,i)==1;
-% dexes = cnvrg(:,i)==1 & floornegs(:,i)>negtol;
-        plot(angvel0(dexes,i),lengthvel0(dexes,i),'Color',cols2(i,:),'LineWidth',2)
+%         dexes = cnvrg(:,i)==1;
+dexes = cnvrg(:,i)==1 & floornegs(:,i)>negtol;
+%         plot(angvel0(dexes,i),lengthvel0(dexes,i),'Color',cols2(i,:),'LineWidth',2)
         posdexes = floornegs(:,i)>negtol & dexes;
         plot(angvel0(posdexes,i),lengthvel0(posdexes,i),'rx','LineWidth',2)
     end
