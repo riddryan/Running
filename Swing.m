@@ -70,12 +70,12 @@ switch test
     case 'experiment'
         
         runner.rigidlegimpulse = 1;
-        runner.kswing = 0; %0.01
-        runner.khip = 1; %0.01
+        runner.kswing = 0.5; %0.01
+        runner.khip = 1.2; %0.01
         
         runner.gslope = 0;
         runner.swingl = 1;
-        runner.hipl = -1.1;
+        runner.hipl = -1.3;
         
         IC.swingfoot.Angle = runner.SLIPx0(1);
         IC.swingfoot.Length = runner.SLIPx0(2);
@@ -346,23 +346,29 @@ end
                 
                 
                 if this.rigidlegimpulse && strcmp('Toe',phase)
-                    vpelvx = this.SLIPdata(1,8);
-                    vpelvy = this.SLIPdata(1,9);
-                    thetadot = this.SLIPdata(1,10);
-                    rdot = this.SLIPdata(1,11);
-                    theta = x0(1);
-                    r = x0(2);
                     
-                    fv = [vpelvx;vpelvy] + r*thetadot*[-sin(theta);cos(theta)];
-                    x0(3) = (fv(2)*cos(theta)-fv(1)*sin(theta)+sin(theta)*vpelvx-cos(theta)*vpelvy/r);
-                    x0(4) = fv(1)*cos(theta)+fv(2)*sin(theta)-cos(theta)*vpelvx-sin(theta)*vpelvy;
+%                     vpelvx = this.SLIPdata(1,8);
+%                     vpelvy = this.SLIPdata(1,9);
+%                     thetadot = this.SLIPdata(1,10);
+%                     rdot = this.SLIPdata(1,11);
+%                     theta = x0(1);
+%                     r = x0(2);
+%                     
+%                     fv = [vpelvx;vpelvy] + r*thetadot*[-sin(theta);cos(theta)];
+%                     x0(3) = (fv(2)*cos(theta)-fv(1)*sin(theta)+sin(theta)*vpelvx-cos(theta)*vpelvy/r);
+%                     x0(4) = fv(1)*cos(theta)+fv(2)*sin(theta)-cos(theta)*vpelvx-sin(theta)*vpelvy;
+%                     
+% %                     x0(3) = (-sin(theta)*vpelvx + cos(theta)*vpelvy)/r/1;
+% %                     x0(4) = (cos(theta)*vpelvx + sin(theta)*vpelvy)/1;
+%                     
+%                     x0([3 4]) = x0([3 4])*2;
+%                     
+% %                     x0([3 4]) = [-.5 -.5];
+%                     vels = this.getVels(tstart,x0);
+
+                    [xpacc,ypacc,stanceangle,stancelength,xp,yp,xvel,yvel,angvel,lengthvel] = getSLIPstates(this.SLIPdata,tstart);
+                    x0(4) = 1*lengthvel;
                     
-%                     x0(3) = (-sin(theta)*vpelvx + cos(theta)*vpelvy)/r/1;
-%                     x0(4) = (cos(theta)*vpelvx + sin(theta)*vpelvy)/1;
-                    
-                    x0([3 4]) = x0([3 4])*2;
-                    
-%                     x0([3 4]) = [-.5 -.5];
                     vels = this.getVels(tstart,x0);
                     
                     phasenum = phasenum+1;

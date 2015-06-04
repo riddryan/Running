@@ -792,19 +792,19 @@ if any(cellstouse==12) %Swing Runner
 %             SLIPdata(2*steps:end,6) = SLIPdata(2*steps:end,6) + finalx;
             runner.SLIPdata = SLIPdata;
         
-        runner.sephips = 1;
-        runner.kswing = 0; %0.01
-        runner.khip = 2; %0.01
+        runner.rigidlegimpulse = 1;
+        runner.kswing = 0.5; %0.01
+        runner.khip = 1.2; %0.01
         
         runner.gslope = 0;
-        runner.swingl = 0.95;
-        runner.hipl = -.8;
+        runner.swingl = 1;
+        runner.hipl = -1.3;
         
         IC.swingfoot.Angle = runner.SLIPx0(1);
         IC.swingfoot.Length = runner.SLIPx0(2);
         
         IC.swingfoot.AngleDot = 0;
-        IC.swingfoot.LengthDot = -0.85;
+        IC.swingfoot.LengthDot = 0;
         
         x0 = IC.getVector();
         
@@ -822,7 +822,7 @@ if any(cellstouse==12) %Swing Runner
     runcharic.steplength = [];
     %%%%%%%%%%%%%%%%%%%%%%%
     
-parmstovary=[{'khip'} {'hipl'}];
+parmstovary=[{'khip'} {'hipl'} {'kswing'}];
 %       addedconstraints = @(r,x0) r.additionalConstraints(x0);
     addedconstraints=[];
       
@@ -844,7 +844,7 @@ parmstovary=[{'khip'} {'hipl'}];
     x0 = xstar;
     r.printStepCharacteristics(x0,xf,tf,tair);
     if savegait
-        save([savepath 'Swing_noleg_sephips.mat'],'r','xstar','parmstovary','limitCycleError',...
+        save([savepath 'Swing_yank1.mat'],'r','xstar','parmstovary','limitCycleError',...
                                    'c','ceq','eflag','optimoutput','lambda',...
                                    'xf','tf','allx','allt','tair','phasevec');
     end 
