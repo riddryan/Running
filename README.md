@@ -25,7 +25,7 @@
 
 ### Important Methods  ###
 
-*"test" is a static method used to test energy conservation, that constraints are working, that event functions are working, and to play with initial conditions and parameters to try to get close to a limit cycle.  It is basically a mess and a playground.  It might be better to divide "test" into multiple static methods that each contain a single test.
+* "test" is a static method used to test energy conservation, that constraints are working, that event functions are working, and to play with initial conditions and parameters to try to get close to a limit cycle.  It is basically a mess and a playground.  It might be better to divide "test" into multiple static methods that each contain a single test.
 
 * All classes have the method "onestep" which simulates the model for a single step given initial conditions, as well as additional extra arguments.  The simulation stops based on event functions that are generally included as methods of the class and called within onestep
 
