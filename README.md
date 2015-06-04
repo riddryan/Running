@@ -17,11 +17,11 @@
 * You may need to create the local folders: "Animations", "SavedGaits", and "ParameterStudies" in order for the saving functions & methods to work properly; else make changes to the code such that it saves elsewhere
 
 ### General Info ###
-*Runner is an abstract class that is a superclass to all the other classes (e.g. SLIP, SoftParRunner, Swing, etc.)
+* Runner is an abstract class that is a superclass to all the other classes (e.g. SLIP, SoftParRunner, Swing, etc.)
 
 * Each class also has an associated state definition class located in the folder State_Definitions which makes it easier to parse the states of each class.  For example, it converts a vector of states to a nicely labeled structure that tells you Knee Velocity, Pelvis Position, etc.
 
-*Also includes some simulations of models that fall under the category of Differential Algebraic Equations, located in the folder DAE.  This is a result of setting unconstrained degrees of freedom to have zero mass, which can still be solved for if there are springs and/or dampers that act on those DOF.
+* Also includes some simulations of models that fall under the category of Differential Algebraic Equations, located in the folder DAE.  This is a result of setting unconstrained degrees of freedom to have zero mass, which can still be solved for if there are springs and/or dampers that act on those DOF.
 
 ### Important Methods  ###
 
