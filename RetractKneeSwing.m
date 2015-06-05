@@ -56,7 +56,7 @@ classdef RetractKneeSwing < Runner
             runner = RetractKneeSwing;
             
 %             SLIPfname = './SavedGaits/SLIPNominal.mat';
-            SLIPfname = './SavedGaits/SLIP_NoAerial_unmatchedSL.mat';
+            SLIPfname = './SavedGaits/RetractKneeSwing/SLIP_NoAerial_unmatchedSL.mat';
             [ runner.SLIPdata, runner.SLIPx0, runner.SLIPxf ] = getSLIPdata( SLIPfname );
             
             
@@ -64,15 +64,15 @@ classdef RetractKneeSwing < Runner
             switch test
                 
                 case 'big kick'
-                    
+                    runner.sephips = 0;
                     runner.mfoot = 0.5;
                     
-                    runner.kknee = 4; %0.01
-                    runner.khip = 10; %0.01
+                    runner.kknee = 6; %0.01
+                    runner.khip = 13; %0.01
                     
                     runner.gslope = 0;
                     runner.kneel = 0.8;
-                    runner.hipl = -0.9;
+                    runner.hipl = -0.6;
                     
                     IC.foot.Angle = runner.SLIPx0(1);
                     IC.knee.Angle = runner.SLIPx0(1);
@@ -608,7 +608,24 @@ end
                 
                 if ~this.sephips
                     
-                    
+                    accs(1,1) = -((-(c3m4*lthigh*(kknee*(-q3 + q4 + kneel) + c4*g*lshank*mfoot - ...
+s4*lshank*mfoot*xpacc + c4*lshank*mfoot*ypacc - ...
+s3m4*lshank*lthigh*mfoot*(u3*u3))) + lshank*(hipl*khip - q4*kknee + q3*(khip ...
++ kknee) - kknee*kneel + 2*c3*g*lthigh*mfoot - khip*stanceangle - ...
+s3*lthigh*(1 + mfoot)*xpacc + c3*lthigh*(1 + mfoot)*ypacc + ...
+s3m4*lshank*lthigh*mfoot*(u4*u4)))*power(lshank,-1)*power(lthigh,-2)*power(1 ...
++ mfoot - mfoot*(c3m4*c3m4),-1)); accs(1,2) = ...
+power(lshank,-2)*(-((-(q3*kknee) + q4*kknee + kknee*kneel + c4*g*lshank*mfoot ...
+- s4*lshank*mfoot*xpacc + c4*lshank*mfoot*ypacc - ...
+s3m4*lshank*lthigh*mfoot*(u3*u3))*power(mfoot,-1)) + ...
+c3m4*(-(c3m4*lthigh*(kknee*(-q3 + q4 + kneel) + c4*g*lshank*mfoot - ...
+s4*lshank*mfoot*xpacc + c4*lshank*mfoot*ypacc - ...
+s3m4*lshank*lthigh*mfoot*(u3*u3))) + lshank*(hipl*khip - q4*kknee + q3*(khip ...
++ kknee) - kknee*kneel + 2*c3*g*lthigh*mfoot - khip*stanceangle - ...
+s3*lthigh*(1 + mfoot)*xpacc + c3*lthigh*(1 + mfoot)*ypacc + ...
+s3m4*lshank*lthigh*mfoot*(u4*u4)))*power(lthigh,-1)*power(1 + mfoot - ...
+mfoot*(c3m4*c3m4),-1)); 
+
                 else
 accs(1,1) = -((-(c3m4*lthigh*(kknee*(-q3 + q4 + kneel) + c4*g*lshank*mfoot - ...
 s4*lshank*mfoot*xpacc + c4*lshank*mfoot*ypacc - ...
@@ -646,7 +663,7 @@ mfoot*(c3m4*c3m4),-1));
             
             [~,~,stanceangle,stancelength,q1,q2,u1,u2,angvel,lengthvel] = getSLIPstates(this.SLIPdata,time);
 
-            
+if this.sephips            
 kineticEnergy = (mpelvis*(u1*u1 + u2*u2))/2.;
 
 potentialEnergy = (khip*((-q3 + hipl)*(-q3 + hipl)) + kknee*((-q3 + q4 + ...
@@ -657,6 +674,18 @@ PEgrav = -(mpelvis*(-(q2*g*cos(gslope)) + q1*g*sin(gslope)));
 
 PEspring = (khip*((q3 - hipl)*(q3 - hipl)))/2. + (kknee*((q3 - q4 - ...
 kneel)*(q3 - q4 - kneel)))/2.;
+else
+    kineticEnergy = (mpelvis*(u1*u1 + u2*u2))/2.;
+
+potentialEnergy = (kknee*((-q3 + q4 + kneel)*(-q3 + q4 + kneel)) + khip*((q3 ...
++ hipl - stanceangle)*(q3 + hipl - stanceangle)) + ...
+2*g*mpelvis*(q2*cos(gslope) - q1*sin(gslope)))/2.;
+
+PEgrav = -(mpelvis*(-(q2*g*cos(gslope)) + q1*g*sin(gslope)));
+
+PEspring = (kknee*((q3 - q4 - kneel)*(q3 - q4 - kneel)))/2. + (khip*((-q3 - ...
+hipl + stanceangle)*(-q3 - hipl + stanceangle)))/2.;
+end
             
             
             E.KE = kineticEnergy;

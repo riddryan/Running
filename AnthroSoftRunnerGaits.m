@@ -792,6 +792,7 @@ if any(cellstouse==12) %Swing Runner
 %             SLIPdata(2*steps:end,6) = SLIPdata(2*steps:end,6) + finalx;
             runner.SLIPdata = SLIPdata;
         
+            
         runner.rigidlegimpulse = 1;
         runner.kswing = 0.5; %0.01
         runner.khip = 1.2; %0.01
@@ -858,12 +859,18 @@ if any(cellstouse==13) %RetractKneeSwing Runner
         SLIPfname = './SavedGaits/SLIP_NoAerial_unmatchedSL.mat';
         [ runner.SLIPdata, runner.SLIPx0, runner.SLIPxf ] = getSLIPdata( SLIPfname );
         
-                    runner.kknee = 2; %0.01
-                    runner.khip = 7; %0.01
+                    runner.lthigh = 0.7;
+            runner.lshank = 0.3;
+            
+                    runner.sephips = 0;
+                    runner.mfoot = 0.5;
+                    
+                    runner.kknee = 6; %0.01
+                    runner.khip = 13; %0.01
                     
                     runner.gslope = 0;
                     runner.kneel = 0.8;
-                    runner.hipl = -0.9;
+                    runner.hipl = -0.6;
                     
                     IC.foot.Angle = runner.SLIPx0(1);
                     IC.knee.Angle = runner.SLIPx0(1);
@@ -871,7 +878,7 @@ if any(cellstouse==13) %RetractKneeSwing Runner
                     IC.foot.AngleDot = 0;
                     IC.knee.AngleDot = 0;
                     
-                    runner.usefloorconstraint = 1;
+                    x0 = IC.getVector();
         
         x0 = IC.getVector();
         
@@ -911,7 +918,7 @@ parmstovary=[{'kknee'} {'khip'} {'hipl'} {'kneel'}];
     x0 = xstar;
     r.printStepCharacteristics(x0,xf,tf,tair);
     if savegait
-        save([savepath 'RetractKneeSwing_floorconstraint.mat'],'r','xstar','parmstovary','limitCycleError',...
+        save([savepath 'RetractKneeSwing_bigkick3.mat'],'r','xstar','parmstovary','limitCycleError',...
                                    'c','ceq','eflag','optimoutput','lambda',...
                                    'xf','tf','allx','allt','tair','phasevec');
     end 
