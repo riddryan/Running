@@ -55,7 +55,7 @@ classdef RetractKneeSwing < Runner
             
             runner = RetractKneeSwing;
             
-%             SLIPfname = './SavedGaits/SLIPNominal.mat';
+%             SLIPfname = './SavedGaits/RetractKneeSwing/SLIPNominal.mat';
             SLIPfname = './SavedGaits/RetractKneeSwing/SLIP_NoAerial_unmatchedSL.mat';
             [ runner.SLIPdata, runner.SLIPx0, runner.SLIPxf ] = getSLIPdata( SLIPfname );
             

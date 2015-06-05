@@ -97,7 +97,7 @@ if any(cellstouse==1) %Soft Stomach Model
         x0 = runner.GoodInitialConditions(x0);
         
     else
-        load([savepath 'StomachNoDamping.mat']);
+        load([savepath 'SoftStomachRunner/' 'StomachNoDamping.mat']);
         runner=r;
         x0 = xstar;
     end
@@ -119,7 +119,7 @@ r=newstomach;
 xstar = newstomachx0;
 
 if savegait
-    save([savepath 'AnthroSoftStomach.mat'],'r','xstar');
+    save([savepath 'SoftStomachRunner/' 'AnthroSoftStomach.mat'],'r','xstar');
 end
 
 end
@@ -149,7 +149,7 @@ if any(cellstouse==2) %Soft Series Stomach Model
         %Make sure foot starts on ground
         x0 = runner.GoodInitialConditions(x0);
     else
-        load([savepath 'SeriesStomachDamping.mat'])
+        load([savepath 'SoftStomachSeriesRunner/' 'SeriesStomachDamping.mat'])
         runner=r;
         x0 = xstar;
     end
@@ -179,7 +179,7 @@ if any(cellstouse==2) %Soft Series Stomach Model
     r=newseriesstomach;
     xstar = newseriesstomachx0;
     if savegait
-        save([savepath 'SeriesStomachDamping.mat'],'r','xstar');
+        save([savepath 'SoftStomachSeriesRunner/' 'SeriesStomachDamping.mat'],'r','xstar');
     end
             
 end
@@ -212,7 +212,7 @@ if any(cellstouse==3) %Soft Series Parallel Stomach Model
             %Make sure foot starts on ground
             x0 = runner.GoodInitialConditions(x0);
     else
-        load([savepath 'SeriesParallelStomachDamping4.mat'])
+        load([savepath 'SoftStomachSeriesParallelRunner/' 'SeriesParallelStomachDamping4.mat'])
         runner=r;
         x0 = xstar;
     end
@@ -245,7 +245,7 @@ if any(cellstouse==3) %Soft Series Parallel Stomach Model
     r=newr;
     xstar = newx0;
     if savegait
-        save([savepath 'SPSAnthro1.mat'],'r','xstar');
+        save([savepath 'SoftStomachSeriesParallelRunner/' 'SPSAnthro1.mat'],'r','xstar');
     end
             
 end
@@ -280,9 +280,9 @@ if any(cellstouse==4) %SSSP_vert
         %Make sure foot starts on ground
         x0 = runner.GoodInitialConditions(x0);
     else
-        %         load([savepath 'SeriesParallelStomachDamping3.mat'])
-        %         runner=r;
-        %         x0 = xstar;
+                load([savepath 'SSSP_vert/' 'SeriesParallelStomachDamping3.mat'])
+                runner=r;
+                x0 = xstar;
     end
      
     runner.csoftparallel=.5;
@@ -308,10 +308,10 @@ if any(cellstouse==4) %SSSP_vert
     r=newr;
     xstar = newx0;
     if savegait
-        save([savepath 'SSSP_vert1.mat'],'r','xstar');
+        save([savepath 'SSSP_vert/' 'SSSP_vert1.mat'],'r','xstar');
     end 
 end
-
+%%
 if any(cellstouse==5) %Spring Foot
     if useguess
         runner = SpringFootRunner;
@@ -348,9 +348,9 @@ if any(cellstouse==5) %Spring Foot
         runner.footangle = x0(5) - x0(6);
         runner.achillesangle = x0(3) - x0(6);
     else
-        %         load([savepath 'SeriesParallelStomachDamping3.mat'])
-        %         runner=r;
-        %         x0 = xstar;
+                load([savepath 'SpringFootRunner/' 'SeriesParallelStomachDamping3.mat'])
+                runner=r;
+                x0 = xstar;
     end
     
     
@@ -373,7 +373,7 @@ if any(cellstouse==5) %Spring Foot
     r=newr;
     xstar = newx0;
     if savegait
-        save([savepath 'SpringFoot2.mat'],'r','xstar');
+        save([savepath 'SpringFootRunner/' 'SpringFoot2.mat'],'r','xstar');
     end 
 end
 
@@ -406,7 +406,7 @@ if any(cellstouse==6) %Soft Par
             %Make sure foot starts on ground
             x0 = runner.GoodInitialConditions(x0);
     else
-        load([savepath 'SoftPar1.mat'])
+        load([savepath 'SoftParRunner/' 'SoftPar1.mat'])
         runner=r;
         x0 = xstar;
     end
@@ -441,7 +441,7 @@ if any(cellstouse==6) %Soft Par
     r=newr;
     xstar = newx0;
     if savegait
-        save([savepath 'SoftPar2.mat'],'r','xstar');
+        save([savepath 'SoftParRunner/' 'SoftPar2.mat'],'r','xstar');
     end
             
 end
@@ -481,7 +481,7 @@ if any(cellstouse==7) %NonlinParSoft Runner
             %Make sure foot starts on ground
             x0 = runner.GoodInitialConditions(x0);
     else
-        load([savepath 'NonlinPar1.mat'])
+        load([savepath 'NonlinParSoftRunner/' 'NonlinPar1.mat'])
         runner=r;
         x0 = xstar;
     end
@@ -517,11 +517,11 @@ parmstovary=[{'gslope'} {'kimpact'} {'kstance'} {'kleg'} {'csoftparallel'}];
     r=newr;
     xstar = newx0;
     if savegait
-        save([savepath 'NonlinPar3.mat'],'r','xstar');
+        save([savepath 'NonlinParSoftRunner/' 'NonlinPar3.mat'],'r','xstar');
     end
             
 end
-
+%% 
 if any(cellstouse==8) %Foot Achilles Runner
     if useguess
         runner = FootAchillesRunner;
@@ -558,9 +558,9 @@ if any(cellstouse==8) %Foot Achilles Runner
             runner.kstance = .3;
             runner.footangle = x0(5) - x0(6);
     else
-        %         load([savepath 'SeriesParallelStomachDamping3.mat'])
-        %         runner=r;
-        %         x0 = xstar;
+                load([savepath 'FootAchillesRunner/' 'SeriesParallelStomachDamping3.mat'])
+                runner=r;
+                x0 = xstar;
     end
     
     
@@ -583,10 +583,10 @@ if any(cellstouse==8) %Foot Achilles Runner
     r=newr;
     xstar = newx0;
     if savegait
-        save([savepath 'FAR1.mat'],'r','xstar');
+        save([savepath 'FootAchillesRunner/' 'FAR1.mat'],'r','xstar');
     end 
 end
-
+%%
 if any(cellstouse==9) %Massless Achilles Foot Runner
     if useguess
             runner = MasslessAchillesRunner;
@@ -614,7 +614,7 @@ if any(cellstouse==9) %Massless Achilles Foot Runner
             runner.kimpact = 0.9870;
             runner.gslope = 0;
     else
-                load([savepath 'MAR1.mat'])
+                load([savepath 'MasslessAchillesRunner/' 'MAR1.mat'])
                 runner=r;
                 x0 = xstar;
     end
@@ -642,12 +642,12 @@ if any(cellstouse==9) %Massless Achilles Foot Runner
     r=newr;
     xstar = allx(1,:);
     if savegait
-        save([savepath 'MAR1.mat'],'r','xstar','parmstovary','limitCycleError',...
+        save([savepath 'MasslessAchillesRunner/''MAR1.mat'],'r','xstar','parmstovary','limitCycleError',...
                                    'c','ceq','eflag','optimoutput','lambda',...
                                    'xf','tf','allx','allt','tair','phasevec');
     end 
 end
-
+%%
 if any(cellstouse==10) %RetractSLIP Runner
     if useguess
         
@@ -683,7 +683,7 @@ if any(cellstouse==10) %RetractSLIP Runner
             x0 = IC.getVector();
             [x0,runner] = runner.GoodInitialConditions(x0);
     else
-                load([savepath 'RetractSLIP2.mat'],'r','xstar')
+                load([savepath 'RetractSLIP/' 'RetractSLIP2.mat'],'r','xstar')
                 runner=r;
                 x0 = xstar;
     end
@@ -714,12 +714,12 @@ parmstovary=[{'kstance'} {'kswing'} {'khip'} {'hipl'} {'gslope'}];
     x0 = xstar;
     r.printStepCharacteristics(x0,xf,tf,tair);
     if savegait
-        save([savepath 'RetractSLIP2.mat'],'r','xstar','parmstovary','limitCycleError',...
+        save([savepath 'RetractSLIP/' 'RetractSLIP2.mat'],'r','xstar','parmstovary','limitCycleError',...
                                    'c','ceq','eflag','optimoutput','lambda',...
                                    'xf','tf','allx','allt','tair','phasevec');
     end 
 end
-
+%%
 if any(cellstouse==11) %SLIP Runner
     runner = SLIP;
     IC = SLIPState;
@@ -736,7 +736,7 @@ if any(cellstouse==11) %SLIP Runner
         IC.stancefoot.LengthDot = -0.5830;
         x0 = IC.getVector();
     else
-                load([savepath 'SLIP_NoAerial_unmatchedSL.mat'],'r','xstar')
+                load([savepath '/SLIP' 'SLIP_NoAerial_unmatchedSL.mat'],'r','xstar')
                 runner=r;
                 x0 = xstar;
     end
@@ -768,7 +768,7 @@ parmstovary=[{'kstance'}];
     x0 = xstar;
     r.printStepCharacteristics(x0,xf,tf,tair);
     if savegait
-        save([savepath 'SLIP_NoAerial_unmatchedSL2.mat'],'r','xstar','parmstovary','limitCycleError',...
+        save([savepath '/SLIP' 'SLIP_NoAerial_unmatchedSL2.mat'],'r','xstar','parmstovary','limitCycleError',...
                                    'c','ceq','eflag','optimoutput','lambda',...
                                    'xf','tf','allx','allt','tair','phasevec');
     end 
@@ -778,7 +778,7 @@ if any(cellstouse==12) %Swing Runner
     runner = Swing;
     IC = SwingState;
     if useguess
-                   load('./SavedGaits/SLIP_NoAerial_unmatchedSL.mat','SLIPdata')
+                   load('./SavedGaits/Swing/SLIP_NoAerial_unmatchedSL.mat','SLIPdata')
             runner.SLIPx0 = [SLIPdata(end,4);SLIPdata(end,5)];
             runner.SLIPxf = [SLIPdata(1,4);SLIPdata(1,5)];
             %add another step to the cycle
@@ -813,7 +813,7 @@ if any(cellstouse==12) %Swing Runner
         
                     [x0,runner] = runner.GoodInitialConditions(x0);
     else
-                load([savepath 'SLIP_NoAerial_unmatchedSL.mat'],'r','xstar')
+                load([savepath 'Swing/' 'SLIP_NoAerial_unmatchedSL.mat'],'r','xstar')
                 runner=r;
                 x0 = xstar;
     end
@@ -845,7 +845,7 @@ parmstovary=[{'khip'} {'hipl'} {'kswing'}];
     x0 = xstar;
     r.printStepCharacteristics(x0,xf,tf,tair);
     if savegait
-        save([savepath 'Swing_yank1.mat'],'r','xstar','parmstovary','limitCycleError',...
+        save([savepath 'Swing/' 'Swing_yank1.mat'],'r','xstar','parmstovary','limitCycleError',...
                                    'c','ceq','eflag','optimoutput','lambda',...
                                    'xf','tf','allx','allt','tair','phasevec');
     end 
@@ -856,7 +856,7 @@ if any(cellstouse==13) %RetractKneeSwing Runner
     IC = RetractKneeSwingState;
     if useguess
 
-        SLIPfname = './SavedGaits/SLIP_NoAerial_unmatchedSL.mat';
+        SLIPfname = './SavedGaits/RetractKneeSwing/SLIP_NoAerial_unmatchedSL.mat';
         [ runner.SLIPdata, runner.SLIPx0, runner.SLIPxf ] = getSLIPdata( SLIPfname );
         
                     runner.lthigh = 0.7;
@@ -886,7 +886,7 @@ if any(cellstouse==13) %RetractKneeSwing Runner
         
        [x0,runner] = runner.GoodInitialConditions(x0);
     else
-                load([savepath 'SLIP_NoAerial_unmatchedSL.mat'],'r','xstar')
+                load([savepath 'RetractKneeSwing/' 'SLIP_NoAerial_unmatchedSL.mat'],'r','xstar')
                 runner=r;
                 x0 = xstar;
     end
@@ -918,7 +918,7 @@ parmstovary=[{'kknee'} {'khip'} {'hipl'} {'kneel'}];
     x0 = xstar;
     r.printStepCharacteristics(x0,xf,tf,tair);
     if savegait
-        save([savepath 'RetractKneeSwing_bigkick3.mat'],'r','xstar','parmstovary','limitCycleError',...
+        save([savepath 'RetractKneeSwing/' 'RetractKneeSwing_bigkick3.mat'],'r','xstar','parmstovary','limitCycleError',...
                                    'c','ceq','eflag','optimoutput','lambda',...
                                    'xf','tf','allx','allt','tair','phasevec');
     end 
