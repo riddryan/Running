@@ -32,7 +32,7 @@ savepath = [dir '\SavedGaits\'];
 % 2. Soft Stomach Series
 % 3. Soft Stomach Series Parallel
 
-cellstouse=[12];
+cellstouse=[13];
 
 %Optimizer Constraint Tolerance
 constrainttolerance = 1e-5;
@@ -773,7 +773,7 @@ parmstovary=[{'kstance'}];
                                    'xf','tf','allx','allt','tair','phasevec');
     end 
 end
-
+%%
 if any(cellstouse==12) %Swing Runner
     runner = Swing;
     IC = SwingState;
@@ -845,6 +845,73 @@ parmstovary=[{'khip'} {'hipl'} {'kswing'}];
     r.printStepCharacteristics(x0,xf,tf,tair);
     if savegait
         save([savepath 'Swing_yank1.mat'],'r','xstar','parmstovary','limitCycleError',...
+                                   'c','ceq','eflag','optimoutput','lambda',...
+                                   'xf','tf','allx','allt','tair','phasevec');
+    end 
+end
+%%
+if any(cellstouse==13) %RetractKneeSwing Runner
+    runner = RetractKneeSwing;
+    IC = RetractKneeSwingState;
+    if useguess
+
+        SLIPfname = './SavedGaits/SLIP_NoAerial_unmatchedSL.mat';
+        [ runner.SLIPdata, runner.SLIPx0, runner.SLIPxf ] = getSLIPdata( SLIPfname );
+        
+                    runner.kknee = 2; %0.01
+                    runner.khip = 7; %0.01
+                    
+                    runner.gslope = 0;
+                    runner.kneel = 0.8;
+                    runner.hipl = -0.9;
+                    
+                    IC.foot.Angle = runner.SLIPx0(1);
+                    IC.knee.Angle = runner.SLIPx0(1);
+                    
+                    IC.foot.AngleDot = 0;
+                    IC.knee.AngleDot = 0;
+                    
+                    runner.usefloorconstraint = 1;
+        
+        x0 = IC.getVector();
+        
+%         runner.statestovary = [3 4];
+        
+       [x0,runner] = runner.GoodInitialConditions(x0);
+    else
+                load([savepath 'SLIP_NoAerial_unmatchedSL.mat'],'r','xstar')
+                runner=r;
+                x0 = xstar;
+    end
+    
+    %%%%%%%%%%%%%%%%%%%%%%%
+    runcharic.airfrac = 0;
+    runcharic.steplength = [];
+    %%%%%%%%%%%%%%%%%%%%%%%
+    
+parmstovary=[{'kknee'} {'khip'} {'hipl'} {'kneel'}];
+%       addedconstraints = @(r,x0) r.additionalConstraints(x0);
+    addedconstraints=[];
+      
+    % Find Limit cycle
+    [finalStates, finalParameters, limitCycleError, c, ceq, eflag, optimoutput, lambda] = ...
+         runner.findLimitCycle(x0,'runcharic',runcharic,...
+        'parametersToAlter',parmstovary,...
+        'TolCon',constrainttolerance,...
+        'additionalConstraintFunction',addedconstraints,'MaxEvals',1000);
+    
+    newr = runner.setParametersFromList(parmstovary,finalParameters);
+    newx0 = finalStates;
+    
+    figure
+    [xf,tf,allx,allt,tair,newr,phasevec] = newr.onestep(newx0,'interleaveAnimation',1);
+    
+    r=newr;
+    xstar = allx(1,:);
+    x0 = xstar;
+    r.printStepCharacteristics(x0,xf,tf,tair);
+    if savegait
+        save([savepath 'RetractKneeSwing_floorconstraint.mat'],'r','xstar','parmstovary','limitCycleError',...
                                    'c','ceq','eflag','optimoutput','lambda',...
                                    'xf','tf','allx','allt','tair','phasevec');
     end 
