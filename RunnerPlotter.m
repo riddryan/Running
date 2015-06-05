@@ -139,6 +139,8 @@ classdef RunnerPlotter
             switch option
                 case 'Color'
                     color = value;
+                case 'CCW'
+                    CCW = value;
             end
         end
         if ~iscolumn(r1)
