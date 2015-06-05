@@ -10,6 +10,7 @@ classdef RetractKneeSwing < Runner
         statestomeasure = [];
         
         mpelvis = 1;
+        mfoot = 1; %as a ratio of mass relative to knee mass of 1
         
         %Segment Lengths
         lthigh = 0.6;
@@ -44,7 +45,7 @@ classdef RetractKneeSwing < Runner
             aviname = [savepath 'RetractKneeSwing1.avi'];
             onephasesim = 0;
             manystep = 0;
-            test = 'experiment';
+            test = 'big kick';
             
             LineWidth=3;
             LineSize=3;
@@ -62,15 +63,16 @@ classdef RetractKneeSwing < Runner
             IC = RetractKneeSwingState;
             switch test
                 
-                case 'experiment'
+                case 'big kick'
                     
+                    runner.mfoot = 0.5;
                     
-                    runner.kknee = 1; %0.01
-                    runner.khip = 8; %0.01
+                    runner.kknee = 4; %0.01
+                    runner.khip = 10; %0.01
                     
                     runner.gslope = 0;
-                    runner.kneel = 0.25;
-                    runner.hipl = -1.05;
+                    runner.kneel = 0.8;
+                    runner.hipl = -0.9;
                     
                     IC.foot.Angle = runner.SLIPx0(1);
                     IC.knee.Angle = runner.SLIPx0(1);
@@ -79,6 +81,40 @@ classdef RetractKneeSwing < Runner
                     IC.knee.AngleDot = 0;
                     
                     x0 = IC.getVector();
+                    
+                
+                case 'more clearance'
+                    
+                    
+                    runner.kknee = 2; %0.01
+                    runner.khip = 7; %0.01
+                    
+                    runner.gslope = 0;
+                    runner.kneel = 0.8;
+                    runner.hipl = -0.9;
+                    
+                    IC.foot.Angle = runner.SLIPx0(1);
+                    IC.knee.Angle = runner.SLIPx0(1);
+                    
+                    IC.foot.AngleDot = 0;
+                    IC.knee.AngleDot = 0;
+                    
+                    x0 = IC.getVector();
+                    
+                case 'first'
+                    
+                            runner.kknee = 1; %0.01
+        runner.khip = 8; %0.01
+        
+        runner.gslope = 0;
+        runner.kneel = 0.25;
+        runner.hipl = -1.05;
+        
+        IC.foot.Angle = runner.SLIPx0(1);
+        IC.knee.Angle = runner.SLIPx0(1);
+        
+        IC.foot.AngleDot = 0;
+        IC.knee.AngleDot = 0;
                 otherwise
                     error('Undefined Test Case')
             end
@@ -155,6 +191,7 @@ classdef RetractKneeSwing < Runner
                 footvelx(i) = vels.foot(1);
                 footvely(i) = vels.foot(2);
                 GRF(i,:) = runner.getGRF(allt(i),allx(i,:),phase);
+                knee(i) = allx(i,1)-allx(i,2);
             end
             
             
@@ -573,19 +610,23 @@ end
                     
                     
                 else
-                    accs(1,1) = (-(c3m4*lthigh*(kknee*(-q3 + q4 + kneel) + c4*g*lshank - ...
-s4*lshank*xpacc + c4*lshank*ypacc - s3m4*lshank*lthigh*(u3*u3))) + ...
-lshank*(-(hipl*khip) - q4*kknee + q3*(khip + kknee) - kknee*kneel + ...
-2*c3*g*lthigh - 2*s3*lthigh*xpacc + 2*c3*lthigh*ypacc + ...
-s3m4*lshank*lthigh*(u4*u4)))*power(lshank,-1)*power(lthigh,-2)*power(-2 + ...
-c3m4*c3m4,-1); accs(1,2) = power(lshank,-2)*power(lthigh,-1)*power(-2 + ...
-c3m4*c3m4,-1)*(c3m4*hipl*khip*lshank + c3m4*kknee*kneel*lshank + ...
-2*kknee*kneel*lthigh + c4*g*lshank*lthigh + q4*kknee*(c3m4*lshank + 2*lthigh) ...
-- q3*(c3m4*(khip + kknee)*lshank + 2*kknee*lthigh) - s4*lshank*lthigh*xpacc + ...
-c4*lshank*lthigh*ypacc - g*lshank*lthigh*cos(2*q3 - q4) - ...
-lshank*lthigh*ypacc*cos(2*q3 - q4) - 2*s3m4*lshank*(u3*u3)*(lthigh*lthigh) - ...
-(lthigh*(u4*u4)*(lshank*lshank)*sin(2*(q3 - q4)))/2. + ...
-lshank*lthigh*xpacc*sin(2*q3 - q4)); 
+accs(1,1) = -((-(c3m4*lthigh*(kknee*(-q3 + q4 + kneel) + c4*g*lshank*mfoot - ...
+s4*lshank*mfoot*xpacc + c4*lshank*mfoot*ypacc - ...
+s3m4*lshank*lthigh*mfoot*(u3*u3))) + lshank*(-(hipl*khip) - q4*kknee + ...
+q3*(khip + kknee) - kknee*kneel + 2*c3*g*lthigh*mfoot - s3*lthigh*(1 + ...
+mfoot)*xpacc + c3*lthigh*(1 + mfoot)*ypacc + ...
+s3m4*lshank*lthigh*mfoot*(u4*u4)))*power(lshank,-1)*power(lthigh,-2)*power(1 ...
++ mfoot - mfoot*(c3m4*c3m4),-1)); accs(1,2) = ...
+power(lshank,-2)*(-((-(q3*kknee) + q4*kknee + kknee*kneel + c4*g*lshank*mfoot ...
+- s4*lshank*mfoot*xpacc + c4*lshank*mfoot*ypacc - ...
+s3m4*lshank*lthigh*mfoot*(u3*u3))*power(mfoot,-1)) + ...
+c3m4*(-(c3m4*lthigh*(kknee*(-q3 + q4 + kneel) + c4*g*lshank*mfoot - ...
+s4*lshank*mfoot*xpacc + c4*lshank*mfoot*ypacc - ...
+s3m4*lshank*lthigh*mfoot*(u3*u3))) + lshank*(-(hipl*khip) - q4*kknee + ...
+q3*(khip + kknee) - kknee*kneel + 2*c3*g*lthigh*mfoot - s3*lthigh*(1 + ...
+mfoot)*xpacc + c3*lthigh*(1 + mfoot)*ypacc + ...
+s3m4*lshank*lthigh*mfoot*(u4*u4)))*power(lthigh,-1)*power(1 + mfoot - ...
+mfoot*(c3m4*c3m4),-1)); 
                     
                 end
                 
@@ -785,7 +826,7 @@ kneel)*(q3 - q4 - kneel)))/2.;
         limitCycleError = pts.foot - pts.pelvis - this.SLIPxf(2)*[cos(this.SLIPxf(1)) sin(this.SLIPxf(1))];
         
         c=[];
-        ceq=limitCycleError;
+        ceq=limitCycleError';
 
         if ~isempty(runcharic.speed)
             [speed] = getSpeed(this, x0, xf, tf);

@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[     69635,       1835]
-NotebookOptionsPosition[     68002,       1780]
-NotebookOutlinePosition[     68349,       1795]
-CellTagsIndexPosition[     68306,       1792]
+NotebookDataLength[     80637,       2050]
+NotebookOptionsPosition[     79001,       1995]
+NotebookOutlinePosition[     79348,       2010]
+CellTagsIndexPosition[     79305,       2007]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -56,7 +56,8 @@ Cell[BoxData["Initialization"], "Output",
    3.6387165495585003`*^9, 3.6387168513535*^9, 3.638808072851*^9, 
    3.638808124942*^9, {3.6400158814639997`*^9, 3.640015910058*^9}, 
    3.6424447611166*^9, {3.6425152592846003`*^9, 3.6425152860556*^9}, {
-   3.6425153533336*^9, 3.6425154334826*^9}, 3.6425155138196*^9}]
+   3.6425153533336*^9, 3.6425154334826*^9}, 3.6425155138196*^9, 
+   3.6425256219166*^9, 3.6425296361876*^9}]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -139,7 +140,8 @@ Cell[BoxData[
    3.638808124972*^9, {3.640015881863*^9, 3.6400159100959997`*^9}, 
    3.6400239197469997`*^9, 3.6400240552939997`*^9, 3.640024143325*^9, 
    3.6424447611726*^9, {3.6425152593146*^9, 3.6425152860856*^9}, 
-   3.6425154335226*^9, 3.6425155138596*^9}],
+   3.6425154335226*^9, 3.6425155138596*^9, 3.6425256219556*^9, 
+   3.6425296362226*^9}],
 
 Cell[BoxData[
  RowBox[{"{", "}"}]], "Output",
@@ -152,7 +154,8 @@ Cell[BoxData[
    3.638808124972*^9, {3.640015881863*^9, 3.6400159100959997`*^9}, 
    3.6400239197469997`*^9, 3.6400240552939997`*^9, 3.640024143325*^9, 
    3.6424447611726*^9, {3.6425152593146*^9, 3.6425152860856*^9}, 
-   3.6425154335226*^9, 3.6425155138696003`*^9}],
+   3.6425154335226*^9, 3.6425155138596*^9, 3.6425256219556*^9, 
+   3.6425296362286*^9}],
 
 Cell[BoxData["Pelvis"], "Output",
  CellChangeTimes->{
@@ -164,7 +167,8 @@ Cell[BoxData["Pelvis"], "Output",
    3.638808124972*^9, {3.640015881863*^9, 3.6400159100959997`*^9}, 
    3.6400239197469997`*^9, 3.6400240552939997`*^9, 3.640024143325*^9, 
    3.6424447611726*^9, {3.6425152593146*^9, 3.6425152860856*^9}, 
-   3.6425154335226*^9, 3.6425155138696003`*^9}],
+   3.6425154335226*^9, 3.6425155138596*^9, 3.6425256219556*^9, 
+   3.6425296362306004`*^9}],
 
 Cell[BoxData[
  RowBox[{"Leg", " ", "Swing"}]], "Output",
@@ -177,7 +181,8 @@ Cell[BoxData[
    3.638808124972*^9, {3.640015881863*^9, 3.6400159100959997`*^9}, 
    3.6400239197469997`*^9, 3.6400240552939997`*^9, 3.640024143325*^9, 
    3.6424447611726*^9, {3.6425152593146*^9, 3.6425152860856*^9}, 
-   3.6425154335226*^9, 3.6425155138696003`*^9}]
+   3.6425154335226*^9, 3.6425155138596*^9, 3.6425256219556*^9, 
+   3.6425296362326*^9}]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -344,6 +349,7 @@ Cell[BoxData[{
     RowBox[{"MassMatrix", "[", "eom", "]"}], "//", "Simplify"}]}], 
   ";"}], "\[IndentingNewLine]", 
  RowBox[{"MatrixForm", "[", "MM", "]"}], "\[IndentingNewLine]", 
+ RowBox[{"MatrixForm", "[", "rhs", "]"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"MMtop", " ", "=", " ", 
    RowBox[{
@@ -364,9 +370,7 @@ Cell[BoxData[{
       RowBox[{"{", 
        RowBox[{"3", ",", "4"}], "}"}], "]"}], "]"}], " ", "//.", " ", 
     RowBox[{"{", 
-     RowBox[{
-      RowBox[{"mfoot", "\[Rule]", "1"}], ",", 
-      RowBox[{"mknee", "\[Rule]", " ", "1"}]}], "}"}]}]}], 
+     RowBox[{"mknee", "\[Rule]", " ", "1"}], "}"}]}]}], 
   ";"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"rhstop", " ", "=", " ", 
@@ -388,9 +392,7 @@ Cell[BoxData[{
       RowBox[{"{", 
        RowBox[{"3", ",", "4"}], "}"}], "]"}], "]"}], " ", "//.", " ", 
     RowBox[{"{", 
-     RowBox[{
-      RowBox[{"mfoot", "\[Rule]", "1"}], ",", 
-      RowBox[{"mknee", "\[Rule]", "1"}]}], "}"}]}]}], 
+     RowBox[{"mknee", "\[Rule]", "1"}], "}"}]}]}], 
   ";"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"MMfoot", " ", "=", " ", "MMbot"}], ";"}], "\[IndentingNewLine]", 
@@ -447,7 +449,8 @@ Cell[BoxData[{
    3.6424440777756*^9}, {3.6424441266726*^9, 3.6424441304646*^9}, 
    3.6424442439526*^9, {3.6424444350165997`*^9, 3.6424444574886*^9}, {
    3.6424444966415997`*^9, 3.6424445238896*^9}, {3.6425256172156*^9, 
-   3.6425256189946003`*^9}}],
+   3.6425256189946003`*^9}, {3.6425296253346*^9, 3.6425296315176*^9}, {
+   3.6425303285826*^9, 3.6425303316946*^9}}],
 
 Cell[BoxData[
  RowBox[{"Torques", " ", 
@@ -466,7 +469,8 @@ Cell[BoxData[
    3.640024138276*^9, 3.640024145394*^9}, {3.640024212736*^9, 
    3.6400242403529997`*^9}, {3.640024620314*^9, 3.6400246247460003`*^9}, 
    3.6424447612886*^9, {3.6425152593646*^9, 3.6425152861256*^9}, 
-   3.6425154335626*^9, 3.6425155138996*^9}],
+   3.6425154335626*^9, 3.6425155138996*^9, 3.6425256219976*^9, 
+   3.6425296362706003`*^9}],
 
 Cell[BoxData["Gravity"], "Output",
  CellChangeTimes->{
@@ -481,7 +485,8 @@ Cell[BoxData["Gravity"], "Output",
    3.640024138276*^9, 3.640024145394*^9}, {3.640024212736*^9, 
    3.6400242403529997`*^9}, {3.640024620314*^9, 3.6400246247460003`*^9}, 
    3.6424447612886*^9, {3.6425152593646*^9, 3.6425152861256*^9}, 
-   3.6425154335626*^9, 3.6425155139096003`*^9}],
+   3.6425154335626*^9, 3.6425155138996*^9, 3.6425256219976*^9, 
+   3.6425296362746*^9}],
 
 Cell[BoxData["Springs"], "Output",
  CellChangeTimes->{
@@ -496,7 +501,8 @@ Cell[BoxData["Springs"], "Output",
    3.640024138276*^9, 3.640024145394*^9}, {3.640024212736*^9, 
    3.6400242403529997`*^9}, {3.640024620314*^9, 3.6400246247460003`*^9}, 
    3.6424447612886*^9, {3.6425152593646*^9, 3.6425152861256*^9}, 
-   3.6425154335626*^9, 3.6425155139096003`*^9}],
+   3.6425154335626*^9, 3.6425155138996*^9, 3.6425256219976*^9, 
+   3.6425296362756*^9}],
 
 Cell[BoxData["Dampers"], "Output",
  CellChangeTimes->{
@@ -511,7 +517,8 @@ Cell[BoxData["Dampers"], "Output",
    3.640024138276*^9, 3.640024145394*^9}, {3.640024212736*^9, 
    3.6400242403529997`*^9}, {3.640024620314*^9, 3.6400246247460003`*^9}, 
    3.6424447612886*^9, {3.6425152593646*^9, 3.6425152861256*^9}, 
-   3.6425154335626*^9, 3.6425155139096003`*^9}],
+   3.6425154335626*^9, 3.6425155138996*^9, 3.6425256219976*^9, 
+   3.6425296362776003`*^9}],
 
 Cell[BoxData[
  TagBox[
@@ -599,40 +606,48 @@ Cell[BoxData[
    3.640024138276*^9, 3.640024145394*^9}, {3.640024212736*^9, 
    3.6400242403529997`*^9}, {3.640024620314*^9, 3.6400246247460003`*^9}, 
    3.6424447612886*^9, {3.6425152593646*^9, 3.6425152861256*^9}, 
-   3.6425154335626*^9, 3.6425155140996*^9}],
+   3.6425154335626*^9, 3.6425155138996*^9, 3.6425256219976*^9, 
+   3.6425296363036003`*^9}],
 
 Cell[BoxData[
  TagBox[
   RowBox[{"(", "\[NoBreak]", GridBox[{
      {
       RowBox[{
-       RowBox[{"-", "2"}], " ", "lthigh", " ", 
+       RowBox[{"-", "lthigh"}], " ", 
+       RowBox[{"(", 
+        RowBox[{"1", "+", "mfoot"}], ")"}], " ", 
        RowBox[{"Sin", "[", 
         SubscriptBox["q", "3"], "]"}]}], 
-      RowBox[{"2", " ", "lthigh", " ", 
+      RowBox[{"lthigh", " ", 
+       RowBox[{"(", 
+        RowBox[{"1", "+", "mfoot"}], ")"}], " ", 
        RowBox[{"Cos", "[", 
         SubscriptBox["q", "3"], "]"}]}], 
-      RowBox[{"2", " ", 
-       SuperscriptBox["lthigh", "2"]}], 
-      RowBox[{"lshank", " ", "lthigh", " ", 
+      RowBox[{
+       SuperscriptBox["lthigh", "2"], " ", 
+       RowBox[{"(", 
+        RowBox[{"1", "+", "mfoot"}], ")"}]}], 
+      RowBox[{"lshank", " ", "lthigh", " ", "mfoot", " ", 
        RowBox[{"Cos", "[", 
         RowBox[{
          SubscriptBox["q", "3"], "-", 
          SubscriptBox["q", "4"]}], "]"}]}]},
      {
       RowBox[{
-       RowBox[{"-", "lshank"}], " ", 
+       RowBox[{"-", "lshank"}], " ", "mfoot", " ", 
        RowBox[{"Sin", "[", 
         SubscriptBox["q", "4"], "]"}]}], 
-      RowBox[{"lshank", " ", 
+      RowBox[{"lshank", " ", "mfoot", " ", 
        RowBox[{"Cos", "[", 
         SubscriptBox["q", "4"], "]"}]}], 
-      RowBox[{"lshank", " ", "lthigh", " ", 
+      RowBox[{"lshank", " ", "lthigh", " ", "mfoot", " ", 
        RowBox[{"Cos", "[", 
         RowBox[{
          SubscriptBox["q", "3"], "-", 
          SubscriptBox["q", "4"]}], "]"}]}], 
-      SuperscriptBox["lshank", "2"]}
+      RowBox[{
+       SuperscriptBox["lshank", "2"], " ", "mfoot"}]}
     },
     GridBoxAlignment->{
      "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
@@ -658,7 +673,8 @@ Cell[BoxData[
    3.640024138276*^9, 3.640024145394*^9}, {3.640024212736*^9, 
    3.6400242403529997`*^9}, {3.640024620314*^9, 3.6400246247460003`*^9}, 
    3.6424447612886*^9, {3.6425152593646*^9, 3.6425152861256*^9}, 
-   3.6425154335626*^9, 3.6425155140996*^9}],
+   3.6425154335626*^9, 3.6425155138996*^9, 3.6425256219976*^9, 
+   3.6425296363066*^9}],
 
 Cell[BoxData[
  TagBox[
@@ -666,34 +682,42 @@ Cell[BoxData[
    TagBox[GridBox[{
       {
        RowBox[{
-        RowBox[{"hipl", " ", "khip"}], "-", 
-        RowBox[{"2", " ", "g", " ", "lthigh", " ", 
+        RowBox[{"hipl", " ", "khip"}], "+", 
+        RowBox[{"kknee", " ", "kneel"}], "-", 
+        RowBox[{"2", " ", "g", " ", "lthigh", " ", "mfoot", " ", 
          RowBox[{"Cos", "[", 
           RowBox[{"gslope", "-", 
            SubscriptBox["q", "3"]}], "]"}]}], "-", 
-        RowBox[{"khip", " ", 
-         SubscriptBox["q", "3"]}], "-", 
-        RowBox[{"lshank", " ", "lthigh", " ", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"khip", "+", "kknee"}], ")"}], " ", 
+         SubscriptBox["q", "3"]}], "+", 
+        RowBox[{"kknee", " ", 
+         SubscriptBox["q", "4"]}], "-", 
+        RowBox[{"lshank", " ", "lthigh", " ", "mfoot", " ", 
          RowBox[{"Sin", "[", 
           RowBox[{
            SubscriptBox["q", "3"], "-", 
            SubscriptBox["q", "4"]}], "]"}], " ", 
          SubsuperscriptBox["u", "4", "2"]}]}]},
       {
-       RowBox[{"lshank", " ", 
-        RowBox[{"(", 
-         RowBox[{
+       RowBox[{
+        RowBox[{
+         RowBox[{"-", "g"}], " ", "lshank", " ", "mfoot", " ", 
+         RowBox[{"Cos", "[", 
+          RowBox[{"gslope", "-", 
+           SubscriptBox["q", "4"]}], "]"}]}], "-", 
+        RowBox[{"kknee", " ", 
+         RowBox[{"(", 
+          RowBox[{"kneel", "-", 
+           SubscriptBox["q", "3"], "+", 
+           SubscriptBox["q", "4"]}], ")"}]}], "+", 
+        RowBox[{"lshank", " ", "lthigh", " ", "mfoot", " ", 
+         RowBox[{"Sin", "[", 
           RowBox[{
-           RowBox[{"-", "g"}], " ", 
-           RowBox[{"Cos", "[", 
-            RowBox[{"gslope", "-", 
-             SubscriptBox["q", "4"]}], "]"}]}], "+", 
-          RowBox[{"lthigh", " ", 
-           RowBox[{"Sin", "[", 
-            RowBox[{
-             SubscriptBox["q", "3"], "-", 
-             SubscriptBox["q", "4"]}], "]"}], " ", 
-           SubsuperscriptBox["u", "3", "2"]}]}], ")"}]}]}
+           SubscriptBox["q", "3"], "-", 
+           SubscriptBox["q", "4"]}], "]"}], " ", 
+         SubsuperscriptBox["u", "3", "2"]}]}]}
      },
      GridBoxAlignment->{
       "Columns" -> {{Center}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}},
@@ -720,7 +744,8 @@ Cell[BoxData[
    3.640024138276*^9, 3.640024145394*^9}, {3.640024212736*^9, 
    3.6400242403529997`*^9}, {3.640024620314*^9, 3.6400246247460003`*^9}, 
    3.6424447612886*^9, {3.6425152593646*^9, 3.6425152861256*^9}, 
-   3.6425154335626*^9, 3.6425155140996*^9}],
+   3.6425154335626*^9, 3.6425155138996*^9, 3.6425256219976*^9, 
+   3.6425296363106003`*^9}],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -728,133 +753,188 @@ Cell[BoxData[
    RowBox[{
     RowBox[{"hipacc", "\[Rule]", 
      RowBox[{"-", 
-      FractionBox[
-       RowBox[{
-        RowBox[{"2", " ", "hipl", " ", "khip"}], "-", 
-        RowBox[{"3", " ", "g", " ", "lthigh", " ", 
-         RowBox[{"Cos", "[", 
-          SubscriptBox["q", "3"], "]"}]}], "-", 
-        RowBox[{"3", " ", "lthigh", " ", "ypacc", " ", 
-         RowBox[{"Cos", "[", 
-          SubscriptBox["q", "3"], "]"}]}], "+", 
-        RowBox[{"g", " ", "lthigh", " ", 
-         RowBox[{"Cos", "[", 
-          RowBox[{
-           SubscriptBox["q", "3"], "-", 
-           RowBox[{"2", " ", 
-            SubscriptBox["q", "4"]}]}], "]"}]}], "+", 
-        RowBox[{"lthigh", " ", "ypacc", " ", 
-         RowBox[{"Cos", "[", 
-          RowBox[{
-           SubscriptBox["q", "3"], "-", 
-           RowBox[{"2", " ", 
-            SubscriptBox["q", "4"]}]}], "]"}]}], "+", 
-        RowBox[{"3", " ", "lthigh", " ", "xpacc", " ", 
-         RowBox[{"Sin", "[", 
-          SubscriptBox["q", "3"], "]"}]}], "+", 
-        RowBox[{"lthigh", " ", "xpacc", " ", 
-         RowBox[{"Sin", "[", 
-          RowBox[{
-           SubscriptBox["q", "3"], "-", 
-           RowBox[{"2", " ", 
-            SubscriptBox["q", "4"]}]}], "]"}]}], "-", 
-        RowBox[{"2", " ", "khip", " ", 
-         SubscriptBox["q", "3"]}], "-", 
-        RowBox[{
+      RowBox[{
+       FractionBox["1", 
+        RowBox[{"lshank", " ", 
          SuperscriptBox["lthigh", "2"], " ", 
-         RowBox[{"Sin", "[", 
-          RowBox[{"2", " ", 
-           RowBox[{"(", 
-            RowBox[{
-             SubscriptBox["q", "3"], "-", 
-             SubscriptBox["q", "4"]}], ")"}]}], "]"}], " ", 
-         SubsuperscriptBox["u", "3", "2"]}], "-", 
-        RowBox[{"2", " ", "lshank", " ", "lthigh", " ", 
-         RowBox[{"Sin", "[", 
-          RowBox[{
-           SubscriptBox["q", "3"], "-", 
-           SubscriptBox["q", "4"]}], "]"}], " ", 
-         SubsuperscriptBox["u", "4", "2"]}]}], 
-       RowBox[{
-        SuperscriptBox["lthigh", "2"], " ", 
-        RowBox[{"(", 
+         RowBox[{"(", 
+          RowBox[{"1", "+", "mfoot", "-", 
+           RowBox[{"mfoot", " ", 
+            SuperscriptBox[
+             RowBox[{"Cos", "[", 
+              RowBox[{
+               SubscriptBox["q", "3"], "-", 
+               SubscriptBox["q", "4"]}], "]"}], "2"]}]}], ")"}]}]], 
+       RowBox[{"(", 
+        RowBox[{
          RowBox[{
-          RowBox[{"-", "3"}], "+", 
+          RowBox[{"-", "lthigh"}], " ", 
           RowBox[{"Cos", "[", 
-           RowBox[{"2", " ", 
-            RowBox[{"(", 
-             RowBox[{
-              SubscriptBox["q", "3"], "-", 
-              SubscriptBox["q", "4"]}], ")"}]}], "]"}]}], ")"}]}]]}]}], ",", 
+           RowBox[{
+            SubscriptBox["q", "3"], "-", 
+            SubscriptBox["q", "4"]}], "]"}], " ", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"g", " ", "lshank", " ", "mfoot", " ", 
+             RowBox[{"Cos", "[", 
+              SubscriptBox["q", "4"], "]"}]}], "+", 
+            RowBox[{"lshank", " ", "mfoot", " ", "ypacc", " ", 
+             RowBox[{"Cos", "[", 
+              SubscriptBox["q", "4"], "]"}]}], "-", 
+            RowBox[{"lshank", " ", "mfoot", " ", "xpacc", " ", 
+             RowBox[{"Sin", "[", 
+              SubscriptBox["q", "4"], "]"}]}], "+", 
+            RowBox[{"kknee", " ", 
+             RowBox[{"(", 
+              RowBox[{"kneel", "-", 
+               SubscriptBox["q", "3"], "+", 
+               SubscriptBox["q", "4"]}], ")"}]}], "-", 
+            RowBox[{"lshank", " ", "lthigh", " ", "mfoot", " ", 
+             RowBox[{"Sin", "[", 
+              RowBox[{
+               SubscriptBox["q", "3"], "-", 
+               SubscriptBox["q", "4"]}], "]"}], " ", 
+             SubsuperscriptBox["u", "3", "2"]}]}], ")"}]}], "+", 
+         RowBox[{"lshank", " ", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{
+             RowBox[{"-", "hipl"}], " ", "khip"}], "-", 
+            RowBox[{"kknee", " ", "kneel"}], "+", 
+            RowBox[{"2", " ", "g", " ", "lthigh", " ", "mfoot", " ", 
+             RowBox[{"Cos", "[", 
+              SubscriptBox["q", "3"], "]"}]}], "+", 
+            RowBox[{"lthigh", " ", 
+             RowBox[{"(", 
+              RowBox[{"1", "+", "mfoot"}], ")"}], " ", "ypacc", " ", 
+             RowBox[{"Cos", "[", 
+              SubscriptBox["q", "3"], "]"}]}], "-", 
+            RowBox[{"lthigh", " ", 
+             RowBox[{"(", 
+              RowBox[{"1", "+", "mfoot"}], ")"}], " ", "xpacc", " ", 
+             RowBox[{"Sin", "[", 
+              SubscriptBox["q", "3"], "]"}]}], "+", 
+            RowBox[{
+             RowBox[{"(", 
+              RowBox[{"khip", "+", "kknee"}], ")"}], " ", 
+             SubscriptBox["q", "3"]}], "-", 
+            RowBox[{"kknee", " ", 
+             SubscriptBox["q", "4"]}], "+", 
+            RowBox[{"lshank", " ", "lthigh", " ", "mfoot", " ", 
+             RowBox[{"Sin", "[", 
+              RowBox[{
+               SubscriptBox["q", "3"], "-", 
+               SubscriptBox["q", "4"]}], "]"}], " ", 
+             SubsuperscriptBox["u", "4", "2"]}]}], ")"}]}]}], ")"}]}]}]}], 
+    ",", 
     RowBox[{"kneeacc", "\[Rule]", 
      RowBox[{
       FractionBox["1", 
-       RowBox[{"lshank", " ", "lthigh", " ", 
-        RowBox[{"(", 
-         RowBox[{
-          RowBox[{"-", "2"}], "+", 
-          SuperscriptBox[
-           RowBox[{"Cos", "[", 
-            RowBox[{
-             SubscriptBox["q", "3"], "-", 
-             SubscriptBox["q", "4"]}], "]"}], "2"]}], ")"}]}]], 
+       SuperscriptBox["lshank", "2"]], 
       RowBox[{"(", 
        RowBox[{
-        RowBox[{"hipl", " ", "khip", " ", 
-         RowBox[{"Cos", "[", 
+        RowBox[{"-", 
+         FractionBox[
           RowBox[{
-           SubscriptBox["q", "3"], "-", 
-           SubscriptBox["q", "4"]}], "]"}]}], "-", 
-        RowBox[{"g", " ", "lthigh", " ", 
-         RowBox[{"Cos", "[", 
-          RowBox[{
-           RowBox[{"2", " ", 
-            SubscriptBox["q", "3"]}], "-", 
-           SubscriptBox["q", "4"]}], "]"}]}], "-", 
-        RowBox[{"lthigh", " ", "ypacc", " ", 
-         RowBox[{"Cos", "[", 
-          RowBox[{
-           RowBox[{"2", " ", 
-            SubscriptBox["q", "3"]}], "-", 
-           SubscriptBox["q", "4"]}], "]"}]}], "+", 
-        RowBox[{"g", " ", "lthigh", " ", 
-         RowBox[{"Cos", "[", 
-          SubscriptBox["q", "4"], "]"}]}], "+", 
-        RowBox[{"lthigh", " ", "ypacc", " ", 
-         RowBox[{"Cos", "[", 
-          SubscriptBox["q", "4"], "]"}]}], "+", 
-        RowBox[{"lthigh", " ", "xpacc", " ", 
-         RowBox[{"Sin", "[", 
-          RowBox[{
-           RowBox[{"2", " ", 
-            SubscriptBox["q", "3"]}], "-", 
-           SubscriptBox["q", "4"]}], "]"}]}], "-", 
-        RowBox[{"lthigh", " ", "xpacc", " ", 
-         RowBox[{"Sin", "[", 
-          SubscriptBox["q", "4"], "]"}]}], "-", 
-        RowBox[{"khip", " ", 
-         RowBox[{"Cos", "[", 
-          RowBox[{
-           SubscriptBox["q", "3"], "-", 
-           SubscriptBox["q", "4"]}], "]"}], " ", 
-         SubscriptBox["q", "3"]}], "-", 
-        RowBox[{"2", " ", 
-         SuperscriptBox["lthigh", "2"], " ", 
-         RowBox[{"Sin", "[", 
-          RowBox[{
-           SubscriptBox["q", "3"], "-", 
-           SubscriptBox["q", "4"]}], "]"}], " ", 
-         SubsuperscriptBox["u", "3", "2"]}], "-", 
+           RowBox[{"kknee", " ", "kneel"}], "+", 
+           RowBox[{"g", " ", "lshank", " ", "mfoot", " ", 
+            RowBox[{"Cos", "[", 
+             SubscriptBox["q", "4"], "]"}]}], "+", 
+           RowBox[{"lshank", " ", "mfoot", " ", "ypacc", " ", 
+            RowBox[{"Cos", "[", 
+             SubscriptBox["q", "4"], "]"}]}], "-", 
+           RowBox[{"lshank", " ", "mfoot", " ", "xpacc", " ", 
+            RowBox[{"Sin", "[", 
+             SubscriptBox["q", "4"], "]"}]}], "-", 
+           RowBox[{"kknee", " ", 
+            SubscriptBox["q", "3"]}], "+", 
+           RowBox[{"kknee", " ", 
+            SubscriptBox["q", "4"]}], "-", 
+           RowBox[{"lshank", " ", "lthigh", " ", "mfoot", " ", 
+            RowBox[{"Sin", "[", 
+             RowBox[{
+              SubscriptBox["q", "3"], "-", 
+              SubscriptBox["q", "4"]}], "]"}], " ", 
+            SubsuperscriptBox["u", "3", "2"]}]}], "mfoot"]}], "+", 
         RowBox[{
-         FractionBox["1", "2"], " ", "lshank", " ", "lthigh", " ", 
-         RowBox[{"Sin", "[", 
-          RowBox[{"2", " ", 
-           RowBox[{"(", 
+         RowBox[{"1", "/", 
+          RowBox[{"(", 
+           RowBox[{"lthigh", " ", 
+            RowBox[{"(", 
+             RowBox[{"1", "+", "mfoot", "-", 
+              RowBox[{"mfoot", " ", 
+               SuperscriptBox[
+                RowBox[{"Cos", "[", 
+                 RowBox[{
+                  SubscriptBox["q", "3"], "-", 
+                  SubscriptBox["q", "4"]}], "]"}], "2"]}]}], ")"}]}], ")"}]}], 
+         RowBox[{
+          RowBox[{"Cos", "[", 
+           RowBox[{
+            SubscriptBox["q", "3"], "-", 
+            SubscriptBox["q", "4"]}], "]"}], " ", 
+          RowBox[{"(", 
+           RowBox[{
             RowBox[{
-             SubscriptBox["q", "3"], "-", 
-             SubscriptBox["q", "4"]}], ")"}]}], "]"}], " ", 
-         SubsuperscriptBox["u", "4", "2"]}]}], ")"}]}]}]}], "}"}], 
-  "}"}]], "Output",
+             RowBox[{"-", "lthigh"}], " ", 
+             RowBox[{"Cos", "[", 
+              RowBox[{
+               SubscriptBox["q", "3"], "-", 
+               SubscriptBox["q", "4"]}], "]"}], " ", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"g", " ", "lshank", " ", "mfoot", " ", 
+                RowBox[{"Cos", "[", 
+                 SubscriptBox["q", "4"], "]"}]}], "+", 
+               RowBox[{"lshank", " ", "mfoot", " ", "ypacc", " ", 
+                RowBox[{"Cos", "[", 
+                 SubscriptBox["q", "4"], "]"}]}], "-", 
+               RowBox[{"lshank", " ", "mfoot", " ", "xpacc", " ", 
+                RowBox[{"Sin", "[", 
+                 SubscriptBox["q", "4"], "]"}]}], "+", 
+               RowBox[{"kknee", " ", 
+                RowBox[{"(", 
+                 RowBox[{"kneel", "-", 
+                  SubscriptBox["q", "3"], "+", 
+                  SubscriptBox["q", "4"]}], ")"}]}], "-", 
+               RowBox[{"lshank", " ", "lthigh", " ", "mfoot", " ", 
+                RowBox[{"Sin", "[", 
+                 RowBox[{
+                  SubscriptBox["q", "3"], "-", 
+                  SubscriptBox["q", "4"]}], "]"}], " ", 
+                SubsuperscriptBox["u", "3", "2"]}]}], ")"}]}], "+", 
+            RowBox[{"lshank", " ", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"-", "hipl"}], " ", "khip"}], "-", 
+               RowBox[{"kknee", " ", "kneel"}], "+", 
+               RowBox[{"2", " ", "g", " ", "lthigh", " ", "mfoot", " ", 
+                RowBox[{"Cos", "[", 
+                 SubscriptBox["q", "3"], "]"}]}], "+", 
+               RowBox[{"lthigh", " ", 
+                RowBox[{"(", 
+                 RowBox[{"1", "+", "mfoot"}], ")"}], " ", "ypacc", " ", 
+                RowBox[{"Cos", "[", 
+                 SubscriptBox["q", "3"], "]"}]}], "-", 
+               RowBox[{"lthigh", " ", 
+                RowBox[{"(", 
+                 RowBox[{"1", "+", "mfoot"}], ")"}], " ", "xpacc", " ", 
+                RowBox[{"Sin", "[", 
+                 SubscriptBox["q", "3"], "]"}]}], "+", 
+               RowBox[{
+                RowBox[{"(", 
+                 RowBox[{"khip", "+", "kknee"}], ")"}], " ", 
+                SubscriptBox["q", "3"]}], "-", 
+               RowBox[{"kknee", " ", 
+                SubscriptBox["q", "4"]}], "+", 
+               RowBox[{"lshank", " ", "lthigh", " ", "mfoot", " ", 
+                RowBox[{"Sin", "[", 
+                 RowBox[{
+                  SubscriptBox["q", "3"], "-", 
+                  SubscriptBox["q", "4"]}], "]"}], " ", 
+                SubsuperscriptBox["u", "4", "2"]}]}], ")"}]}]}], ")"}]}]}]}], 
+       ")"}]}]}]}], "}"}], "}"}]], "Output",
  CellChangeTimes->{
   3.638544650914*^9, 3.638548204968*^9, 3.638548693924*^9, 3.638549064417*^9, 
    3.6387152313805*^9, 3.6387152786064997`*^9, 3.6387153232155*^9, {
@@ -867,137 +947,194 @@ Cell[BoxData[
    3.640024138276*^9, 3.640024145394*^9}, {3.640024212736*^9, 
    3.6400242403529997`*^9}, {3.640024620314*^9, 3.6400246247460003`*^9}, 
    3.6424447612886*^9, {3.6425152593646*^9, 3.6425152861256*^9}, 
-   3.6425154335626*^9, 3.6425155149196*^9}],
+   3.6425154335626*^9, 3.6425155138996*^9, 3.6425256219976*^9, 
+   3.6425296405896*^9}],
 
 Cell[BoxData[
  RowBox[{"{", 
   RowBox[{"{", 
    RowBox[{
     RowBox[{"-", 
-     FractionBox[
-      RowBox[{
-       RowBox[{"2", " ", "hipl", " ", "khip"}], "-", 
-       RowBox[{"3", " ", "g", " ", "lthigh", " ", 
-        RowBox[{"Cos", "[", 
-         SubscriptBox["q", "3"], "]"}]}], "-", 
-       RowBox[{"3", " ", "lthigh", " ", "ypacc", " ", 
-        RowBox[{"Cos", "[", 
-         SubscriptBox["q", "3"], "]"}]}], "+", 
-       RowBox[{"g", " ", "lthigh", " ", 
-        RowBox[{"Cos", "[", 
-         RowBox[{
-          SubscriptBox["q", "3"], "-", 
-          RowBox[{"2", " ", 
-           SubscriptBox["q", "4"]}]}], "]"}]}], "+", 
-       RowBox[{"lthigh", " ", "ypacc", " ", 
-        RowBox[{"Cos", "[", 
-         RowBox[{
-          SubscriptBox["q", "3"], "-", 
-          RowBox[{"2", " ", 
-           SubscriptBox["q", "4"]}]}], "]"}]}], "+", 
-       RowBox[{"3", " ", "lthigh", " ", "xpacc", " ", 
-        RowBox[{"Sin", "[", 
-         SubscriptBox["q", "3"], "]"}]}], "+", 
-       RowBox[{"lthigh", " ", "xpacc", " ", 
-        RowBox[{"Sin", "[", 
-         RowBox[{
-          SubscriptBox["q", "3"], "-", 
-          RowBox[{"2", " ", 
-           SubscriptBox["q", "4"]}]}], "]"}]}], "-", 
-       RowBox[{"2", " ", "khip", " ", 
-        SubscriptBox["q", "3"]}], "-", 
-       RowBox[{
-        SuperscriptBox["lthigh", "2"], " ", 
-        RowBox[{"Sin", "[", 
-         RowBox[{"2", " ", 
-          RowBox[{"(", 
-           RowBox[{
-            SubscriptBox["q", "3"], "-", 
-            SubscriptBox["q", "4"]}], ")"}]}], "]"}], " ", 
-        SubsuperscriptBox["u", "3", "2"]}], "-", 
-       RowBox[{"2", " ", "lshank", " ", "lthigh", " ", 
-        RowBox[{"Sin", "[", 
-         RowBox[{
-          SubscriptBox["q", "3"], "-", 
-          SubscriptBox["q", "4"]}], "]"}], " ", 
-        SubsuperscriptBox["u", "4", "2"]}]}], 
-      RowBox[{
-       SuperscriptBox["lthigh", "2"], " ", 
-       RowBox[{"(", 
-        RowBox[{
-         RowBox[{"-", "3"}], "+", 
-         RowBox[{"Cos", "[", 
-          RowBox[{"2", " ", 
-           RowBox[{"(", 
-            RowBox[{
-             SubscriptBox["q", "3"], "-", 
-             SubscriptBox["q", "4"]}], ")"}]}], "]"}]}], ")"}]}]]}], ",", 
-    FractionBox[
      RowBox[{
-      RowBox[{"hipl", " ", "khip", " ", 
-       RowBox[{"Cos", "[", 
-        RowBox[{
-         SubscriptBox["q", "3"], "-", 
-         SubscriptBox["q", "4"]}], "]"}]}], "-", 
-      RowBox[{"g", " ", "lthigh", " ", 
-       RowBox[{"Cos", "[", 
-        RowBox[{
-         RowBox[{"2", " ", 
-          SubscriptBox["q", "3"]}], "-", 
-         SubscriptBox["q", "4"]}], "]"}]}], "-", 
-      RowBox[{"lthigh", " ", "ypacc", " ", 
-       RowBox[{"Cos", "[", 
-        RowBox[{
-         RowBox[{"2", " ", 
-          SubscriptBox["q", "3"]}], "-", 
-         SubscriptBox["q", "4"]}], "]"}]}], "+", 
-      RowBox[{"g", " ", "lthigh", " ", 
-       RowBox[{"Cos", "[", 
-        SubscriptBox["q", "4"], "]"}]}], "+", 
-      RowBox[{"lthigh", " ", "ypacc", " ", 
-       RowBox[{"Cos", "[", 
-        SubscriptBox["q", "4"], "]"}]}], "+", 
-      RowBox[{"lthigh", " ", "xpacc", " ", 
-       RowBox[{"Sin", "[", 
-        RowBox[{
-         RowBox[{"2", " ", 
-          SubscriptBox["q", "3"]}], "-", 
-         SubscriptBox["q", "4"]}], "]"}]}], "-", 
-      RowBox[{"lthigh", " ", "xpacc", " ", 
-       RowBox[{"Sin", "[", 
-        SubscriptBox["q", "4"], "]"}]}], "-", 
-      RowBox[{"khip", " ", 
-       RowBox[{"Cos", "[", 
-        RowBox[{
-         SubscriptBox["q", "3"], "-", 
-         SubscriptBox["q", "4"]}], "]"}], " ", 
-       SubscriptBox["q", "3"]}], "-", 
-      RowBox[{"2", " ", 
-       SuperscriptBox["lthigh", "2"], " ", 
-       RowBox[{"Sin", "[", 
-        RowBox[{
-         SubscriptBox["q", "3"], "-", 
-         SubscriptBox["q", "4"]}], "]"}], " ", 
-       SubsuperscriptBox["u", "3", "2"]}], "-", 
-      RowBox[{
-       FractionBox["1", "2"], " ", "lshank", " ", "lthigh", " ", 
-       RowBox[{"Sin", "[", 
-        RowBox[{"2", " ", 
-         RowBox[{"(", 
-          RowBox[{
-           SubscriptBox["q", "3"], "-", 
-           SubscriptBox["q", "4"]}], ")"}]}], "]"}], " ", 
-       SubsuperscriptBox["u", "4", "2"]}]}], 
-     RowBox[{"lshank", " ", "lthigh", " ", 
+      FractionBox["1", 
+       RowBox[{"lshank", " ", 
+        SuperscriptBox["lthigh", "2"], " ", 
+        RowBox[{"(", 
+         RowBox[{"1", "+", "mfoot", "-", 
+          RowBox[{"mfoot", " ", 
+           SuperscriptBox[
+            RowBox[{"Cos", "[", 
+             RowBox[{
+              SubscriptBox["q", "3"], "-", 
+              SubscriptBox["q", "4"]}], "]"}], "2"]}]}], ")"}]}]], 
       RowBox[{"(", 
        RowBox[{
-        RowBox[{"-", "2"}], "+", 
-        SuperscriptBox[
+        RowBox[{
+         RowBox[{"-", "lthigh"}], " ", 
          RowBox[{"Cos", "[", 
           RowBox[{
            SubscriptBox["q", "3"], "-", 
-           SubscriptBox["q", "4"]}], "]"}], "2"]}], ")"}]}]]}], "}"}], 
-  "}"}]], "Output",
+           SubscriptBox["q", "4"]}], "]"}], " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"g", " ", "lshank", " ", "mfoot", " ", 
+            RowBox[{"Cos", "[", 
+             SubscriptBox["q", "4"], "]"}]}], "+", 
+           RowBox[{"lshank", " ", "mfoot", " ", "ypacc", " ", 
+            RowBox[{"Cos", "[", 
+             SubscriptBox["q", "4"], "]"}]}], "-", 
+           RowBox[{"lshank", " ", "mfoot", " ", "xpacc", " ", 
+            RowBox[{"Sin", "[", 
+             SubscriptBox["q", "4"], "]"}]}], "+", 
+           RowBox[{"kknee", " ", 
+            RowBox[{"(", 
+             RowBox[{"kneel", "-", 
+              SubscriptBox["q", "3"], "+", 
+              SubscriptBox["q", "4"]}], ")"}]}], "-", 
+           RowBox[{"lshank", " ", "lthigh", " ", "mfoot", " ", 
+            RowBox[{"Sin", "[", 
+             RowBox[{
+              SubscriptBox["q", "3"], "-", 
+              SubscriptBox["q", "4"]}], "]"}], " ", 
+            SubsuperscriptBox["u", "3", "2"]}]}], ")"}]}], "+", 
+        RowBox[{"lshank", " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "hipl"}], " ", "khip"}], "-", 
+           RowBox[{"kknee", " ", "kneel"}], "+", 
+           RowBox[{"2", " ", "g", " ", "lthigh", " ", "mfoot", " ", 
+            RowBox[{"Cos", "[", 
+             SubscriptBox["q", "3"], "]"}]}], "+", 
+           RowBox[{"lthigh", " ", 
+            RowBox[{"(", 
+             RowBox[{"1", "+", "mfoot"}], ")"}], " ", "ypacc", " ", 
+            RowBox[{"Cos", "[", 
+             SubscriptBox["q", "3"], "]"}]}], "-", 
+           RowBox[{"lthigh", " ", 
+            RowBox[{"(", 
+             RowBox[{"1", "+", "mfoot"}], ")"}], " ", "xpacc", " ", 
+            RowBox[{"Sin", "[", 
+             SubscriptBox["q", "3"], "]"}]}], "+", 
+           RowBox[{
+            RowBox[{"(", 
+             RowBox[{"khip", "+", "kknee"}], ")"}], " ", 
+            SubscriptBox["q", "3"]}], "-", 
+           RowBox[{"kknee", " ", 
+            SubscriptBox["q", "4"]}], "+", 
+           RowBox[{"lshank", " ", "lthigh", " ", "mfoot", " ", 
+            RowBox[{"Sin", "[", 
+             RowBox[{
+              SubscriptBox["q", "3"], "-", 
+              SubscriptBox["q", "4"]}], "]"}], " ", 
+            SubsuperscriptBox["u", "4", "2"]}]}], ")"}]}]}], ")"}]}]}], ",", 
+    RowBox[{
+     FractionBox["1", 
+      SuperscriptBox["lshank", "2"]], 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"-", 
+        FractionBox[
+         RowBox[{
+          RowBox[{"kknee", " ", "kneel"}], "+", 
+          RowBox[{"g", " ", "lshank", " ", "mfoot", " ", 
+           RowBox[{"Cos", "[", 
+            SubscriptBox["q", "4"], "]"}]}], "+", 
+          RowBox[{"lshank", " ", "mfoot", " ", "ypacc", " ", 
+           RowBox[{"Cos", "[", 
+            SubscriptBox["q", "4"], "]"}]}], "-", 
+          RowBox[{"lshank", " ", "mfoot", " ", "xpacc", " ", 
+           RowBox[{"Sin", "[", 
+            SubscriptBox["q", "4"], "]"}]}], "-", 
+          RowBox[{"kknee", " ", 
+           SubscriptBox["q", "3"]}], "+", 
+          RowBox[{"kknee", " ", 
+           SubscriptBox["q", "4"]}], "-", 
+          RowBox[{"lshank", " ", "lthigh", " ", "mfoot", " ", 
+           RowBox[{"Sin", "[", 
+            RowBox[{
+             SubscriptBox["q", "3"], "-", 
+             SubscriptBox["q", "4"]}], "]"}], " ", 
+           SubsuperscriptBox["u", "3", "2"]}]}], "mfoot"]}], "+", 
+       RowBox[{
+        RowBox[{"1", "/", 
+         RowBox[{"(", 
+          RowBox[{"lthigh", " ", 
+           RowBox[{"(", 
+            RowBox[{"1", "+", "mfoot", "-", 
+             RowBox[{"mfoot", " ", 
+              SuperscriptBox[
+               RowBox[{"Cos", "[", 
+                RowBox[{
+                 SubscriptBox["q", "3"], "-", 
+                 SubscriptBox["q", "4"]}], "]"}], "2"]}]}], ")"}]}], ")"}]}], 
+        RowBox[{
+         RowBox[{"Cos", "[", 
+          RowBox[{
+           SubscriptBox["q", "3"], "-", 
+           SubscriptBox["q", "4"]}], "]"}], " ", 
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{
+            RowBox[{"-", "lthigh"}], " ", 
+            RowBox[{"Cos", "[", 
+             RowBox[{
+              SubscriptBox["q", "3"], "-", 
+              SubscriptBox["q", "4"]}], "]"}], " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{"g", " ", "lshank", " ", "mfoot", " ", 
+               RowBox[{"Cos", "[", 
+                SubscriptBox["q", "4"], "]"}]}], "+", 
+              RowBox[{"lshank", " ", "mfoot", " ", "ypacc", " ", 
+               RowBox[{"Cos", "[", 
+                SubscriptBox["q", "4"], "]"}]}], "-", 
+              RowBox[{"lshank", " ", "mfoot", " ", "xpacc", " ", 
+               RowBox[{"Sin", "[", 
+                SubscriptBox["q", "4"], "]"}]}], "+", 
+              RowBox[{"kknee", " ", 
+               RowBox[{"(", 
+                RowBox[{"kneel", "-", 
+                 SubscriptBox["q", "3"], "+", 
+                 SubscriptBox["q", "4"]}], ")"}]}], "-", 
+              RowBox[{"lshank", " ", "lthigh", " ", "mfoot", " ", 
+               RowBox[{"Sin", "[", 
+                RowBox[{
+                 SubscriptBox["q", "3"], "-", 
+                 SubscriptBox["q", "4"]}], "]"}], " ", 
+               SubsuperscriptBox["u", "3", "2"]}]}], ")"}]}], "+", 
+           RowBox[{"lshank", " ", 
+            RowBox[{"(", 
+             RowBox[{
+              RowBox[{
+               RowBox[{"-", "hipl"}], " ", "khip"}], "-", 
+              RowBox[{"kknee", " ", "kneel"}], "+", 
+              RowBox[{"2", " ", "g", " ", "lthigh", " ", "mfoot", " ", 
+               RowBox[{"Cos", "[", 
+                SubscriptBox["q", "3"], "]"}]}], "+", 
+              RowBox[{"lthigh", " ", 
+               RowBox[{"(", 
+                RowBox[{"1", "+", "mfoot"}], ")"}], " ", "ypacc", " ", 
+               RowBox[{"Cos", "[", 
+                SubscriptBox["q", "3"], "]"}]}], "-", 
+              RowBox[{"lthigh", " ", 
+               RowBox[{"(", 
+                RowBox[{"1", "+", "mfoot"}], ")"}], " ", "xpacc", " ", 
+               RowBox[{"Sin", "[", 
+                SubscriptBox["q", "3"], "]"}]}], "+", 
+              RowBox[{
+               RowBox[{"(", 
+                RowBox[{"khip", "+", "kknee"}], ")"}], " ", 
+               SubscriptBox["q", "3"]}], "-", 
+              RowBox[{"kknee", " ", 
+               SubscriptBox["q", "4"]}], "+", 
+              RowBox[{"lshank", " ", "lthigh", " ", "mfoot", " ", 
+               RowBox[{"Sin", "[", 
+                RowBox[{
+                 SubscriptBox["q", "3"], "-", 
+                 SubscriptBox["q", "4"]}], "]"}], " ", 
+               SubsuperscriptBox["u", "4", "2"]}]}], ")"}]}]}], ")"}]}]}]}], 
+      ")"}]}]}], "}"}], "}"}]], "Output",
  CellChangeTimes->{
   3.638544650914*^9, 3.638548204968*^9, 3.638548693924*^9, 3.638549064417*^9, 
    3.6387152313805*^9, 3.6387152786064997`*^9, 3.6387153232155*^9, {
@@ -1010,7 +1147,8 @@ Cell[BoxData[
    3.640024138276*^9, 3.640024145394*^9}, {3.640024212736*^9, 
    3.6400242403529997`*^9}, {3.640024620314*^9, 3.6400246247460003`*^9}, 
    3.6424447612886*^9, {3.6425152593646*^9, 3.6425152861256*^9}, 
-   3.6425154335626*^9, 3.6425155149196*^9}]
+   3.6425154335626*^9, 3.6425155138996*^9, 3.6425256219976*^9, 
+   3.6425296405976*^9}]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -1133,7 +1271,8 @@ Cell[BoxData["Energy"], "Output",
    3.6387165497655*^9, 3.6387168515305*^9, 3.638808073001*^9, 
    3.638808125072*^9, {3.6400158822980003`*^9, 3.640015910416*^9}, 
    3.6424447640086*^9, {3.6425152594646*^9, 3.6425152886896*^9}, 
-   3.6425154336926003`*^9, 3.6425155150095997`*^9}]
+   3.6425154336926003`*^9, 3.6425155150095997`*^9, 3.6425256240656*^9, 
+   3.6425296406916*^9}]
 }, Open  ]],
 
 Cell[BoxData[""], "Input",
@@ -1226,7 +1365,8 @@ Cell[BoxData[
    3.640016218229*^9}, 3.6400164840699997`*^9, 3.640016585531*^9, 
    3.640016685551*^9, 3.640016794558*^9, 3.640023014975*^9, 
    3.6424447641345997`*^9, {3.6425152595046*^9, 3.6425152887796*^9}, 
-   3.6425154337326*^9, 3.6425155150495996`*^9}]
+   3.6425154337326*^9, 3.6425155150495996`*^9, 3.6425256241056004`*^9, 
+   3.6425296407335997`*^9}]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -1323,7 +1463,7 @@ Cell[BoxData["Export"], "Output",
    3.6387168516435003`*^9, 3.638808073091*^9, 3.6388081252019997`*^9, {
    3.640015882834*^9, 3.640015910699*^9}, 3.6424447644175997`*^9, {
    3.6425152595446*^9, 3.6425152888496*^9}, 3.6425154337726*^9, 
-   3.6425155150896*^9}],
+   3.6425155150896*^9, 3.6425256241436*^9, 3.6425296407736*^9}],
 
 Cell[BoxData[
  RowBox[{"{", 
@@ -1508,132 +1648,189 @@ Cell[BoxData[
       RowBox[{"{", 
        RowBox[{
         RowBox[{"-", 
-         FractionBox[
-          RowBox[{
-           RowBox[{"2", " ", "hipl", " ", "khip"}], "-", 
-           RowBox[{"3", " ", "g", " ", "lthigh", " ", 
-            RowBox[{"Cos", "[", 
-             SubscriptBox["q", "3"], "]"}]}], "-", 
-           RowBox[{"3", " ", "lthigh", " ", "ypacc", " ", 
-            RowBox[{"Cos", "[", 
-             SubscriptBox["q", "3"], "]"}]}], "+", 
-           RowBox[{"g", " ", "lthigh", " ", 
-            RowBox[{"Cos", "[", 
-             RowBox[{
-              SubscriptBox["q", "3"], "-", 
-              RowBox[{"2", " ", 
-               SubscriptBox["q", "4"]}]}], "]"}]}], "+", 
-           RowBox[{"lthigh", " ", "ypacc", " ", 
-            RowBox[{"Cos", "[", 
-             RowBox[{
-              SubscriptBox["q", "3"], "-", 
-              RowBox[{"2", " ", 
-               SubscriptBox["q", "4"]}]}], "]"}]}], "+", 
-           RowBox[{"3", " ", "lthigh", " ", "xpacc", " ", 
-            RowBox[{"Sin", "[", 
-             SubscriptBox["q", "3"], "]"}]}], "+", 
-           RowBox[{"lthigh", " ", "xpacc", " ", 
-            RowBox[{"Sin", "[", 
-             RowBox[{
-              SubscriptBox["q", "3"], "-", 
-              RowBox[{"2", " ", 
-               SubscriptBox["q", "4"]}]}], "]"}]}], "-", 
-           RowBox[{"2", " ", "khip", " ", 
-            SubscriptBox["q", "3"]}], "-", 
-           RowBox[{
+         RowBox[{
+          FractionBox["1", 
+           RowBox[{"lshank", " ", 
             SuperscriptBox["lthigh", "2"], " ", 
-            RowBox[{"Sin", "[", 
-             RowBox[{"2", " ", 
-              RowBox[{"(", 
-               RowBox[{
-                SubscriptBox["q", "3"], "-", 
-                SubscriptBox["q", "4"]}], ")"}]}], "]"}], " ", 
-            SubsuperscriptBox["u", "3", "2"]}], "-", 
-           RowBox[{"2", " ", "lshank", " ", "lthigh", " ", 
-            RowBox[{"Sin", "[", 
-             RowBox[{
-              SubscriptBox["q", "3"], "-", 
-              SubscriptBox["q", "4"]}], "]"}], " ", 
-            SubsuperscriptBox["u", "4", "2"]}]}], 
-          RowBox[{
-           SuperscriptBox["lthigh", "2"], " ", 
-           RowBox[{"(", 
+            RowBox[{"(", 
+             RowBox[{"1", "+", "mfoot", "-", 
+              RowBox[{"mfoot", " ", 
+               SuperscriptBox[
+                RowBox[{"Cos", "[", 
+                 RowBox[{
+                  SubscriptBox["q", "3"], "-", 
+                  SubscriptBox["q", "4"]}], "]"}], "2"]}]}], ")"}]}]], 
+          RowBox[{"(", 
+           RowBox[{
             RowBox[{
-             RowBox[{"-", "3"}], "+", 
+             RowBox[{"-", "lthigh"}], " ", 
              RowBox[{"Cos", "[", 
-              RowBox[{"2", " ", 
-               RowBox[{"(", 
-                RowBox[{
-                 SubscriptBox["q", "3"], "-", 
-                 SubscriptBox["q", "4"]}], ")"}]}], "]"}]}], ")"}]}]]}], ",", 
+              RowBox[{
+               SubscriptBox["q", "3"], "-", 
+               SubscriptBox["q", "4"]}], "]"}], " ", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{"g", " ", "lshank", " ", "mfoot", " ", 
+                RowBox[{"Cos", "[", 
+                 SubscriptBox["q", "4"], "]"}]}], "+", 
+               RowBox[{"lshank", " ", "mfoot", " ", "ypacc", " ", 
+                RowBox[{"Cos", "[", 
+                 SubscriptBox["q", "4"], "]"}]}], "-", 
+               RowBox[{"lshank", " ", "mfoot", " ", "xpacc", " ", 
+                RowBox[{"Sin", "[", 
+                 SubscriptBox["q", "4"], "]"}]}], "+", 
+               RowBox[{"kknee", " ", 
+                RowBox[{"(", 
+                 RowBox[{"kneel", "-", 
+                  SubscriptBox["q", "3"], "+", 
+                  SubscriptBox["q", "4"]}], ")"}]}], "-", 
+               RowBox[{"lshank", " ", "lthigh", " ", "mfoot", " ", 
+                RowBox[{"Sin", "[", 
+                 RowBox[{
+                  SubscriptBox["q", "3"], "-", 
+                  SubscriptBox["q", "4"]}], "]"}], " ", 
+                SubsuperscriptBox["u", "3", "2"]}]}], ")"}]}], "+", 
+            RowBox[{"lshank", " ", 
+             RowBox[{"(", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"-", "hipl"}], " ", "khip"}], "-", 
+               RowBox[{"kknee", " ", "kneel"}], "+", 
+               RowBox[{"2", " ", "g", " ", "lthigh", " ", "mfoot", " ", 
+                RowBox[{"Cos", "[", 
+                 SubscriptBox["q", "3"], "]"}]}], "+", 
+               RowBox[{"lthigh", " ", 
+                RowBox[{"(", 
+                 RowBox[{"1", "+", "mfoot"}], ")"}], " ", "ypacc", " ", 
+                RowBox[{"Cos", "[", 
+                 SubscriptBox["q", "3"], "]"}]}], "-", 
+               RowBox[{"lthigh", " ", 
+                RowBox[{"(", 
+                 RowBox[{"1", "+", "mfoot"}], ")"}], " ", "xpacc", " ", 
+                RowBox[{"Sin", "[", 
+                 SubscriptBox["q", "3"], "]"}]}], "+", 
+               RowBox[{
+                RowBox[{"(", 
+                 RowBox[{"khip", "+", "kknee"}], ")"}], " ", 
+                SubscriptBox["q", "3"]}], "-", 
+               RowBox[{"kknee", " ", 
+                SubscriptBox["q", "4"]}], "+", 
+               RowBox[{"lshank", " ", "lthigh", " ", "mfoot", " ", 
+                RowBox[{"Sin", "[", 
+                 RowBox[{
+                  SubscriptBox["q", "3"], "-", 
+                  SubscriptBox["q", "4"]}], "]"}], " ", 
+                SubsuperscriptBox["u", "4", "2"]}]}], ")"}]}]}], ")"}]}]}], 
+        ",", 
         RowBox[{
          FractionBox["1", 
-          RowBox[{"lshank", " ", "lthigh", " ", 
-           RowBox[{"(", 
-            RowBox[{
-             RowBox[{"-", "2"}], "+", 
-             SuperscriptBox[
-              RowBox[{"Cos", "[", 
-               RowBox[{
-                SubscriptBox["q", "3"], "-", 
-                SubscriptBox["q", "4"]}], "]"}], "2"]}], ")"}]}]], 
+          SuperscriptBox["lshank", "2"]], 
          RowBox[{"(", 
           RowBox[{
-           RowBox[{"hipl", " ", "khip", " ", 
-            RowBox[{"Cos", "[", 
+           RowBox[{"-", 
+            FractionBox[
              RowBox[{
-              SubscriptBox["q", "3"], "-", 
-              SubscriptBox["q", "4"]}], "]"}]}], "-", 
-           RowBox[{"g", " ", "lthigh", " ", 
-            RowBox[{"Cos", "[", 
-             RowBox[{
-              RowBox[{"2", " ", 
-               SubscriptBox["q", "3"]}], "-", 
-              SubscriptBox["q", "4"]}], "]"}]}], "-", 
-           RowBox[{"lthigh", " ", "ypacc", " ", 
-            RowBox[{"Cos", "[", 
-             RowBox[{
-              RowBox[{"2", " ", 
-               SubscriptBox["q", "3"]}], "-", 
-              SubscriptBox["q", "4"]}], "]"}]}], "+", 
-           RowBox[{"g", " ", "lthigh", " ", 
-            RowBox[{"Cos", "[", 
-             SubscriptBox["q", "4"], "]"}]}], "+", 
-           RowBox[{"lthigh", " ", "ypacc", " ", 
-            RowBox[{"Cos", "[", 
-             SubscriptBox["q", "4"], "]"}]}], "+", 
-           RowBox[{"lthigh", " ", "xpacc", " ", 
-            RowBox[{"Sin", "[", 
-             RowBox[{
-              RowBox[{"2", " ", 
-               SubscriptBox["q", "3"]}], "-", 
-              SubscriptBox["q", "4"]}], "]"}]}], "-", 
-           RowBox[{"lthigh", " ", "xpacc", " ", 
-            RowBox[{"Sin", "[", 
-             SubscriptBox["q", "4"], "]"}]}], "-", 
-           RowBox[{"khip", " ", 
-            RowBox[{"Cos", "[", 
-             RowBox[{
-              SubscriptBox["q", "3"], "-", 
-              SubscriptBox["q", "4"]}], "]"}], " ", 
-            SubscriptBox["q", "3"]}], "-", 
-           RowBox[{"2", " ", 
-            SuperscriptBox["lthigh", "2"], " ", 
-            RowBox[{"Sin", "[", 
-             RowBox[{
-              SubscriptBox["q", "3"], "-", 
-              SubscriptBox["q", "4"]}], "]"}], " ", 
-            SubsuperscriptBox["u", "3", "2"]}], "-", 
+              RowBox[{"kknee", " ", "kneel"}], "+", 
+              RowBox[{"g", " ", "lshank", " ", "mfoot", " ", 
+               RowBox[{"Cos", "[", 
+                SubscriptBox["q", "4"], "]"}]}], "+", 
+              RowBox[{"lshank", " ", "mfoot", " ", "ypacc", " ", 
+               RowBox[{"Cos", "[", 
+                SubscriptBox["q", "4"], "]"}]}], "-", 
+              RowBox[{"lshank", " ", "mfoot", " ", "xpacc", " ", 
+               RowBox[{"Sin", "[", 
+                SubscriptBox["q", "4"], "]"}]}], "-", 
+              RowBox[{"kknee", " ", 
+               SubscriptBox["q", "3"]}], "+", 
+              RowBox[{"kknee", " ", 
+               SubscriptBox["q", "4"]}], "-", 
+              RowBox[{"lshank", " ", "lthigh", " ", "mfoot", " ", 
+               RowBox[{"Sin", "[", 
+                RowBox[{
+                 SubscriptBox["q", "3"], "-", 
+                 SubscriptBox["q", "4"]}], "]"}], " ", 
+               SubsuperscriptBox["u", "3", "2"]}]}], "mfoot"]}], "+", 
            RowBox[{
-            FractionBox["1", "2"], " ", "lshank", " ", "lthigh", " ", 
-            RowBox[{"Sin", "[", 
-             RowBox[{"2", " ", 
-              RowBox[{"(", 
+            RowBox[{"1", "/", 
+             RowBox[{"(", 
+              RowBox[{"lthigh", " ", 
+               RowBox[{"(", 
+                RowBox[{"1", "+", "mfoot", "-", 
+                 RowBox[{"mfoot", " ", 
+                  SuperscriptBox[
+                   RowBox[{"Cos", "[", 
+                    RowBox[{
+                    SubscriptBox["q", "3"], "-", 
+                    SubscriptBox["q", "4"]}], "]"}], "2"]}]}], ")"}]}], 
+              ")"}]}], 
+            RowBox[{
+             RowBox[{"Cos", "[", 
+              RowBox[{
+               SubscriptBox["q", "3"], "-", 
+               SubscriptBox["q", "4"]}], "]"}], " ", 
+             RowBox[{"(", 
+              RowBox[{
                RowBox[{
-                SubscriptBox["q", "3"], "-", 
-                SubscriptBox["q", "4"]}], ")"}]}], "]"}], " ", 
-            SubsuperscriptBox["u", "4", "2"]}]}], ")"}]}]}], "}"}], "}"}], 
-     ",", "\<\"accs\"\>"}], "}"}], ",", 
+                RowBox[{"-", "lthigh"}], " ", 
+                RowBox[{"Cos", "[", 
+                 RowBox[{
+                  SubscriptBox["q", "3"], "-", 
+                  SubscriptBox["q", "4"]}], "]"}], " ", 
+                RowBox[{"(", 
+                 RowBox[{
+                  RowBox[{"g", " ", "lshank", " ", "mfoot", " ", 
+                   RowBox[{"Cos", "[", 
+                    SubscriptBox["q", "4"], "]"}]}], "+", 
+                  RowBox[{"lshank", " ", "mfoot", " ", "ypacc", " ", 
+                   RowBox[{"Cos", "[", 
+                    SubscriptBox["q", "4"], "]"}]}], "-", 
+                  RowBox[{"lshank", " ", "mfoot", " ", "xpacc", " ", 
+                   RowBox[{"Sin", "[", 
+                    SubscriptBox["q", "4"], "]"}]}], "+", 
+                  RowBox[{"kknee", " ", 
+                   RowBox[{"(", 
+                    RowBox[{"kneel", "-", 
+                    SubscriptBox["q", "3"], "+", 
+                    SubscriptBox["q", "4"]}], ")"}]}], "-", 
+                  RowBox[{"lshank", " ", "lthigh", " ", "mfoot", " ", 
+                   RowBox[{"Sin", "[", 
+                    RowBox[{
+                    SubscriptBox["q", "3"], "-", 
+                    SubscriptBox["q", "4"]}], "]"}], " ", 
+                   SubsuperscriptBox["u", "3", "2"]}]}], ")"}]}], "+", 
+               RowBox[{"lshank", " ", 
+                RowBox[{"(", 
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{"-", "hipl"}], " ", "khip"}], "-", 
+                  RowBox[{"kknee", " ", "kneel"}], "+", 
+                  RowBox[{"2", " ", "g", " ", "lthigh", " ", "mfoot", " ", 
+                   RowBox[{"Cos", "[", 
+                    SubscriptBox["q", "3"], "]"}]}], "+", 
+                  RowBox[{"lthigh", " ", 
+                   RowBox[{"(", 
+                    RowBox[{"1", "+", "mfoot"}], ")"}], " ", "ypacc", " ", 
+                   RowBox[{"Cos", "[", 
+                    SubscriptBox["q", "3"], "]"}]}], "-", 
+                  RowBox[{"lthigh", " ", 
+                   RowBox[{"(", 
+                    RowBox[{"1", "+", "mfoot"}], ")"}], " ", "xpacc", " ", 
+                   RowBox[{"Sin", "[", 
+                    SubscriptBox["q", "3"], "]"}]}], "+", 
+                  RowBox[{
+                   RowBox[{"(", 
+                    RowBox[{"khip", "+", "kknee"}], ")"}], " ", 
+                   SubscriptBox["q", "3"]}], "-", 
+                  RowBox[{"kknee", " ", 
+                   SubscriptBox["q", "4"]}], "+", 
+                  RowBox[{"lshank", " ", "lthigh", " ", "mfoot", " ", 
+                   RowBox[{"Sin", "[", 
+                    RowBox[{
+                    SubscriptBox["q", "3"], "-", 
+                    SubscriptBox["q", "4"]}], "]"}], " ", 
+                   SubsuperscriptBox["u", "4", "2"]}]}], ")"}]}]}], 
+              ")"}]}]}]}], ")"}]}]}], "}"}], "}"}], ",", "\<\"accs\"\>"}], 
+    "}"}], ",", 
    RowBox[{"{", 
     RowBox[{
      RowBox[{"{", 
@@ -1641,15 +1838,21 @@ Cell[BoxData[
        RowBox[{"{", 
         RowBox[{
          RowBox[{
-          RowBox[{"-", "2"}], " ", "lthigh", " ", 
+          RowBox[{"-", "lthigh"}], " ", 
+          RowBox[{"(", 
+           RowBox[{"1", "+", "mfoot"}], ")"}], " ", 
           RowBox[{"Sin", "[", 
            SubscriptBox["q", "3"], "]"}]}], ",", 
-         RowBox[{"2", " ", "lthigh", " ", 
+         RowBox[{"lthigh", " ", 
+          RowBox[{"(", 
+           RowBox[{"1", "+", "mfoot"}], ")"}], " ", 
           RowBox[{"Cos", "[", 
            SubscriptBox["q", "3"], "]"}]}], ",", 
-         RowBox[{"2", " ", 
-          SuperscriptBox["lthigh", "2"]}], ",", 
-         RowBox[{"lshank", " ", "lthigh", " ", 
+         RowBox[{
+          SuperscriptBox["lthigh", "2"], " ", 
+          RowBox[{"(", 
+           RowBox[{"1", "+", "mfoot"}], ")"}]}], ",", 
+         RowBox[{"lshank", " ", "lthigh", " ", "mfoot", " ", 
           RowBox[{"Cos", "[", 
            RowBox[{
             SubscriptBox["q", "3"], "-", 
@@ -1657,52 +1860,61 @@ Cell[BoxData[
        RowBox[{"{", 
         RowBox[{
          RowBox[{
-          RowBox[{"-", "lshank"}], " ", 
+          RowBox[{"-", "lshank"}], " ", "mfoot", " ", 
           RowBox[{"Sin", "[", 
            SubscriptBox["q", "4"], "]"}]}], ",", 
-         RowBox[{"lshank", " ", 
+         RowBox[{"lshank", " ", "mfoot", " ", 
           RowBox[{"Cos", "[", 
            SubscriptBox["q", "4"], "]"}]}], ",", 
-         RowBox[{"lshank", " ", "lthigh", " ", 
+         RowBox[{"lshank", " ", "lthigh", " ", "mfoot", " ", 
           RowBox[{"Cos", "[", 
            RowBox[{
             SubscriptBox["q", "3"], "-", 
             SubscriptBox["q", "4"]}], "]"}]}], ",", 
-         SuperscriptBox["lshank", "2"]}], "}"}]}], "}"}], ",", "\<\"MM\"\>"}],
-     "}"}], ",", 
+         RowBox[{
+          SuperscriptBox["lshank", "2"], " ", "mfoot"}]}], "}"}]}], "}"}], 
+     ",", "\<\"MM\"\>"}], "}"}], ",", 
    RowBox[{"{", 
     RowBox[{
      RowBox[{"{", 
       RowBox[{
        RowBox[{
-        RowBox[{"hipl", " ", "khip"}], "-", 
-        RowBox[{"2", " ", "g", " ", "lthigh", " ", 
+        RowBox[{"hipl", " ", "khip"}], "+", 
+        RowBox[{"kknee", " ", "kneel"}], "-", 
+        RowBox[{"2", " ", "g", " ", "lthigh", " ", "mfoot", " ", 
          RowBox[{"Cos", "[", 
           RowBox[{"gslope", "-", 
            SubscriptBox["q", "3"]}], "]"}]}], "-", 
-        RowBox[{"khip", " ", 
-         SubscriptBox["q", "3"]}], "-", 
-        RowBox[{"lshank", " ", "lthigh", " ", 
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{"khip", "+", "kknee"}], ")"}], " ", 
+         SubscriptBox["q", "3"]}], "+", 
+        RowBox[{"kknee", " ", 
+         SubscriptBox["q", "4"]}], "-", 
+        RowBox[{"lshank", " ", "lthigh", " ", "mfoot", " ", 
          RowBox[{"Sin", "[", 
           RowBox[{
            SubscriptBox["q", "3"], "-", 
            SubscriptBox["q", "4"]}], "]"}], " ", 
          SubsuperscriptBox["u", "4", "2"]}]}], ",", 
-       RowBox[{"lshank", " ", 
-        RowBox[{"(", 
-         RowBox[{
+       RowBox[{
+        RowBox[{
+         RowBox[{"-", "g"}], " ", "lshank", " ", "mfoot", " ", 
+         RowBox[{"Cos", "[", 
+          RowBox[{"gslope", "-", 
+           SubscriptBox["q", "4"]}], "]"}]}], "-", 
+        RowBox[{"kknee", " ", 
+         RowBox[{"(", 
+          RowBox[{"kneel", "-", 
+           SubscriptBox["q", "3"], "+", 
+           SubscriptBox["q", "4"]}], ")"}]}], "+", 
+        RowBox[{"lshank", " ", "lthigh", " ", "mfoot", " ", 
+         RowBox[{"Sin", "[", 
           RowBox[{
-           RowBox[{"-", "g"}], " ", 
-           RowBox[{"Cos", "[", 
-            RowBox[{"gslope", "-", 
-             SubscriptBox["q", "4"]}], "]"}]}], "+", 
-          RowBox[{"lthigh", " ", 
-           RowBox[{"Sin", "[", 
-            RowBox[{
-             SubscriptBox["q", "3"], "-", 
-             SubscriptBox["q", "4"]}], "]"}], " ", 
-           SubsuperscriptBox["u", "3", "2"]}]}], ")"}]}]}], "}"}], 
-     ",", "\<\"rhs\"\>"}], "}"}]}], "}"}]], "Output",
+           SubscriptBox["q", "3"], "-", 
+           SubscriptBox["q", "4"]}], "]"}], " ", 
+         SubsuperscriptBox["u", "3", "2"]}]}]}], "}"}], ",", "\<\"rhs\"\>"}], 
+    "}"}]}], "}"}]], "Output",
  CellChangeTimes->{
   3.638544652224*^9, 3.638548205138*^9, 3.638548694024*^9, 3.638549064557*^9, 
    3.6387152327205*^9, 3.6387152788045*^9, 3.6387153234175*^9, {
@@ -1711,7 +1923,7 @@ Cell[BoxData[
    3.6387168516435003`*^9, 3.638808073091*^9, 3.6388081252019997`*^9, {
    3.640015882834*^9, 3.640015910699*^9}, 3.6424447644175997`*^9, {
    3.6425152595446*^9, 3.6425152888496*^9}, 3.6425154337726*^9, 
-   3.6425155150996*^9}],
+   3.6425155150896*^9, 3.6425256241436*^9, 3.6425296407836*^9}],
 
 Cell[CellGroupData[{
 
@@ -1734,7 +1946,8 @@ Notebooks\\RetractKneeSwing.m", "\""],
    3.6387165501545*^9, 3.6387168516815*^9, 3.6388080731210003`*^9, 
    3.638808125242*^9, {3.64001588285*^9, 3.6400159107349997`*^9}, 
    3.6424447644566*^9, {3.6425152595646*^9, 3.6425152888696003`*^9}, 
-   3.6425154337976*^9, 3.6425155151096*^9}],
+   3.6425154337976*^9, 3.6425155151096*^9, 3.6425256241626*^9, 
+   3.6425296407946*^9}],
 
 Cell[BoxData[
  InterpretationBox[
@@ -1753,7 +1966,8 @@ Student\\\\Documents\\\\RunModels\\\\EOM Notebooks\"\>"}],
    3.6387165501545*^9, 3.6387168516815*^9, 3.6388080731210003`*^9, 
    3.638808125242*^9, {3.64001588285*^9, 3.6400159107349997`*^9}, 
    3.6424447644566*^9, {3.6425152595646*^9, 3.6425152888696003`*^9}, 
-   3.6425154337976*^9, 3.6425155151096*^9}],
+   3.6425154337976*^9, 3.6425155151096*^9, 3.6425256241626*^9, 
+   3.6425296407956*^9}],
 
 Cell[BoxData[
  InterpretationBox[
@@ -1774,7 +1988,8 @@ Notebooks\\RetractKneeSwing.m", "\""],
    3.6387165501545*^9, 3.6387168516815*^9, 3.6388080731210003`*^9, 
    3.638808125242*^9, {3.64001588285*^9, 3.6400159107349997`*^9}, 
    3.6424447644566*^9, {3.6425152595646*^9, 3.6425152888696003`*^9}, 
-   3.6425154337976*^9, 3.6425155151396*^9}]
+   3.6425154337976*^9, 3.6425155151096*^9, 3.6425256241626*^9, 
+   3.6425296408326*^9}]
 }, Open  ]]
 }, Open  ]]
 },
@@ -1797,44 +2012,44 @@ Notebook[{
 Cell[557, 20, 86, 1, 31, "Input"],
 Cell[CellGroupData[{
 Cell[668, 25, 912, 22, 179, "Input"],
-Cell[1583, 49, 593, 9, 31, "Output"]
+Cell[1583, 49, 637, 10, 31, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[2213, 63, 2811, 65, 223, "Input"],
-Cell[5027, 130, 676, 11, 31, "Output"],
-Cell[5706, 143, 651, 11, 31, "Output"],
-Cell[6360, 156, 639, 10, 31, "Output"],
-Cell[7002, 168, 662, 11, 31, "Output"]
+Cell[2257, 64, 2811, 65, 223, "Input"],
+Cell[5071, 131, 720, 12, 31, "Output"],
+Cell[5794, 145, 691, 12, 31, "Output"],
+Cell[6488, 159, 683, 11, 31, "Output"],
+Cell[7174, 172, 702, 12, 31, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[7701, 184, 9648, 265, 959, "Input"],
-Cell[17352, 451, 960, 17, 31, "Output"],
-Cell[18315, 470, 866, 13, 31, "Output"],
-Cell[19184, 485, 866, 13, 31, "Output"],
-Cell[20053, 500, 866, 13, 31, "Output"],
-Cell[20922, 515, 3354, 86, 92, "Output"],
-Cell[24279, 603, 2311, 57, 62, "Output"],
-Cell[26593, 662, 2470, 60, 67, "Output"],
-Cell[29066, 724, 5594, 145, 132, "Output"],
-Cell[34663, 871, 5284, 141, 136, "Output"]
+Cell[7913, 189, 9674, 263, 979, "Input"],
+Cell[17590, 454, 1008, 18, 31, "Output"],
+Cell[18601, 474, 906, 14, 31, "Output"],
+Cell[19510, 490, 906, 14, 31, "Output"],
+Cell[20419, 506, 910, 14, 31, "Output"],
+Cell[21332, 522, 3402, 87, 92, "Output"],
+Cell[24737, 611, 2626, 65, 62, "Output"],
+Cell[27366, 678, 2882, 69, 64, "Output"],
+Cell[30251, 749, 8481, 201, 177, "Output"],
+Cell[38735, 952, 8222, 198, 177, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[39984, 1017, 3596, 107, 200, "Input"],
-Cell[43583, 1126, 574, 9, 31, "Output"]
+Cell[46994, 1155, 3596, 107, 200, "Input"],
+Cell[50593, 1264, 618, 10, 31, "Output"]
 }, Open  ]],
-Cell[44172, 1138, 663, 10, 31, "Input"],
+Cell[51226, 1277, 663, 10, 31, "Input"],
 Cell[CellGroupData[{
-Cell[44860, 1152, 2419, 60, 320, "Input"],
-Cell[47282, 1214, 837, 14, 31, "Output"]
+Cell[51914, 1291, 2419, 60, 320, "Input"],
+Cell[54336, 1353, 889, 15, 31, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[48156, 1233, 2970, 81, 260, "Input"],
-Cell[51129, 1316, 559, 9, 31, "Output"],
-Cell[51691, 1327, 13499, 386, 275, "Output"],
+Cell[55262, 1373, 2970, 81, 260, "Input"],
+Cell[58235, 1456, 599, 9, 31, "Output"],
+Cell[58837, 1467, 17220, 458, 320, "Output"],
 Cell[CellGroupData[{
-Cell[65215, 1717, 946, 19, 23, "Print"],
-Cell[66164, 1738, 861, 17, 23, "Print"],
-Cell[67028, 1757, 946, 19, 23, "Print"]
+Cell[76082, 1929, 990, 20, 23, "Print"],
+Cell[77075, 1951, 905, 18, 23, "Print"],
+Cell[77983, 1971, 990, 20, 23, "Print"]
 }, Open  ]]
 }, Open  ]]
 }
