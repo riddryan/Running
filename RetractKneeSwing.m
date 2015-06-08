@@ -56,7 +56,7 @@ classdef RetractKneeSwing < Runner
             runner = RetractKneeSwing;
             
 %             SLIPfname = './SavedGaits/RetractKneeSwing/SLIPNominal.mat';
-            SLIPfname = './SavedGaits/RetractKneeSwing/SLIP_NoAerial_unmatchedSL.mat';
+            SLIPfname = './SavedGaits/SLIP/SLIP_NoAerial_unmatchedSL.mat';
             [ runner.SLIPdata, runner.SLIPx0, runner.SLIPxf ] = getSLIPdata( SLIPfname );
             
             
@@ -67,12 +67,12 @@ classdef RetractKneeSwing < Runner
                     runner.sephips = 0;
                     runner.mfoot = 0.5;
                     
-                    runner.kknee = 6; %0.01
-                    runner.khip = 13; %0.01
+                    runner.kknee = 3; %0.01
+                    runner.khip = 12; %0.01
                     
                     runner.gslope = 0;
-                    runner.kneel = 0.8;
-                    runner.hipl = -0.6;
+                    runner.kneel = 1;
+                    runner.hipl = -0.5;
                     
                     IC.foot.Angle = runner.SLIPx0(1);
                     IC.knee.Angle = runner.SLIPx0(1);

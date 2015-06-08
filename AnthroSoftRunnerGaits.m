@@ -778,7 +778,7 @@ if any(cellstouse==12) %Swing Runner
     runner = Swing;
     IC = SwingState;
     if useguess
-                   load('./SavedGaits/Swing/SLIP_NoAerial_unmatchedSL.mat','SLIPdata')
+                   load('./SavedGaits/SLIP/SLIP_NoAerial_unmatchedSL.mat','SLIPdata')
             runner.SLIPx0 = [SLIPdata(end,4);SLIPdata(end,5)];
             runner.SLIPxf = [SLIPdata(1,4);SLIPdata(1,5)];
             %add another step to the cycle
@@ -856,21 +856,20 @@ if any(cellstouse==13) %RetractKneeSwing Runner
     IC = RetractKneeSwingState;
     if useguess
 
-        SLIPfname = './SavedGaits/RetractKneeSwing/SLIP_NoAerial_unmatchedSL.mat';
+        SLIPfname = './SavedGaits/SLIP/SLIP_NoAerial_unmatchedSL.mat';
         [ runner.SLIPdata, runner.SLIPx0, runner.SLIPxf ] = getSLIPdata( SLIPfname );
-        
-                    runner.lthigh = 0.7;
-            runner.lshank = 0.3;
-            
+                    
+                    runner.usefloorconstraint = 1;
+                    
                     runner.sephips = 0;
                     runner.mfoot = 0.5;
                     
-                    runner.kknee = 6; %0.01
-                    runner.khip = 13; %0.01
+                    runner.kknee = 3; %0.01
+                    runner.khip = 12; %0.01
                     
                     runner.gslope = 0;
-                    runner.kneel = 0.8;
-                    runner.hipl = -0.6;
+                    runner.kneel = 1;
+                    runner.hipl = -0.5;
                     
                     IC.foot.Angle = runner.SLIPx0(1);
                     IC.knee.Angle = runner.SLIPx0(1);
@@ -918,7 +917,7 @@ parmstovary=[{'kknee'} {'khip'} {'hipl'} {'kneel'}];
     x0 = xstar;
     r.printStepCharacteristics(x0,xf,tf,tair);
     if savegait
-        save([savepath 'RetractKneeSwing/' 'RetractKneeSwing_bigkick3.mat'],'r','xstar','parmstovary','limitCycleError',...
+        save([savepath 'RetractKneeSwing/' 'RetractKneeSwing_bigkick4.mat'],'r','xstar','parmstovary','limitCycleError',...
                                    'c','ceq','eflag','optimoutput','lambda',...
                                    'xf','tf','allx','allt','tair','phasevec');
     end 
