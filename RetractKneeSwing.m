@@ -467,12 +467,14 @@ end
                 torsodir = [0 1];
                 swingpoint = points.pelvis + .3 * lthigh * kneedir;
                 torsopoint = points.pelvis + 0.7 * lpelvis * torsodir;
+                %
+                %                 springdir = (torsopoint - swingpoint)/norm(torsopoint - swingpoint);
+                %                 perpdir = ([0 1;0 -1]*springdir')';
+                %
+                %                 plotter.plotAngSpring(torsopoint,swingpoint,points.pelvis,2,.05,...
+                %                     'Color',[232 40 76]/255)
                 
-                springdir = (torsopoint - swingpoint)/norm(torsopoint - swingpoint);
-                perpdir = ([0 1;0 -1]*springdir')';
-                
-                plotter.plotAngSpring(torsopoint,swingpoint,points.pelvis,2,.05,...
-                    'Color',[232 40 76]/255)
+                plotter.plotCircSpring(torsopoint,swingpoint,0.2,0,2,0.05,'Color',[232 40 76]/255)
                 
             end
             
@@ -483,11 +485,13 @@ end
                 pelvpoint = points.knee + .3 * lthigh * pelvdir;
                 footpoint = points.knee + .3 * lshank * footdir;
                 
-                springdir = (pelvpoint - footpoint)/norm(pelvpoint - footpoint);
-                perpdir = ([0 1;0 -1]*springdir')';
+                %                 springdir = (pelvpoint - footpoint)/norm(pelvpoint - footpoint);
+                %                 perpdir = ([0 1;0 -1]*springdir')';
+                %
+                %                 plotter.plotAngSpring(pelvpoint,footpoint,points.knee+.8*perpdir,2,.05,...
+                %                     'Color',[150 150 76]/255)
                 
-                plotter.plotAngSpring(pelvpoint,footpoint,points.knee+.8*perpdir,2,.05,...
-                    'Color',[150 150 76]/255)
+                plotter.plotCircSpring(pelvpoint,footpoint,0.2,1,2,0.05,'Color',[150 150 76]/255)
             end
             
             

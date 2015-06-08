@@ -244,7 +244,110 @@ end
 blah =1;
         
     end
+    %%
     
+    function plotCircSpring(this,r1,r2,rad,dir,numcoils,coilrad,varargin)
+        % SPRING         Calculates the position of a 2D spring
+        %    plotANGSPRING(r1,r2,c,ne,a,r0) draws an angular spring b/w
+        %    2D points r1, and r2, with the center of the ellipse at point
+        %    c, with numcoils # of coils, rest angle restang, and coilrad natural radius
+        %    of the spring coils.  dir = 1 draws CCW, dir = 2 draws CW
+        
+        color = this.vectorColor;
+        dbgplot = 0;
+        CCW = 1; %draw counterclockwise
+        whichroot = 0;
+        pts = 40;
+        springstart = 1/3;
+        
+        for i = 1 : 2 : length(varargin)
+            option = varargin{i};
+            value = varargin{i + 1};
+            switch option
+                case 'Color'
+                    color = value;
+                case 'CCW'
+                    CCW = value;
+            end
+        end
+        
+        if dir ==2
+            CCW=0;
+        end
+        
+        if ~iscolumn(r1)
+            r1 = r1';
+        end
+        if ~iscolumn(r2)
+            r2 = r2';
+        end
+        
+        %Dist between two points on the circle
+        R = sqrt( (r2(2) -r1 (2))^2 + (r2(1) - r1(1))^2 );
+        
+        %mid point
+        m = [(r1(1) + r2(1))/2 ; (r1(2) + r2(2))/2];
+        
+        %perp dir
+        d = [ r1(2) - r2(2) ; r2(1) - r1(1) ];
+        
+        if ~whichroot
+           t = sqrt( (rad/R)^2 - 1/4 ); 
+        else
+           t = -sqrt( (rad/R)^2 - 1/4 ); 
+        end
+        
+        %Center of circle
+        c = m + t*d;
+        
+        ang1 = atan2(r1(2)-c(2),r1(1)-c(1));
+        ang2 = atan2(r2(2)-c(2),r2(1)-c(1));
+        
+        if ang1<0, ang1 = ang1 + 2*pi; end;  if ang2<0, ang2 = ang2 + 2*pi; end;
+        
+        if CCW
+           if ang2<ang1
+               ang2 = ang2 + 2*pi;
+           end
+        else
+            if ang2>ang1
+                ang2 = ang2 - 2*pi;
+            end
+        end
+        
+        arc1range = linspace(ang1,ang1 + springstart*(ang2-ang1),pts);
+        springrange = linspace(ang1 + springstart*(ang2-ang1),ang1+(1-springstart)*(ang2-ang1),pts);
+        arc2range = linspace(ang1+(1-springstart)*(ang2-ang1),ang2,pts);
+        
+        
+        xarc1 = c(1) + rad*cos(arc1range); xarc2 = c(1) + rad*cos(arc2range);
+        yarc1 = c(2) + rad*sin(arc1range); yarc2 = c(2) + rad*sin(arc2range);
+        
+        xpts = c(1) + repmat([rad-coilrad rad+coilrad],1,numcoils).*cos(linspace(springrange(1),springrange(end),2*numcoils));
+        ypts = c(2) + repmat([rad-coilrad rad+coilrad],1,numcoils).*sin(linspace(springrange(1),springrange(end),2*numcoils));
+        
+        xpts = c(1) + rad*cos(linspace(springrange(1),springrange(end),2*numcoils+1));
+        ypts = c(2) + rad*sin(linspace(springrange(1),springrange(end),2*numcoils+1));
+        arcvecs = diff([xpts; ypts],[],2);
+        
+        xloc = zeros(1,2*numcoils + 2); yloc = xloc;
+        
+        arcangles = bsxfun(@atan2,arcvecs(2,:),arcvecs(1,:));
+        exangles = acos(bsxfun(@hypot,arcvecs(1,:),arcvecs(2,:))/2/coilrad);
+        
+        A = (-1).^([1:length(arcangles)]);
+        xloc = [xpts(1) xpts(1:2*numcoils)+coilrad*cos(arcangles + A.*exangles) xpts(end)];
+        yloc = [ypts(1) ypts(1:2*numcoils)+coilrad*sin(arcangles + A.*exangles) ypts(end)];
+        
+
+pts = [xarc1 xloc xarc2; yarc1 yloc yarc2];
+% pts = [xarc1 xpts xarc2; yarc1 ypts yarc2];
+
+
+plot(pts(1,:),pts(2,:),'Color',color,'LineWidth',this.lineWidth);
+
+        
+    end
     
     function [] = plotFoot(this, contactpoint, stanceangle, varargin)
         %%
