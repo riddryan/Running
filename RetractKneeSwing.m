@@ -441,9 +441,11 @@ end
             hold on
             
             %Draw Torso
+            if ~this.sephips
             lpelvis = 0.3;
             torso = points.pelvis + [0 lpelvis];
             plotter.plotLine(points.pelvis,torso)
+            end
             
             %Draw Shank
             plotter.plotLine(points.pelvis,points.knee)
@@ -463,6 +465,9 @@ end
             
             %Hip Spring
             if this.khip > 0
+                
+                if ~this.sephips
+                     hipstretch = (state(1) - this.hipl)/abs(this.hipl);
                 kneedir = [cos(state(1)) sin(state(1))];
                 torsodir = [0 1];
                 swingpoint = points.pelvis + .3 * lthigh * kneedir;
@@ -474,7 +479,18 @@ end
                 %                 plotter.plotAngSpring(torsopoint,swingpoint,points.pelvis,2,.05,...
                 %                     'Color',[232 40 76]/255)
                 
-                plotter.plotCircSpring(torsopoint,swingpoint,0.2,0,2,0.05,'Color',[232 40 76]/255)
+                plotter.plotCircSpring(torsopoint,swingpoint,0.1,0,2,0.05,hipstretch,'Color',[232 40 76]/255)
+                
+                else
+                kneedir = [cos(state(1)) sin(state(1))];
+                [~,~,stanceangle] = getSLIPstates(this.SLIPdata,time);
+                hipstretch = (stanceangle - state(1) - this.hipl)/abs(this.hipl);
+                stancedir = [cos(stanceangle) sin(stanceangle)];
+                swingpoint = points.pelvis + .3 * lthigh * kneedir;
+                stancepoint = points.pelvis + 0.3 * lthigh * stancedir;
+                
+                plotter.plotCircSpring(stancepoint,swingpoint,0.1,0,2,0.05,hipstretch,'Color',[232 40 76]/255)
+                end
                 
             end
             
@@ -482,6 +498,7 @@ end
             if this.kknee > 0
                 pelvdir = -[cos(state(1)) sin(state(1))];
                 footdir = [cos(state(2)) sin(state(2))];
+                kneestretch = -(state(1) - state(2) - this.kneel)/abs(this.kneel);
                 pelvpoint = points.knee + .3 * lthigh * pelvdir;
                 footpoint = points.knee + .3 * lshank * footdir;
                 
@@ -491,13 +508,15 @@ end
                 %                 plotter.plotAngSpring(pelvpoint,footpoint,points.knee+.8*perpdir,2,.05,...
                 %                     'Color',[150 150 76]/255)
                 
-                plotter.plotCircSpring(pelvpoint,footpoint,0.2,1,2,0.05,'Color',[150 150 76]/255)
+                plotter.plotCircSpring(pelvpoint,footpoint,0.1,1,2,0.05,kneestretch,'Color',[150 150 76]/255)
             end
             
             
             %Draw Masses
             plotter.plotMass(points.pelvis);
+            if ~this.sephips
             plotter.plotMass(torso,'scaling',0)
+            end
             plotter.plotMass(points.foot,'scaling',0);
             plotter.plotMass(points.knee,'scaling',0);
             
@@ -668,27 +687,41 @@ mfoot*(c3m4*c3m4),-1));
             [~,~,stanceangle,stancelength,q1,q2,u1,u2,angvel,lengthvel] = getSLIPstates(this.SLIPdata,time);
 
 if this.sephips            
-kineticEnergy = (mpelvis*(u1*u1 + u2*u2))/2.;
+kineticEnergy = (2*c3m4*u3*u4*lshank*lthigh*mfoot + 2*u2*(c4*u4*lshank*mfoot ...
++ c3*u3*lthigh*(1 + mfoot)) - 2*u1*(s4*u4*lshank*mfoot + s3*u3*lthigh*(1 + ...
+mfoot)) + (1 + mfoot)*(u1*u1) + (1 + mfoot)*(u2*u2) + ...
+mfoot*(u4*u4)*(lshank*lshank) + u3*u3*(lthigh*lthigh) + ...
+mfoot*(u3*u3)*(lthigh*lthigh))/2.;
 
-potentialEnergy = (khip*((-q3 + hipl)*(-q3 + hipl)) + kknee*((-q3 + q4 + ...
-kneel)*(-q3 + q4 + kneel)) + 2*g*mpelvis*(q2*cos(gslope) - ...
-q1*sin(gslope)))/2.;
+potentialEnergy = (2*q2*g*cos(gslope) + khip*((-q3 + hipl)*(-q3 + hipl)) + ...
+kknee*((-q3 + q4 + kneel)*(-q3 + q4 + kneel)) + 2*g*lthigh*sin(q3 - gslope) - ...
+2*q1*g*sin(gslope) - 2*g*mfoot*(-(q2*cos(gslope)) - lthigh*sin(q3 - gslope) - ...
+lshank*sin(q4 - gslope) + q1*sin(gslope)))/2.;
 
-PEgrav = -(mpelvis*(-(q2*g*cos(gslope)) + q1*g*sin(gslope)));
+PEgrav = q2*g*cos(gslope) + g*lthigh*sin(q3 - gslope) - q1*g*sin(gslope) - ...
+mfoot*(-(q2*g*cos(gslope)) - s4*g*lshank*cos(gslope) - g*lthigh*sin(q3 - ...
+gslope) + q1*g*sin(gslope) + c4*g*lshank*sin(gslope));
 
 PEspring = (khip*((q3 - hipl)*(q3 - hipl)))/2. + (kknee*((q3 - q4 - ...
 kneel)*(q3 - q4 - kneel)))/2.;
 else
-    kineticEnergy = (mpelvis*(u1*u1 + u2*u2))/2.;
+kineticEnergy = (2*c3m4*u3*u4*lshank*lthigh*mfoot + 2*u2*(c4*u4*lshank*mfoot ...
++ c3*u3*lthigh*(1 + mfoot)) - 2*u1*(s4*u4*lshank*mfoot + s3*u3*lthigh*(1 + ...
+mfoot)) + (1 + mfoot)*(u1*u1) + (1 + mfoot)*(u2*u2) + ...
+mfoot*(u4*u4)*(lshank*lshank) + u3*u3*(lthigh*lthigh) + ...
+mfoot*(u3*u3)*(lthigh*lthigh))/2.;
 
-potentialEnergy = (kknee*((-q3 + q4 + kneel)*(-q3 + q4 + kneel)) + khip*((q3 ...
-+ hipl - stanceangle)*(q3 + hipl - stanceangle)) + ...
-2*g*mpelvis*(q2*cos(gslope) - q1*sin(gslope)))/2.;
+potentialEnergy = (2*q2*g*cos(gslope) + khip*((-q3 + hipl)*(-q3 + hipl)) + ...
+kknee*((-q3 + q4 + kneel)*(-q3 + q4 + kneel)) + 2*g*lthigh*sin(q3 - gslope) - ...
+2*q1*g*sin(gslope) - 2*g*mfoot*(-(q2*cos(gslope)) - lthigh*sin(q3 - gslope) - ...
+lshank*sin(q4 - gslope) + q1*sin(gslope)))/2.;
 
-PEgrav = -(mpelvis*(-(q2*g*cos(gslope)) + q1*g*sin(gslope)));
+PEgrav = q2*g*cos(gslope) + g*lthigh*sin(q3 - gslope) - q1*g*sin(gslope) - ...
+mfoot*(-(q2*g*cos(gslope)) - s4*g*lshank*cos(gslope) - g*lthigh*sin(q3 - ...
+gslope) + q1*g*sin(gslope) + c4*g*lshank*sin(gslope));
 
-PEspring = (kknee*((q3 - q4 - kneel)*(q3 - q4 - kneel)))/2. + (khip*((-q3 - ...
-hipl + stanceangle)*(-q3 - hipl + stanceangle)))/2.;
+PEspring = (khip*((q3 - hipl)*(q3 - hipl)))/2. + (kknee*((q3 - q4 - ...
+kneel)*(q3 - q4 - kneel)))/2.;
 end
             
             

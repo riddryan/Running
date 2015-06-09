@@ -246,7 +246,7 @@ blah =1;
     end
     %%
     
-    function plotCircSpring(this,r1,r2,rad,dir,numcoils,coilrad,varargin)
+    function plotCircSpring(this,r1,r2,rad,dir,numcoils,coilrad,stretch,varargin)
         % SPRING         Calculates the position of a 2D spring
         %    plotANGSPRING(r1,r2,c,ne,a,r0) draws an angular spring b/w
         %    2D points r1, and r2, with the center of the ellipse at point
@@ -282,8 +282,13 @@ blah =1;
             r2 = r2';
         end
         
+        
         %Dist between two points on the circle
         R = sqrt( (r2(2) -r1 (2))^2 + (r2(1) - r1(1))^2 );
+        
+        if (rad/R)^2 < 1/4
+            rad = 1/2*R;
+        end
         
         %mid point
         m = [(r1(1) + r2(1))/2 ; (r1(2) + r2(2))/2];
@@ -314,6 +319,11 @@ blah =1;
                 ang2 = ang2 - 2*pi;
             end
         end
+        
+        %Change coilrad & spring range accoridng to stretch
+        
+        coilrad = (1-stretch/(3*numcoils))*coilrad;
+        springstart = (1-stretch/(2*3*numcoils))*springstart;
         
         arc1range = linspace(ang1,ang1 + springstart*(ang2-ang1),pts);
         springrange = linspace(ang1 + springstart*(ang2-ang1),ang1+(1-springstart)*(ang2-ang1),pts);
