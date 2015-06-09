@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[     80637,       2050]
-NotebookOptionsPosition[     79001,       1995]
-NotebookOutlinePosition[     79348,       2010]
-CellTagsIndexPosition[     79305,       2007]
+NotebookDataLength[     80139,       2038]
+NotebookOptionsPosition[     78504,       1983]
+NotebookOutlinePosition[     78851,       1998]
+CellTagsIndexPosition[     78808,       1995]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -1154,33 +1154,7 @@ Cell[BoxData[
 Cell[CellGroupData[{
 
 Cell[BoxData[{
- RowBox[{
-  StyleBox["Energy", "Subtitle"], "\[IndentingNewLine]", 
-  RowBox[{"(*", 
-   RowBox[{
-    RowBox[{
-     StyleBox["gravE", "Input"], 
-     StyleBox[" ", "Input"], 
-     StyleBox["=", "Input"], 
-     StyleBox[" ", "Input"], 
-     RowBox[{
-      StyleBox["-", "Input"], 
-      RowBox[{
-       StyleBox["(", "Input"], 
-       RowBox[{
-        RowBox[{
-         RowBox[{"Mass", "[", "pelvis", "]"}], " ", 
-         RowBox[{"grav", ".", 
-          RowBox[{"PosCOM", "[", "pelvis", "]"}]}]}], " ", "+", " ", 
-        RowBox[{
-         RowBox[{"Mass", "[", "foot1", "]"}], " ", 
-         RowBox[{"grav", ".", 
-          RowBox[{"PosCOM", "[", "foot1", "]"}]}]}], " ", "+", " ", 
-        RowBox[{
-         RowBox[{"Mass", "[", "foot2", "]"}], " ", 
-         RowBox[{"grav", ".", 
-          RowBox[{"PosCOM", "[", "foot2", "]"}]}]}]}], ")"}]}]}], ";"}], 
-   "*)"}]}], "\[IndentingNewLine]", 
+ StyleBox["Energy", "Subtitle"], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{
    RowBox[{
@@ -1193,10 +1167,29 @@ Cell[BoxData[{
      RowBox[{
       StyleBox["(", "Input"], 
       RowBox[{
-       RowBox[{"Mass", "[", "pelvis", "]"}], " ", 
+       RowBox[{
+        RowBox[{"Mass", "[", "foot1", "]"}], " ", 
+        RowBox[{"grav", ".", 
+         RowBox[{"PosCOM", "[", "foot1", "]"}]}]}], " ", "+", "  ", 
        RowBox[{"grav", ".", 
-        RowBox[{"PosCOM", "[", "pelvis", "]"}]}]}], ")"}]}]}], ";"}], 
-  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+        RowBox[{"PosCOM", "[", "knee1", "]"}]}]}], ")"}]}]}], ";"}], 
+  "\[IndentingNewLine]", 
+  RowBox[{"(*", 
+   RowBox[{
+    RowBox[{
+     StyleBox["gravE", "Input"], 
+     StyleBox[" ", "Input"], 
+     StyleBox["=", "Input"], 
+     StyleBox[" ", "Input"], 
+     RowBox[{
+      StyleBox["-", "Input"], 
+      RowBox[{
+       StyleBox["(", "Input"], 
+       RowBox[{
+        RowBox[{"Mass", "[", "pelvis", "]"}], " ", 
+        RowBox[{"grav", ".", 
+         RowBox[{"PosCOM", "[", "pelvis", "]"}]}]}], ")"}]}]}], ";"}], "*)"}],
+   "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
  RowBox[{
   RowBox[{"springE", " ", "=", " ", 
    RowBox[{
@@ -1220,7 +1213,24 @@ Cell[BoxData[{
    RowBox[{"PE", " ", "=", " ", 
     RowBox[{
      RowBox[{"gravE", " ", "+", " ", "springE"}], " ", "//", " ", 
-     "Simplify"}]}], ";"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+     "Simplify"}]}], ";"}], "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"KE", " ", "=", " ", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"1", "/", "2"}], 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{
+        RowBox[{"Mass", "[", "foot1", "]"}], " ", 
+        RowBox[{
+         RowBox[{"VelCOM", "[", "foot1", "]"}], ".", 
+         RowBox[{"VelCOM", "[", "foot1", "]"}]}]}], "+", " ", 
+       RowBox[{
+        RowBox[{"VelCOM", "[", "knee1", "]"}], ".", 
+        RowBox[{"VelCOM", "[", "knee1", "]"}]}]}], " ", ")"}]}], " ", "//", 
+    " ", "Simplify"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
   RowBox[{"(*", 
    RowBox[{
     RowBox[{"KE", " ", "=", " ", 
@@ -1229,38 +1239,16 @@ Cell[BoxData[{
        RowBox[{"1", "/", "2"}], 
        RowBox[{"(", 
         RowBox[{
+         RowBox[{"Mass", "[", "pelvis", "]"}], " ", 
          RowBox[{
-          RowBox[{"Mass", "[", "pelvis", "]"}], " ", 
-          RowBox[{
-           RowBox[{"VelCOM", "[", "pelvis", "]"}], ".", 
-           RowBox[{"VelCOM", "[", "pelvis", "]"}]}]}], " ", "+", " ", 
-         RowBox[{
-          RowBox[{"Mass", "[", "foot1", "]"}], " ", 
-          RowBox[{
-           RowBox[{"VelCOM", "[", "foot1", "]"}], ".", 
-           RowBox[{"VelCOM", "[", "foot1", "]"}]}]}], "+", 
-         RowBox[{
-          RowBox[{"Mass", "[", "foot2", "]"}], " ", 
-          RowBox[{
-           RowBox[{"VelCOM", "[", "foot2", "]"}], ".", 
-           RowBox[{"VelCOM", "[", "foot2", "]"}]}]}]}], " ", ")"}]}], " ", "//",
-       " ", "Simplify"}]}], ";"}], "*)"}]}], "\[IndentingNewLine]", 
- RowBox[{
-  RowBox[{"KE", " ", "=", " ", 
-   RowBox[{
-    RowBox[{
-     RowBox[{"1", "/", "2"}], 
-     RowBox[{"(", 
-      RowBox[{
-       RowBox[{"Mass", "[", "pelvis", "]"}], " ", 
-       RowBox[{
-        RowBox[{"VelCOM", "[", "pelvis", "]"}], ".", 
-        RowBox[{"VelCOM", "[", "pelvis", "]"}]}]}], ")"}]}], "//", " ", 
-    "Simplify"}]}], ";"}]}], "Input",
+          RowBox[{"VelCOM", "[", "pelvis", "]"}], ".", 
+          RowBox[{"VelCOM", "[", "pelvis", "]"}]}]}], ")"}]}], "//", " ", 
+      "Simplify"}]}], ";"}], "*)"}]}]}], "Input",
  CellChangeTimes->{{3.638543561019*^9, 3.638543630803*^9}, {3.63854399366*^9, 
    3.638544003417*^9}, {3.6387164780095*^9, 3.6387164988385*^9}, 
    3.6387168488905*^9, {3.640024530527*^9, 3.640024532792*^9}, {
-   3.6424441155536003`*^9, 3.6424441451056004`*^9}}],
+   3.6424441155536003`*^9, 3.6424441451056004`*^9}, {3.642849898783*^9, 
+   3.6428499737469997`*^9}}],
 
 Cell[BoxData["Energy"], "Output",
  CellChangeTimes->{
@@ -2027,29 +2015,29 @@ Cell[17590, 454, 1008, 18, 31, "Output"],
 Cell[18601, 474, 906, 14, 31, "Output"],
 Cell[19510, 490, 906, 14, 31, "Output"],
 Cell[20419, 506, 910, 14, 31, "Output"],
-Cell[21332, 522, 3402, 87, 92, "Output"],
-Cell[24737, 611, 2626, 65, 62, "Output"],
-Cell[27366, 678, 2882, 69, 64, "Output"],
+Cell[21332, 522, 3402, 87, 78, "Output"],
+Cell[24737, 611, 2626, 65, 48, "Output"],
+Cell[27366, 678, 2882, 69, 50, "Output"],
 Cell[30251, 749, 8481, 201, 177, "Output"],
 Cell[38735, 952, 8222, 198, 177, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[46994, 1155, 3596, 107, 200, "Input"],
-Cell[50593, 1264, 618, 10, 31, "Output"]
+Cell[46994, 1155, 3099, 95, 200, "Input"],
+Cell[50096, 1252, 618, 10, 31, "Output"]
 }, Open  ]],
-Cell[51226, 1277, 663, 10, 31, "Input"],
+Cell[50729, 1265, 663, 10, 31, "Input"],
 Cell[CellGroupData[{
-Cell[51914, 1291, 2419, 60, 320, "Input"],
-Cell[54336, 1353, 889, 15, 31, "Output"]
+Cell[51417, 1279, 2419, 60, 320, "Input"],
+Cell[53839, 1341, 889, 15, 31, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[55262, 1373, 2970, 81, 260, "Input"],
-Cell[58235, 1456, 599, 9, 31, "Output"],
-Cell[58837, 1467, 17220, 458, 320, "Output"],
+Cell[54765, 1361, 2970, 81, 260, "Input"],
+Cell[57738, 1444, 599, 9, 31, "Output"],
+Cell[58340, 1455, 17220, 458, 342, "Output"],
 Cell[CellGroupData[{
-Cell[76082, 1929, 990, 20, 23, "Print"],
-Cell[77075, 1951, 905, 18, 23, "Print"],
-Cell[77983, 1971, 990, 20, 23, "Print"]
+Cell[75585, 1917, 990, 20, 23, "Print"],
+Cell[76578, 1939, 905, 18, 23, "Print"],
+Cell[77486, 1959, 990, 20, 23, "Print"]
 }, Open  ]]
 }, Open  ]]
 }
