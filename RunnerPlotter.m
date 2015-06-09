@@ -286,6 +286,8 @@ blah =1;
         %Dist between two points on the circle
         R = sqrt( (r2(2) -r1 (2))^2 + (r2(1) - r1(1))^2 );
         
+        %If desired radius of circle too small, make it the min size
+        %possible
         if (rad/R)^2 < 1/4
             rad = 1/2*R;
         end
