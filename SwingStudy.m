@@ -21,7 +21,9 @@ parmstovary = [];
 constrainttolerance = 1e-4;
 MaxEvals = 1000;
 
-cellstouse = [5];
+loadfolder = '.\SavedGaits\Swing\';
+
+cellstouse = [6];
 %% 1D studies
 
 if sum(cellstouse==1)
@@ -93,7 +95,6 @@ end
 %% No-Hip Study
 if sum(cellstouse==2)
     loadname = 'Swing_nohip.mat';
-loadfolder = '.\SavedGaits\';
 load([loadfolder loadname]);
 
     parmnames = {'kswing','swingl'};
@@ -177,8 +178,7 @@ end
 %% No Leg Study
 if sum(cellstouse==3)
     loadname = 'Swing_noleg.mat';
-
-loadfolder = '.\SavedGaits\';
+    
 load([loadfolder loadname]);
     parmnames = {'khip','hipl'};
     parmranges{1} = sort(linspace(r.(parmnames{1}),0,20));
@@ -259,7 +259,6 @@ end
 if sum(cellstouse==4)
     loadname = 'Swing1.mat';
 
-loadfolder = '.\SavedGaits\';
 load([loadfolder loadname]);
     parmnames = {'khip','hipl'};
     parmranges{1} = sort(linspace(0,4,20));
@@ -351,7 +350,6 @@ end
 if sum(cellstouse==5)
     loadname = 'Swing1.mat';
 
-loadfolder = '.\SavedGaits\';
 load([loadfolder loadname]);
     parmnames = {'kswing','swingl'};
     parmranges{1} = sort(linspace(0,40,30));
@@ -439,6 +437,46 @@ load([loadfolder loadname]);
     ylabel(h2,parmnames{2});
     xlabel(parmnames{1})
     ylabel('ldot')
+    
+end
+
+%% 6: Leg Yank Impulse Study
+if sum(cellstouse==6)
+    loadname = 'Swing_yank1.mat';
+
+load([loadfolder loadname]);
+    PNAME = 'impulsecoeff';
+    parmrange = sort(linspace(0,2,30));
+%     parmranges{1} = sort(linspace(1.1*r.(parmnames{2}),0.9*r.(parmnames{1}),2));
+%     parmranges{2} = sort(linspace(1.1*r.(parmnames{2}),0.9*r.(parmnames{2}),2));
+%         parmranges{1} = sort(linspace(r.(parmnames{1}),0.9*r.(parmnames{1}),3));
+%     parmranges{2} = sort(linspace(r.(parmnames{2}),0.3,3));
+%     
+    savename = ['yankimpulse_nofloor.mat'];
+
+    parmstovary=[{'kswing'} {'khip'} {'hipl'}];
+    r.usefloorconstraint = 0;
+  
+    extraconstraint = [];
+    
+    %     Run the parameter study
+    [runners,xstar,cnvrg] = parmstudy1d(r,xstar,parmrange,PNAME,...
+        'runcharic',runcharic,'parmstovary',parmstovary,'extraconstraint',extraconstraint,'TolCon',constrainttolerance,...
+        'MaxEvals',1000);
+    
+    numparams = length(parmstovary);
+    numIC = length(r.statestovary);
+    numvars = numparams+numIC;
+    numstudies = length(cnvrg);
+    
+    pvar = zeros(numstudies,1);
+    resparms = zeros(numstudies,numvars);
+    for i = 1:length(cnvrg)
+        pvar(i) = runners(i).(PNAME);
+        for j = 1:numparams
+            resparms(i,j) = runners(i).(parmstovary{j});
+        end
+    end
     
 end
 

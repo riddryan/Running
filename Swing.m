@@ -390,10 +390,8 @@ end
 % %                     x0([3 4]) = [-.5 -.5];
 %                     vels = this.getVels(tstart,x0);
 
-                    [xpacc,ypacc,stanceangle,stancelength,xp,yp,xvel,yvel,angvel,lengthvel] = getSLIPstates(this.SLIPdata,tstart);
-                    x0(4) = this.impulsecoeff*lengthvel;
-                    
-                    vels = this.getVels(tstart,x0);
+                      x0 = getYankImpulse(this,x0,tstart);
+%                     vels = this.getVels(tstart,x0);
                     
                     phasenum = phasenum+1;
                     phase = this.phases{phasenum};
@@ -895,6 +893,11 @@ vels.COM(2) = yvel;
         end
         
         %% Other Gait Information
+        
+        function x0 = getYankImpulse(this,x0,tstart)
+            [xpacc,ypacc,stanceangle,stancelength,xp,yp,xvel,yvel,angvel,lengthvel] = getSLIPstates(this.SLIPdata,tstart);
+            x0(4) = this.impulsecoeff*lengthvel;
+        end
         
         function [c,ceq] = floorconstraint(this,~,~,~,allx,allt,varargin)
             
