@@ -441,7 +441,7 @@ end
             hold on
             
             %Draw Torso
-            if ~this.sephips
+            if this.sephips
             lpelvis = 0.3;
             torso = points.pelvis + [0 lpelvis];
             plotter.plotLine(points.pelvis,torso)
@@ -466,7 +466,7 @@ end
             %Hip Spring
             if this.khip > 0
                 
-                if ~this.sephips
+                if this.sephips
                      hipstretch = (state(1) - this.hipl)/abs(this.hipl);
                 kneedir = [cos(state(1)) sin(state(1))];
                 torsodir = [0 1];
@@ -489,7 +489,7 @@ end
                 swingpoint = points.pelvis + .3 * lthigh * kneedir;
                 stancepoint = points.pelvis + 0.3 * lthigh * stancedir;
                 
-                plotter.plotCircSpring(stancepoint,swingpoint,0.1,0,2,0.05,hipstretch,'Color',[232 40 76]/255)
+                plotter.plotCircSpring(stancepoint,swingpoint,0.2,0,2,0.05,hipstretch,'Color',[232 40 76]/255)
                 end
                 
             end
@@ -499,8 +499,8 @@ end
                 pelvdir = -[cos(state(1)) sin(state(1))];
                 footdir = [cos(state(2)) sin(state(2))];
                 kneestretch = -(state(1) - state(2) - this.kneel)/abs(this.kneel);
-                pelvpoint = points.knee + .3 * lthigh * pelvdir;
-                footpoint = points.knee + .3 * lshank * footdir;
+                pelvpoint = points.knee + .2 * lthigh * pelvdir;
+                footpoint = points.knee + .2 * lshank * footdir;
                 
                 %                 springdir = (pelvpoint - footpoint)/norm(pelvpoint - footpoint);
                 %                 perpdir = ([0 1;0 -1]*springdir')';
@@ -508,13 +508,13 @@ end
                 %                 plotter.plotAngSpring(pelvpoint,footpoint,points.knee+.8*perpdir,2,.05,...
                 %                     'Color',[150 150 76]/255)
                 
-                plotter.plotCircSpring(pelvpoint,footpoint,0.1,1,2,0.05,kneestretch,'Color',[150 150 76]/255)
+                plotter.plotCircSpring(pelvpoint,footpoint,0.05,1,2,0.05,kneestretch,'Color',[150 150 76]/255)
             end
             
             
             %Draw Masses
             plotter.plotMass(points.pelvis);
-            if ~this.sephips
+            if this.sephips
             plotter.plotMass(torso,'scaling',0)
             end
             plotter.plotMass(points.foot,'scaling',0);
