@@ -45,7 +45,7 @@ classdef RetractKneeSwing < Runner
             aviname = [savepath 'RetractKneeSwing1.avi'];
             onephasesim = 0;
             manystep = 0;
-            test = 'big kick';
+            test = 'experiment';
             
             LineWidth=3;
             LineSize=3;
@@ -62,7 +62,25 @@ classdef RetractKneeSwing < Runner
             
             IC = RetractKneeSwingState;
             switch test
-                
+                case 'experiment'
+                    runner.sephips = 0;
+                    runner.mfoot = .01;
+                    
+                    runner.kknee = 5; %0.01
+                    runner.khip = 0; %0.01
+                    
+                    runner.gslope = 0;
+                    runner.kneel = 1;
+                    runner.hipl = -0.4;
+                    
+                    IC.foot.Angle = runner.SLIPx0(1);
+                    IC.knee.Angle = runner.SLIPx0(1);
+                    
+                    IC.foot.AngleDot = 0;
+                    IC.knee.AngleDot = 0;
+                    
+                    x0 = IC.getVector();
+                    
                 case 'big kick'
                     runner.sephips = 0;
                     runner.mfoot = 0.5;
