@@ -28,6 +28,8 @@ classdef Swing < Runner
         rigidlegimpulse = 0;
         usefloorconstraint = 1;
         
+        useHSevent = 0;
+        
         phases = {'Toe' 'Aerial'};
     end
     
@@ -52,7 +54,7 @@ classdef Swing < Runner
             
             runner = Swing;
             
-            load('./SavedGaits/SLIP_NoAerial_unmatchedSL.mat','SLIPdata')
+            load('./SavedGaits/SLIP/SLIP_NoAerial_unmatchedSL.mat','SLIPdata')
             runner.SLIPx0 = [SLIPdata(end,4);SLIPdata(end,5)];
             runner.SLIPxf = [SLIPdata(1,4);SLIPdata(1,5)];
             %add another step to the cycle
@@ -71,6 +73,7 @@ switch test
     
         case 'experiment'
         
+            runner.useHSevent = 1;
 %             runner.SLIPdata(:,2:3) = 0;
             runner.sephips = 1;
             
@@ -250,6 +253,9 @@ for i = 1:size(allx,1)
     stancefooty(i) = pts.stancefoot(2);
         swingfootx(i) = pts.swingfoot(1);
     swingfooty(i) = pts.swingfoot(2);
+    pelvx(i) = pts.pelvis(1);
+    pelvy(i) = pts.pelvis(2);
+    
     vels = runner.getVels(allt(i),allx(i,:));
     stancefootvelx(i) = vels.stancefoot(1);
     stancefootvely(i) = vels.stancefoot(2);
@@ -525,9 +531,20 @@ end
 %                isTerminal = 0; 
 %             end
             
-            value(1) = this.SLIPdata(end,1) - t;
-            direction(1) = 0;
-            isTerminal(1) = 1;
+if ~this.useHSevent
+    value(1) = this.SLIPdata(end,1) - t;
+    direction(1) = 0;
+    isTerminal(1) = 1;
+else
+    pts = this.getPoints(t,state);
+    value(1) = pts.swingfoot(2);
+    direction(1) = 0;
+    if t >= this.SLIPdata(end,1)
+        isTerminal(1) = 1;
+    else
+        isTerminal(1) = 0;
+    end
+end
         end
         
         function [newstate,this] = GoodInitialConditions(this,x0,varargin)
@@ -703,6 +720,46 @@ end
             
         end
         
+        function [xpacc,ypacc,stanceangle,stancelength,xp,yp,xvel,yvel,angvel,lengthvel] = getSLIPstates(this,targettimes)
+            SLIPdata = this.SLIPdata;
+            SLIPtf = SLIPdata(end,1);
+            if max(targettimes)>SLIPtf 
+                % If useHSevent = 1, and the foot has not hit the ground by
+                % the time the SLIP model simulation has ended, simulate
+                % the free fall of the SLIP model at those future times.
+                
+                if isrow(targettimes)
+                    targettimes = targettimes';
+                end
+                
+                x0 = SLIPdata(end,6); y0 = SLIPdata(end,7);
+                vx0 = SLIPdata(end,8); vy0 = SLIPdata(end,9);
+                times = targettimes(targettimes>SLIPtf)-SLIPtf;
+                xs = x0 + vx0*times; ys = y0 + vy0*times - 1/2*this.g*times.^2;
+                vxs = vx0*ones(size(times)); vys = vy0*ones(size(times)) - this.g*times;
+                xaccs = zeros(size(times)); yaccs = -this.g*ones(size(times));
+                angs = SLIPdata(end,4)*ones(size(times)); lengths = SLIPdata(end,5)*ones(size(times));
+                angvels = zeros(size(times)); lengthvels = zeros(size(times));
+                
+                SLIPdata = [SLIPdata; times+SLIPtf xaccs yaccs angs lengths xs ys vxs vys angvels lengthvels];
+            end
+            
+            SLIPtimes = SLIPdata(:,1);
+            SLIPstates = SLIPdata(:,2:end);
+            interpstates = interp1(SLIPtimes,SLIPstates,targettimes,'spline');
+            
+            xpacc = interpstates(:,1);
+            ypacc = interpstates(:,2);
+            stanceangle = interpstates(:,3);
+            stancelength = interpstates(:,4);
+            xp = interpstates(:,5);
+            yp = interpstates(:,6);
+            xvel = interpstates(:,7);
+            yvel = interpstates(:,8);
+            angvel = interpstates(:,9);
+            lengthvel = interpstates(:,10);
+        end
+        
         function [xddot, constraintForces] = XDoubleDot(this,time,x,phase)
             %%
             %Phase specifies what equations to use, EG 'aerial' or 'stance'
@@ -711,7 +768,7 @@ end
             c3 = cos(q3); s3 = sin(q3);
             u = x(this.N/2+1:end); %velocity states
             
-            [xpacc,ypacc,stanceangle] = getSLIPstates(this.SLIPdata,time);
+            [xpacc,ypacc,stanceangle] = this.getSLIPstates(time);
             
             if strcmp(phase,'Aerial')
                 
@@ -768,7 +825,7 @@ s3*kswing*swingl + ypacc + c3*(q3 - hipl)*khip*power(q4,-1);
             this.getQandUdefs(state);
             c3 = cos(q3); s3 = sin(q3);
             
-            [~,~,stanceangle,stancelength,q1,q2,u1,u2,angvel,lengthvel] = getSLIPstates(this.SLIPdata,time);
+            [~,~,stanceangle,stancelength,q1,q2,u1,u2,angvel,lengthvel] = this.getSLIPstates(time);
 
             
             kineticEnergy = (u1*(-2*q4*s3*u3 + 2*c3*u4) + 2*u2*(c3*q4*u3 + s3*u4) + u1*u1 ...
@@ -798,7 +855,7 @@ s3*kswing*swingl + ypacc + c3*(q3 - hipl)*khip*power(q4,-1);
             this.getQandUdefs(state);
             c3 = cos(q3); s3 = sin(q3);
             
-            [~,~,stanceangle,stancelength,xp,yp] = getSLIPstates(this.SLIPdata,time);
+            [~,~,stanceangle,stancelength,xp,yp] = this.getSLIPstates(time);
             
             points.swingfoot(1) = xp + c3*q4;
             points.swingfoot(2) = yp + q4*s3;
@@ -821,7 +878,7 @@ s3*kswing*swingl + ypacc + c3*(q3 - hipl)*khip*power(q4,-1);
             this.getQandUdefs(state);
             c3 = cos(q3); s3 = sin(q3);
             
-            [~,~,stanceangle,stancelength,~,~,xvel,yvel,angvel,lengthvel] = getSLIPstates(this.SLIPdata,time);
+            [~,~,stanceangle,stancelength,~,~,xvel,yvel,angvel,lengthvel] = this.getSLIPstates(time);
             
             
 vels.stancefoot(1) = xvel - stancelength*sin(stanceangle)*angvel + cos(stanceangle)*lengthvel; 
@@ -881,7 +938,7 @@ vels.COM(2) = yvel;
         
         function hippower= getHipPower(this,time,x)
             sz = SwingState(x);
-[~,~,stanceangle,~,~,~,~,~,angvel,~] = getSLIPstates(this.SLIPdata,time);
+[~,~,stanceangle,~,~,~,~,~,angvel,~] = this.getSLIPstates(time);
             force = this.getHipForce(x,stanceangle);
             velocity = angvel - sz.swingfoot.AngleDot;
             hippower = force.*velocity;
@@ -895,7 +952,7 @@ vels.COM(2) = yvel;
         %% Other Gait Information
         
         function x0 = getYankImpulse(this,x0,tstart)
-            [xpacc,ypacc,stanceangle,stancelength,xp,yp,xvel,yvel,angvel,lengthvel] = getSLIPstates(this.SLIPdata,tstart);
+            [xpacc,ypacc,stanceangle,stancelength,xp,yp,xvel,yvel,angvel,lengthvel] = this.getSLIPstates(time);
             x0(4) = this.impulsecoeff*lengthvel;
         end
         
@@ -1028,8 +1085,8 @@ vels.COM(2) = yvel;
                 [~,tf] = this.onestep(x0);
             end
             
-            [~,~,~,~,xp0,~] = getSLIPstates(this.SLIPdata,0);
-            [~,~,~,~,xpf,~] = getSLIPstates(this.SLIPdata,tf);
+            [~,~,~,~,xp0,~] = this.getSLIPstates(0);
+            [~,~,~,~,xpf,~] = this.getSLIPstates(tf);
             
             speed = (xpf-xp0) / tf;
             if isnan(speed)
@@ -1042,8 +1099,8 @@ vels.COM(2) = yvel;
                 [~,tf] = this.onestep(x0);
             end
             
-            [~,~,~,~,xp0,~] = getSLIPstates(this.SLIPdata,0);
-            [~,~,~,~,xpf,~] = getSLIPstates(this.SLIPdata,tf);
+            [~,~,~,~,xp0,~] = this.getSLIPstates(0);
+            [~,~,~,~,xpf,~] = this.getSLIPstates(tf);
             
             steplength = (xpf-xp0);
             if isnan(steplength)
