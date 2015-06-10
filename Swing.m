@@ -329,7 +329,7 @@ end
             %%
             RelTol = 1e-6; %10; %
             AbsTol = 1e-6; %10; %
-            tmax = 1.5; %2; %6;
+            tmax = 2; %2; %6;
             dt = 1e-2;
             interleaveAnimation = 0; %1; %
             interleaveAnimationFrameskip = 2;
@@ -539,7 +539,7 @@ else
     pts = this.getPoints(t,state);
     value(1) = pts.swingfoot(2);
     direction(1) = 0;
-    if t >= this.SLIPdata(end,1)
+    if t >= this.SLIPdata(end,1) || state(1)>-pi/2
         isTerminal(1) = 1;
     else
         isTerminal(1) = 0;
@@ -1170,12 +1170,15 @@ vels.COM(2) = yvel;
             
             AMatrix = ones(length(x0)) * NaN;
             xNextUnperturbed = this.onestep(x0,varargin{:});
-            xNextUnperturbed(1:2) = this.SLIPxf';
+%             xNextUnperturbed(1:2) = this.SLIPxf';
             for i = 1 : length(x0)
                 x0Perturbed = x0;
                 x0Perturbed(i) = x0Perturbed(i) + perturbationAmount;
-                xNextPerturbed = this.onestep(x0Perturbed, varargin{:});
-                AMatrix(:, i) = (xNextPerturbed - xNextUnperturbed) / perturbationAmount;
+                [xNextPerturbed,tf] = this.onestep(x0Perturbed, varargin{:});
+                vels = this.getVels(tf,xNextPerturbed);
+                SLIPpert = [xNextPerturbed(1:2) vels.pelvis];
+                SLIPunpert = [xNextUnperturbed(1:2) this.SLIPdata(1,[8 9])];
+                AMatrix(:, i) = (SLIPpert - SLIPunpert) / perturbationAmount;
             end
         end
         
@@ -1197,11 +1200,15 @@ vels.COM(2) = yvel;
             end
             
             xNextUnperturbed = this.onestep(x0,varargin{:});
-            xNextUnperturbed(1:2) = this.SLIPxf';
+%             xNextUnperturbed(1:2) = this.SLIPxf';
             this.(parameterName) = this.(parameterName) + perturbationAmount;
-            xNextPerturbed = this.onestep(x0, varargin{:});
+            [xNextPerturbed,tf] = this.onestep(x0, varargin{:});
             
-            BMatrix = (xNextPerturbed - xNextUnperturbed) / perturbationAmount;
+            vels = this.getVels(tf,xNextPerturbed);
+            SLIPpert = [xNextPerturbed(1:2) vels.pelvis];
+            SLIPunpert = [xNextUnperturbed(1:2) this.SLIPdata(1,[8 9])];
+            
+            BMatrix = (SLIPpert - SLIPunpert) / perturbationAmount;
         end
         
        
