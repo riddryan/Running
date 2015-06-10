@@ -1090,7 +1090,7 @@ vels.COM(2) = yvel;
                     'perturbationAmount', perturbationAmount, varargin{:})';
             end
             
-            A = this.getSensitivtyToStates(x0, 'perturbationAmount', perturbationAmount, varargin{:});
+            A = this.getSensitivityToStates(x0, 'perturbationAmount', perturbationAmount, varargin{:});
         end
         
         function [AMatrix] = getSensitivityToStates(this, x0, varargin)
@@ -1112,11 +1112,12 @@ vels.COM(2) = yvel;
             end
             
             AMatrix = ones(length(x0)) * NaN;
-            xNextUnperturbed = this.oneStep(x0, varargin{:});
+            xNextUnperturbed = this.onestep(x0,varargin{:});
+            xNextUnperturbed(1:2) = this.SLIPxf';
             for i = 1 : length(x0)
                 x0Perturbed = x0;
                 x0Perturbed(i) = x0Perturbed(i) + perturbationAmount;
-                xNextPerturbed = this.oneStep(x0Perturbed, varargin{:});
+                xNextPerturbed = this.onestep(x0Perturbed, varargin{:});
                 AMatrix(:, i) = (xNextPerturbed - xNextUnperturbed) / perturbationAmount;
             end
         end
@@ -1138,9 +1139,10 @@ vels.COM(2) = yvel;
                 varargin = {'', {}};
             end
             
-            xNextUnperturbed = this.oneStep(x0, varargin{:});
+            xNextUnperturbed = this.onestep(x0,varargin{:});
+            xNextUnperturbed(1:2) = this.SLIPxf';
             this.(parameterName) = this.(parameterName) + perturbationAmount;
-            xNextPerturbed = this.oneStep(x0, varargin{:});
+            xNextPerturbed = this.onestep(x0, varargin{:});
             
             BMatrix = (xNextPerturbed - xNextUnperturbed) / perturbationAmount;
         end
