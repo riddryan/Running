@@ -30,6 +30,7 @@ classdef RetractKneeSwing < Runner
         
         usefloorconstraint = 0;
         sephips = 1;
+        kneelock = 0;
         
         phases = {'Aerial'};
     end
@@ -42,10 +43,10 @@ classdef RetractKneeSwing < Runner
             dir = cd;
             saveAnimation=1;
             savepath = [dir '\Animations\'];
-            aviname = [savepath 'RetractKneeSwing1.avi'];
             onephasesim = 0;
             manystep = 0;
-            test = 'experiment';
+            test = 'nokneeunder';
+            aviname = [test '.avi'];
             
             LineWidth=3;
             LineSize=3;
@@ -62,16 +63,58 @@ classdef RetractKneeSwing < Runner
             
             IC = RetractKneeSwingState;
             switch test
-                case 'experiment'
+                                case 'nokneeunder'
+                    runner.phases = {'Aerial' 'KneeLock'};
+                    runner.kneelock = 1;
                     runner.sephips = 0;
-                    runner.mfoot = .01;
+                    runner.mfoot = 0.5;
                     
-                    runner.kknee = 5; %0.01
-                    runner.khip = 0; %0.01
+                    runner.kknee = 0; %0.01
+                    runner.khip = 3; %0.01
                     
                     runner.gslope = 0;
                     runner.kneel = 1;
-                    runner.hipl = -0.4;
+                    runner.hipl = -0.2;
+                    
+                    IC.foot.Angle = runner.SLIPx0(1);
+                    IC.knee.Angle = runner.SLIPx0(1);
+                    
+                    IC.foot.AngleDot = 0;
+                    IC.knee.AngleDot = 0;
+                    
+                    x0 = IC.getVector();
+                case 'kneelockover'
+                    runner.phases = {'Aerial' 'KneeLock'};
+                    runner.kneelock = 1;
+                    runner.sephips = 0;
+                    runner.mfoot = 0.3;
+                    
+                    runner.kknee = 0.8; %0.01
+                    runner.khip = 4; %0.01
+                    
+                    runner.gslope = 0;
+                    runner.kneel = 2.5;
+                    runner.hipl = -0.7;
+                    
+                    IC.foot.Angle = runner.SLIPx0(1);
+                    IC.knee.Angle = runner.SLIPx0(1);
+                    
+                    IC.foot.AngleDot = 0;
+                    IC.knee.AngleDot = 0;
+                    
+                    x0 = IC.getVector();
+                case 'kneelock'
+                    runner.phases = {'Aerial' 'KneeLock'};
+                    runner.kneelock = 1;
+                    runner.sephips = 0;
+                    runner.mfoot = 0.5;
+                    
+                    runner.kknee = 3; %0.01
+                    runner.khip = 7; %0.01
+                    
+                    runner.gslope = 0;
+                    runner.kneel = 1;
+                    runner.hipl = -0.5;
                     
                     IC.foot.Angle = runner.SLIPx0(1);
                     IC.knee.Angle = runner.SLIPx0(1);
@@ -210,6 +253,8 @@ classdef RetractKneeSwing < Runner
                 footvely(i) = vels.foot(2);
                 GRF(i,:) = runner.getGRF(allt(i),allx(i,:),phase);
                 knee(i) = allx(i,1)-allx(i,2);
+                
+                [~,cforce(i)] = runner.XDoubleDot(allt(i),allx(i,:)',phase);
             end
             
             
@@ -221,6 +266,9 @@ classdef RetractKneeSwing < Runner
             plot(allt,PEgrav)
             legend('Tot','KE','PE','PEgrav')
             
+            figure
+            plot(allt,cforce)
+            title('knee lock constraint force')
             
 
             
@@ -311,7 +359,7 @@ end
             allt = [];
             allx = [];
             phasevec = [];
-            phaseevents = {@(t,x) this.AerialEvents(t,x)};  
+            phaseevents = {@(t,x) this.AerialEvents(t,x) @(t,x) this.KneeLockEvents(t,x)};  
 
             while sim
                 %% Phase transition & Integration
@@ -333,23 +381,18 @@ end
                 x0 = allx(end,:);
                 
                 %% Decide which Phase to Move To
-                [eventpossibilities] = phaseevents{phasenum}(tstart,x0);
-                fallevent = length(eventpossibilities); %Event in which model falls for that phase
-                
-                if isempty(ie)
+                if isempty(ie) || length(this.phases)==1
                     sim = 0;
                     break;
                 end
-                if ie == fallevent || phasenum == length(this.phases) %Fallen or reached last phase
-                    sim = 0;
-                elseif ie ==1 %First event is reserved for expected behavior
+                if ie == 2 || ie == 3 %Knee has been locked 
                     phasenum = phasenum+1; %Move forward one phase
-                else
+                else %swing foot hit hte ground
                     sim = 0;
                 end
                 
             end
-            xf = allx(end,:); tf = allt(end); tair=allt(find(phasevec==2,1));
+            xf = allx(end,:); tf = allt(end); tair=allt(1);
             
             if (interleaveAnimation)
                 
@@ -416,6 +459,29 @@ end
             value(1) = this.SLIPdata(end,1) - t;
             direction(1) = 0;
             isTerminal(1) = 1;
+            
+            if this.kneelock
+               value(2)=(state(2))-(state(1));
+               value(3) = state(2) + 2*pi - state(1);
+               direction(2) = 0;
+               direction(3) = 0;
+               if state(1)>-pi/2
+                   isTerminal(2) = 1;
+                   isTerminal(3) = 1;
+               else
+                   isTerminal(2) = 0;
+                   isTerminal(3) = 1;
+               end
+                
+            end
+        end
+        
+        function [value, isTerminal, direction]  = KneeLockEvents(this,t,state)
+            %End when the alotted time for the step is complete
+            value(1) = this.SLIPdata(end,1) - t;
+            direction(1) = 0;
+            isTerminal(1) = 1;
+            
         end
         
         function [newstate,this] = GoodInitialConditions(this,x0,varargin)
@@ -645,7 +711,6 @@ end
             
             [xpacc,ypacc,stanceangle] = getSLIPstates(this.SLIPdata,time);
             
-            if strcmp(phase,'Aerial')
                 
                 if ~this.sephips
                     
@@ -688,10 +753,19 @@ mfoot*(c3m4*c3m4),-1));
                     
                 end
                 
-                xddot = [u;accs'];
-                constraintForces = [];
                 
-            end
+                xddot = [u;accs'];
+                constraintForces = 0;
+                
+                if strcmp(phase,'KneeLock')
+                    %To lock the knee, need a constraint force equal and
+                    %opposite to the unconstrained acceleration of the knee
+                    %angle + an acceleration equal to the hip acceleration
+                    constraintForces = -xddot(4)+xddot(3)*this.mfoot;
+                    %Enforce velocity & acceleration constraint
+                    xddot([2 4]) = xddot([1 3]);
+                end
+                
             
             
         end
