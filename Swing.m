@@ -952,7 +952,7 @@ vels.COM(2) = yvel;
         %% Other Gait Information
         
         function x0 = getYankImpulse(this,x0,tstart)
-            [xpacc,ypacc,stanceangle,stancelength,xp,yp,xvel,yvel,angvel,lengthvel] = this.getSLIPstates(time);
+            [xpacc,ypacc,stanceangle,stancelength,xp,yp,xvel,yvel,angvel,lengthvel] = this.getSLIPstates(tstart);
             x0(4) = this.impulsecoeff*lengthvel;
         end
         
