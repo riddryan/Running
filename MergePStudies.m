@@ -134,9 +134,9 @@ load(file5);
        plot([0 0],get(gca,'YLim'),'k--')
        
        load(nospringsfile)
-       plot(xstar(3),xstar(4),'b.','LineWidth',2,'MarkerSize',40)
+       plot(xstar(3),xstar(4),'y.','LineWidth',2,'MarkerSize',40)
        
-       nospringstext = text(1,-1.4,'\color{blue} No Springs');
+       nospringstext = text(1,-1.4,'\color{yellow} No Springs');
     
     
     title('Swing Leg IC State Space')
