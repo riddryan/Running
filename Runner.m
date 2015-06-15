@@ -101,8 +101,8 @@ methods
          elseif regexpi(parametersToAlter{i},'transition')
              LB(length(this.statestovary)+i) = .8;
              UB(length(this.statestovary)+i) = 1;
-         elseif regexpi(parametersToAlter{i},'impulsecoeff')
-             LB(length(this.statestovary)+i) = 0;
+%          elseif regexpi(parametersToAlter{i},'impulsecoeff')
+%              LB(length(this.statestovary)+i) = 0;
          end
       end
       
