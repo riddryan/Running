@@ -35,12 +35,22 @@ classdef RunnerPlotter
       
     end
     
-    function plotLine(this, from, to)
+    function plotLine(this, from, to,varargin)
+        
+        color = this.linkColor;
+        for i = 1 : 2 : length(varargin)
+            option = varargin{i};
+            value = varargin{i + 1};
+            switch option
+                case 'Color'
+                    color = value;
+            end
+        end
     
         line( ...
             [from(1) to(1)], ...
             [from(2), to(2)], ...
-            'Color', this.linkColor, 'LineWidth', this.lineWidth);
+            'Color', color, 'LineWidth', this.lineWidth);
         hold on;
 
     end
