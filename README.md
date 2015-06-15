@@ -6,16 +6,14 @@
 
 ### How do I get set up? ###
 
-* You need Mathematica, Dynamics Workbench, and a recent version of Matlab to use this repository.
+* You need Mathematica, Dynamics Workbench, and a recent version of Matlab to use this repository.  Created on Matlab 2014b, Mathematica 9.0.0.0, and [Dynamics Workbench 3.7] (http://www-personal.umich.edu/~artkuo/DynamicsWorkbench/).
 
-* Human data is not stored on this repository, but is used in some of the analysis
+* Human data is not stored on this repository, but is used in some of the analysis.  Animations and saved mat files are also not included in the repository, although some functions reference such files.  You may need to create the local folders: "Animations", "SavedGaits", "ParameterStudies", "ReturnMapStudies", and "Figures" in order for the saving functions & methods to work properly; else make changes to the code such that it saves elsewhere.
 
-* Animations and saved mat files are also not included in the repository, although some functions reference such files
-
-* You may need to create the local folders: "Animations", "SavedGaits", and "ParameterStudies" in order for the saving functions & methods to work properly; else make changes to the code such that it saves elsewhere
+* The data & folders can be found at `\\hbcl-server.engin.umich.edu\hbcl\projects\RunModels`
 
 ### General Info ###
-* Runner is an abstract class that is a superclass to all the other classes (e.g. SLIP, SoftParRunner, Swing, etc.)
+* `Runner` is an abstract class that is a superclass to all the other classes (e.g. `SLIP`, `SoftParRunner`, `Swing`, etc.)
 
 * Each class also has an associated state definition class located in the folder State_Definitions which makes it easier to parse the states of each class.  For example, it converts a vector of states to a nicely labeled structure that tells you Knee Velocity, Pelvis Position, etc.
 
@@ -23,13 +21,13 @@
 
 ### Important Methods  ###
 
-* "test" is a static method used to test energy conservation, that constraints are working, that event functions are working, and to play with initial conditions and parameters to try to get close to a limit cycle.  It is basically a mess and a playground.  It might be better to divide "test" into multiple static methods that each contain a single test.
+* `test` is a static method used to test energy conservation, that constraints are working, that event functions are working, and to play with initial conditions and parameters to try to get close to a limit cycle.  It is basically a mess and a playground.  It might be better to divide `test` into multiple static methods that each contain a single test.
 
-* All classes have the method "onestep" which simulates the model for a single step given initial conditions, as well as additional extra arguments.  The simulation stops based on event functions that are generally included as methods of the class and called within onestep
+* All classes have the method `onestep` which simulates the model for a single step given initial conditions, as well as additional extra arguments.  The simulation stops based on event functions that are generally included as methods of the class and called within onestep
 
-* "plot" plots the model at one state
+* `plot` plots the model at one state
 
-* "anim" animates the model at the states given to its input.  If only initial conditions of the model are given, it calls onestep first, and then animates the results
+* `anim` animates the model at the states given to its input.  If only initial conditions of the model are given, it calls onestep first, and then animates the results
 
 ### Who do I talk to? ###
 
