@@ -23,7 +23,7 @@
 
 The process of describing a model, solving the equations of motion, constructing a class definition of that model, and then using the model to find and analyze limit cycles are described here.
 
-# Steps #
+### Steps ###
 
 1. Use the Dynamics Workbench packages to build a 2D or 3D model, and then export the equations of motion into a .m file for use in Matlab.  It is also helpful to export the energy of each body & spring, the position & velocity vectors of each point, and the Constraint matrices and their derivatives as well.
 
@@ -40,7 +40,7 @@ The process of describing a model, solving the equations of motion, constructing
 
 5.  Use that limit cycle to find other limit cycles and analyze how parameters effect dynamics and energetics using `parmstudy1d.m` and `parmstudy2d.m`
 
-# Example #
+### Example ###
 
 
 
