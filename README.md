@@ -1,10 +1,10 @@
 # README #
 
-### Running Models ###
+## Running Models ##
 
 * Calculates multi body dynamics for models for the purpose of investigating the dynamics, energetics, and control of human running.  Uses a class library in Matlab to expedite the creation of new models based on simple models.
 
-### How do I get set up? ###
+## How do I get set up? ##
 
 * You need Mathematica, Dynamics Workbench, and a recent version of Matlab to use this repository.  Created on Matlab 2014b, Mathematica 9.0.0.0, and [Dynamics Workbench 3.7] (http://www-personal.umich.edu/~artkuo/DynamicsWorkbench/).
 
@@ -12,18 +12,18 @@
 
 * The data & folders can be found at `\\hbcl-server.engin.umich.edu\hbcl\projects\RunModels`
 
-### General Info ###
+## General Info ##
 * `Runner` is an abstract class that is a superclass to all the other classes (e.g. `SLIP`, `SoftParRunner`, `Swing`, etc.)
 
 * Each class also has an associated state definition class located in the folder State_Definitions which makes it easier to parse the states of each class.  For example, it converts a vector of states to a nicely labeled structure that tells you Knee Velocity, Pelvis Position, etc.
 
 * Also includes some simulations of models that fall under the category of Differential Algebraic Equations, located in the folder DAE.  This is a result of setting unconstrained degrees of freedom to have zero mass, which can still be solved for if there are springs and/or dampers that act on those DOF.
 
-### Tutorial ###
+## Tutorial ##
 
 The process of describing a model, solving the equations of motion, constructing a class definition of that model, and then using the model to find and analyze limit cycles are described here.
 
-## Steps ##
+# Steps #
 
 1. Use the Dynamics Workbench packages to build a 2D or 3D model, and then export the equations of motion into a .m file for use in Matlab.  It is also helpful to export the energy of each body & spring, the position & velocity vectors of each point, and the Constraint matrices and their derivatives as well.
 
@@ -40,11 +40,11 @@ The process of describing a model, solving the equations of motion, constructing
 
 5.  Use that limit cycle to find other limit cycles and analyze how parameters effect dynamics and energetics using `parmstudy1d.m` and `parmstudy2d.m`
 
-## Example ##
+# Example #
 
 
 
-### Important Methods  ###
+## Important Methods  ##
 
 * `test` is a static method used to test energy conservation, that constraints are working, that event functions are working, and to play with initial conditions and parameters to try to get close to a limit cycle.  It is basically a mess and a playground.  It might be better to divide `test` into multiple static methods that each contain a single test.
 
@@ -54,6 +54,6 @@ The process of describing a model, solving the equations of motion, constructing
 
 * `anim` animates the model at the states given to its input.  If only initial conditions of the model are given, it calls onestep first, and then animates the results
 
-### Who do I talk to? ###
+## Who do I talk to? ##
 
 * Contact riddryan on bitbucket or email at riddryan@umich.edu
