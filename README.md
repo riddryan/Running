@@ -6,7 +6,7 @@
 
 ## How do I get set up? ##
 
-* You need Mathematica, Dynamics Workbench, and a recent version of Matlab to use this repository.  Created on Matlab 2014b, Mathematica 9.0.0.0, and [Dynamics Workbench 3.7] (http://www-personal.umich.edu/~artkuo/DynamicsWorkbench/).
+* You need Mathematica, Dynamics Workbench, and a recent version of Matlab to use this repository.  Created on Matlab 2014b, Mathematica 9.0.0.0, and [Dynamics Workbench 3.7] (http://www-personal.umich.edu/~artkuo/DynamicsWorkbench/).  Add folder State_Definitions to your Matlab Path.
 
 * Human data is not stored on this repository, but is used in some of the analysis.  Animations and saved mat files are also not included in the repository, although some functions reference such files.  You may need to create the local folders: "Animations", "SavedGaits", "ParameterStudies", "ReturnMapStudies", and "Figures" in order for the saving functions & methods to work properly; else make changes to the code such that it saves elsewhere.
 
@@ -23,7 +23,7 @@
 
 The process of describing a model, solving the equations of motion, constructing a class definition of that model, and then using the model to find and analyze limit cycles are described here.
 
-### Steps ###
+### Outline ###
 
 1. Use the Dynamics Workbench packages to build a 2D or 3D model, and then export the equations of motion into a .m file for use in Matlab.  It is also helpful to export the energy of each body & spring, the position & velocity vectors of each point, and the Constraint matrices and their derivatives as well.
 
@@ -41,6 +41,18 @@ The process of describing a model, solving the equations of motion, constructing
 5.  Use that limit cycle to find other limit cycles and analyze how parameters effect dynamics and energetics using `parmstudy1d.m` and `parmstudy2d.m`
 
 ### Example ###
+
+This example will show you how to start with the SLIP model and then add a degree of freedom with a spring, mass, and damper above the pelvis to represent a soft stomach.  
+
+### Build the Model ###
+
+* Open SLIP.nb in Mathematica, located in the folder EOM Notebooks.  Save file as Tutorial.nb and change the line `savename = workdir <> "\\SLIP.m";` to `savename = workdir <> "\\Tutorial.m";` This is the name of the m-file Mathematica will export Matlab code into
+
+* After the last line in `Set Up Bodies`, add the line `AddBody[stomach,pelvis,Slider,Axis->ground[2],Mass->mstomach];`
+
+* Under `Gravity`, add the line `AppFrc[stomach,Mass[stomach] grav, 0];`
+
+* Under `Springs`, add the line
 
 
 
