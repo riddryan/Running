@@ -29,10 +29,10 @@ The process of describing a model, solving the equations of motion, constructing
 
 2.  Copy an old class definition file that most resembles your desired model, rename it appropriately, and then go through the annoying process of copy/pasting and class-specific changes that are required in each method.
 
-* If desired, for your class `MyClass.m`, also create an m-file `MyClassState.m` in the State_Definitions folder to allow easier decoding of which state is which.
-* If you created your class from `OldClass.m`, replace each call to `OldClass` and `OldClassState` by `MyClass` and `MyClassState` respectively.
-* Copy and paste the appropiate output from Mathematica into the methods `getMMandRHS`, `getConstraints`, `getVelJacob`, `getEnergies`, `getPoints`, and `getcomWR`
-* You will probably have to change several other class methods by hand including: `onestep` , `plot`, methods that serve as event functions for simulations, methods that calculate special quantities such as power going through a spring (could also export from Mathematica).  You may also have to change `getSpeed`, `getStepLength`, and `getAerialFraction`.
+     * If desired, for your class `MyClass.m`, also create an m-file `MyClassState.m` in the State_Definitions folder to allow easier decoding of which state is which.
+     * If you created your class from `OldClass.m`, replace each call to `OldClass` and `OldClassState` by `MyClass` and `MyClassState` respectively.
+     * Copy and paste the appropiate output from Mathematica into the methods `getMMandRHS`, `getConstraints`, `getVelJacob`, `getEnergies`, `getPoints`, and `getcomWR`
+     * You will probably have to change several other class methods by hand including: `onestep` , `plot`, methods that serve as event functions for simulations, methods that calculate special quantities such as      power going through a spring (could also export from Mathematica).  You may also have to change `getSpeed`, `getStepLength`, and `getAerialFraction`.
 
 3.  Use the method `test` to simulate the model and test for energy conservation, that event functions are working properly, that constraints are working properly, and to get initial conditions that look like they could be close to a limit cycle.
 
