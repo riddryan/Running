@@ -6,7 +6,7 @@
 
 ## How do I get set up? ##
 
-* You need Mathematica, Dynamics Workbench, and a recent version of Matlab to use this repository.  Created on Matlab 2014b, Mathematica 9.0.0.0, and Dynamics Workbench 3.7 (http://www-personal.umich.edu/~artkuo/DynamicsWorkbench/).  Add folder State_Definitions to your Matlab Path.
+* You need Mathematica, Dynamics Workbench, and a recent version of Matlab to use this repository.  Created on Matlab 2014b, Mathematica 9.0.0.0, and [Dynamics Workbench 3.7](http://www-personal.umich.edu/~artkuo/DynamicsWorkbench/).  Add folder State_Definitions to your Matlab Path.
 
 * Human data is not stored on this repository, but is used in some of the analysis.  Animations and saved mat files are also not included in the repository, although some functions reference such files.  You may need to create the local folders: "Animations", "SavedGaits", "ParameterStudies", "ReturnMapStudies", and "Figures" in order for the saving functions & methods to work properly; else make changes to the code such that it saves elsewhere.
 
