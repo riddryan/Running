@@ -42,11 +42,11 @@ The process of describing a model, solving the equations of motion, constructing
 
 ### Example ###
 
-This example will show you how to start with the SLIP model and then add a degree of freedom with a spring, mass, and damper above the pelvis to represent a soft stomach.  
+This example will show you how to start with the SLIP model and then add a degree of freedom with a spring, mass, and damper above the pelvis to represent a soft stomach.  You can look in the files Tutorial.nb, and the class definition Tutorial.m to check you work.
 
 ### Build the Model ###
 
-* Open SLIP.nb in Mathematica, located in the folder EOM Notebooks.  Save file as Tutorial.nb and change the line `savename = workdir <> "\\SLIP.m";` to `savename = workdir <> "\\Tutorial.m";` This is the name of the m-file Mathematica will export Matlab code into
+* Open SLIP.nb in Mathematica, located in the folder EOM Notebooks.  Save file as MyStomach.nb and change the line `savename = workdir <> "\\SLIP.m";` to `savename = workdir <> "\\MyStomach.m";` This is the name of the m-file Mathematica will export Matlab code into
 
 * After the last line in `Set Up Bodies`, add the line `AddBody[stomach,pelvis,Slider,Axis->ground[2],Mass->mstomach];`
 
