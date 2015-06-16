@@ -87,6 +87,30 @@ expressionsToExport = {{constraintJacobianStance, "constraintJacobianStance"}, {
     {inGroundFrame2D[stancefootvel], "vels.stancefoot"}, {inGroundFrame2D[pelvvel], "vels.pelvis"},{inGroundFrame2D[COMvel], "vels.COM"},{inGroundFrame2D[stomachvel], "vels.stomach"}}
 ```
 
+### Construct the Class State Definition in Matlab ###
+
+First make a class that interprets the states of the model that you will build in Matlab into readable words.  This is most useful when you are working with a lot of models or degrees of freedom and don't remember which state is which.
+
+* Make a copy of SLIPState.m in the folder State_Definitions and rename it MyStomachState.m
+* Open MyStomachState.m, and do a find "SLIPState" and replace all with "MyStomachState"
+* Under properties, you need to define the structures with sensible names that correspond to each element of the vector.  For example, replace the code under properties with the following:
+```matlab
+        pelvis = struct('x', 0, 'y', 0, 'xDot', 0, 'yDot',0);
+        stancefoot = struct('Angle', 0, 'Length',0,'AngleDot',0,'LengthDot',0);
+        stomach = struct('Length',0,'LengthDot',0);
+        order=[1 2 6 7 ...
+               3 4 8 9 ...
+               5 10]; 
+```
+
+### Develop the Class Definition in Matlab ###
+
+* Make a copy of SLIP.m in the main directory and rename it MyStomach.m
+* Open MyStomach.m and do a find "SLIP" and replace all with "MyStomach"
+* Also open MyStomach.m in the "EOM Notebooks" folder to access the exported Mathematica code.  Note that this has the same file name as your class definition but is in a different folder.
+* Copy and paste `MM` and `rhs` from the exported code into the method `getMMandrhs`
+
+
 ## Important Methods  ##
 
 * `test` is a static method used to test energy conservation, that constraints are working, that event functions are working, and to play with initial conditions and parameters to try to get close to a limit cycle.  It is basically a mess and a playground.  It might be better to divide `test` into multiple static methods that each contain a single test.
