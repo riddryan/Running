@@ -42,7 +42,7 @@ The process of describing a model, solving the equations of motion, constructing
 
 ### Example ###
 
-This example will show you how to start with the SLIP model and then add a degree of freedom with a spring, mass, and damper above the pelvis to represent a soft stomach.  You can look in the files Tutorial.nb, and the class definition Tutorial.m to check you work.
+This example will show you how to start with the SLIP model and then add a degree of freedom with a spring and mass above the pelvis to represent a soft stomach.  You can look in the files Tutorial.nb, and the class definition Tutorial.m to check you work.
 
 ### Build the Model in Mathematica ###
 
