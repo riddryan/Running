@@ -34,7 +34,7 @@ The process of describing a model, solving the equations of motion, constructing
      * Copy and paste the appropiate output from Mathematica into the methods `getMMandRHS`, `getConstraints`, `getVelJacob`, `getEnergies`, `getPoints`, and `getcomWR`
      * You will probably have to change several other class methods by hand including: `onestep` , `plot`, methods that serve as event functions for simulations, methods that calculate special quantities such as      power going through a spring (could also export from Mathematica).  You may also have to change `getSpeed`, `getStepLength`, and `getAerialFraction`.
 
-3.  Use the method `test` to simulate the model and test for energy conservation, that event functions are working properly, that constraints are working properly, and to get initial conditions that look like they could be close to a limit cycle.
+3.  Use the static method `test` to simulate the model and test for energy conservation, that event functions are working properly, that constraints are working properly, and to get initial conditions that look like they could be close to a limit cycle.
 
 4.  Use method `findLimitCycle` (of class Runner unless otherwise overridden) to take those initial conditons and find a limit cycle that meet the desired constraints of speed, step length, air time, and any other constraints specified.
 
@@ -50,7 +50,10 @@ This example will show you how to start with the SLIP model and then add a degre
 
 * After the last line in `Set Up Bodies`, add the line `AddBody[stomach,pelvis,Slider,Axis->ground[2],Mass->mstomach];`
 
-* Under `Gravity`, add the line `AppFrc[stomach,Mass[stomach] grav, 0];`
+* Under `Gravity`, add the line 
+```nb
+AppFrc[stomach,Mass[stomach] grav, 0];
+```
 
 * Under `Springs`, add the line
 
