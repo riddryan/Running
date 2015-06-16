@@ -73,17 +73,17 @@ switch test
     
         case 'experiment'
         
-            runner.useHSevent = 1;
+            runner.useHSevent = 0;
 %             runner.SLIPdata(:,2:3) = 0;
-            runner.sephips = 1;
+            runner.sephips = 0;
             
         runner.rigidlegimpulse = 0;
         
-                    runner.kswing = 40; %0.01
+                    runner.kswing = 5; %0.01
                     runner.khip = 5; %0.01
 
                     runner.gslope = 0;
-                    runner.swingl = 0.8;
+                    runner.swingl = -1;
                     runner.hipl = -1.4;
         
         IC.swingfoot.Angle = runner.SLIPx0(1);
