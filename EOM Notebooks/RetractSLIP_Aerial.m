@@ -83,6 +83,12 @@ PEgrav2 = 2*q2*g*cos(gslope) + q4*g*sin(q3 - gslope) + q6*g*sin(q5 - gslope) ...
 PEspring2 = (khip*((q3 - q5 - hipl)*(q3 - q5 - hipl)))/2. + (kswing*((q4 - ...
 swingl)*(q4 - swingl)))/2. + (kswing*((q6 - swingl)*(q6 - swingl)))/2.;
 
+stanceE = (kswing*((q4 - swingl)*(q4 - swingl)))/2.;
+
+swingE = (kswing*((q6 - swingl)*(q6 - swingl)))/2.;
+
+hipE = (khip*((q3 - q5 - hipl)*(q3 - q5 - hipl)))/2.;
+
 points.stancefoot(1) = q1 + c3*q4; 
 points.stancefoot(2) = q2 + q4*s3; 
 

@@ -59,12 +59,12 @@ constraintJacobianStanceDot(2,5) = 0; constraintJacobianStanceDot(2,6) = 0;
 
 kineticEnergy = (mpelvis*(u1*u1 + u2*u2))/2.;
 
-potentialEnergy = (kstance*((-q4 + swingl)*(-q4 + swingl)))/2. + ...
+potentialEnergy = (kstance*((-q4 + stancel)*(-q4 + stancel)))/2. + ...
 g*mpelvis*(q2*cos(gslope) - q1*sin(gslope));
 
 PEgrav = -(mpelvis*(-(q2*g*cos(gslope)) + q1*g*sin(gslope)));
 
-PEspring = (kstance*((q4 - swingl)*(q4 - swingl)))/2.;
+PEspring = (kstance*((q4 - stancel)*(q4 - stancel)))/2.;
 
 kineticEnergy2 = (mfoot*(-2*q6*s5*u1*u5 + 2*s5*u2*u6 + c5*(2*q6*u2*u5 + ...
 2*u1*u6) + u1*u1 + u2*u2 + q6*q6*(u5*u5) + u6*u6) + mfoot*((2*q4*u2*u3 + ...
@@ -80,6 +80,12 @@ PEgrav2 = 2*q2*g*cos(gslope) + q4*g*sin(q3 - gslope) + q6*g*sin(q5 - gslope) ...
 
 PEspring2 = (khip*((q3 - q5 - hipl)*(q3 - q5 - hipl)))/2. + (kswing*((q6 - ...
 swingl)*(q6 - swingl)))/2.;
+
+stanceE = (kstance*((q4 - stancel)*(q4 - stancel)))/2.;
+
+swingE = (kswing*((q6 - swingl)*(q6 - swingl)))/2.;
+
+hipE = (khip*((q3 - q5 - hipl)*(q3 - q5 - hipl)))/2.;
 
 points.stancefoot(1) = q1 + q4*cos(q3); 
 points.stancefoot(2) = q2 + q4*sin(q3); 

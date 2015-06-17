@@ -113,8 +113,8 @@ classdef RetractSLIP < Runner
                     KE(i) = energies.KE;
                     PE(i) = energies.PE;
                     PEgrav(i) = energies.PEgrav;
-                    PEspringinertial(i) = energies.PEspringinertial;
-                    PEspringmassless(i) = energies.PEspringmassless
+                    PE(i) = energies.PE;
+                    PE2(i) = energies.PE2
                 end
                 
                  figure
@@ -147,17 +147,16 @@ classdef RetractSLIP < Runner
                 phase = runner.phases{phasevec(i)};
                 energies = runner.getEnergies(allx(i,:),phase);
                 TOTE(i) = energies.Total;
+                TOTE2(i) = energies.Total2;
                 KE(i) = energies.KE;
                 PE(i) = energies.PE;
                 PEgrav(i) = energies.PEgrav;
-                PEspringinertial(i) = energies.PEspringinertial;
-                PEswing(i) = energies.PEswing;
-                PEswing2(i) = energies.PEswing2;
-                PEhip(i) = energies.PEhip;
-                PEspringmassless(i) = energies.PEspringmassless;
-                PEgravmassless(i) = energies.PEgravmassless;
-                PEmassless(i) = energies.PEmassless;
-                KEmassless(i) = energies.KEmassless;
+                PEspring(i) = energies.PEspring;
+                PEspring2(i) = energies.PEspring2;
+                PE2(i) = energies.PE2;
+                PEgrav2(i) = energies.PEgrav2;
+                PE2(i) = energies.PE2;
+                KE2(i) = energies.KE2;
                 pts = runner.getPoints(allx(i,:));
                 stancefootx(i) = pts.stancefoot(1);
                 stancefooty(i) = pts.stancefoot(2);
@@ -172,31 +171,25 @@ classdef RetractSLIP < Runner
             end
             
             figure
-            plot(allt,PEhip)
-            hold on
-            plot(allt,PEswing)
-            plot(allt,PEswing2)
-            plot(allt,PEgravmassless)
-            plot(allt,KEmassless)
-            legend('hip','swing','swing2','grav','KE')
-            
-            figure
             subplot(211)
             plot(allt,TOTE)
             hold on
             plot(allt,KE)
             plot(allt,PE)
             plot(allt,PEgrav)
-            plot(allt,PEspringinertial)
+            plot(allt,PEspring)
             title('Inertial World')
             legend('Tot','KE','PE','PEgrav','PEspring')
             
             subplot(212)
-            plot(allt,PEswing)
+            plot(allt,PEspring2)
             hold on
-            plot(allt,PEhip)
+            plot(allt,PEgrav2)
+            plot(allt,KE2)
+            plot(allt,PE2)
+            plot(allt,TOTE2)
             title('Massless World')
-            legend('Swing Leg Spring','Hip Spring')
+            legend('springs','grav','KE','PE','Tot')
             
            figure
            subplot(211)
@@ -823,65 +816,84 @@ classdef RetractSLIP < Runner
         this.getParams();
         this.getQandUdefs(state);
         c3 = cos(q3); c5 = cos(q5); s3 = sin(q3); s5 = sin(q5);
-        
+        mfoot = 1;
         if strcmp(phase,'Stance')
-            kineticEnergy = (mpelvis*(u1*u1 + u2*u2))/2.;
-            
-            potentialEnergy = (kstance*((-q4 + swingl)*(-q4 + swingl)))/2. + ...
-                g*mpelvis*(q2*cos(gslope) - q1*sin(gslope));
-            
-            PEgrav = -(mpelvis*(-(q2*g*cos(gslope)) + q1*g*sin(gslope)));
-            
-            PEspring = (kstance*((q4 - swingl)*(q4 - swingl)))/2.;
-            
-            kineticEnergy2 = (mfoot*(-2*q6*s5*u1*u5 + 2*s5*u2*u6 + c5*(2*q6*u2*u5 + ...
-                2*u1*u6) + u1*u1 + u2*u2 + q6*q6*(u5*u5) + u6*u6) + mfoot*((2*q4*u2*u3 + ...
-                2*u1*u4)*cos(q3) + u1*u1 + u2*u2 + q4*q4*(u3*u3) + u4*u4 - 2*q4*u1*u3*sin(q3) ...
-                + 2*u2*u4*sin(q3)))/2.;
-            
-            potentialEnergy2 = 2*q2*g*cos(gslope) + (khip*((q3 - q5 - hipl)*(q3 - q5 - ...
-                hipl)))/2. + (kswing*((q6 - swingl)*(q6 - swingl)))/2. + q4*g*sin(q3 - ...
-                gslope) + q6*g*sin(q5 - gslope) - 2*q1*g*sin(gslope);
-            
-            PEgrav2 = 2*q2*g*cos(gslope) + q4*g*sin(q3 - gslope) + q6*g*sin(q5 - gslope) ...
-                - 2*q1*g*sin(gslope);
-            
-            PEspring2 = (khip*((q3 - q5 - hipl)*(q3 - q5 - hipl)))/2. + (kswing*((q6 - ...
-                swingl)*(q6 - swingl)))/2.;
+kineticEnergy = (mpelvis*(u1*u1 + u2*u2))/2.;
+
+potentialEnergy = (kstance*((-q4 + stancel)*(-q4 + stancel)))/2. + ...
+g*mpelvis*(q2*cos(gslope) - q1*sin(gslope));
+
+PEgrav = -(mpelvis*(-(q2*g*cos(gslope)) + q1*g*sin(gslope)));
+
+PEspring = (kstance*((q4 - stancel)*(q4 - stancel)))/2.;
+
+kineticEnergy2 = (mfoot*(-2*q6*s5*u1*u5 + 2*s5*u2*u6 + c5*(2*q6*u2*u5 + ...
+2*u1*u6) + u1*u1 + u2*u2 + q6*q6*(u5*u5) + u6*u6) + mfoot*((2*q4*u2*u3 + ...
+2*u1*u4)*cos(q3) + u1*u1 + u2*u2 + q4*q4*(u3*u3) + u4*u4 - 2*q4*u1*u3*sin(q3) ...
++ 2*u2*u4*sin(q3)))/2.;
+
+potentialEnergy2 = 2*q2*g*cos(gslope) + (khip*((q3 - q5 - hipl)*(q3 - q5 - ...
+hipl)))/2. + (kswing*((q6 - swingl)*(q6 - swingl)))/2. + q4*g*sin(q3 - ...
+gslope) + q6*g*sin(q5 - gslope) - 2*q1*g*sin(gslope);
+
+PEgrav2 = 2*q2*g*cos(gslope) + q4*g*sin(q3 - gslope) + q6*g*sin(q5 - gslope) ...
+- 2*q1*g*sin(gslope);
+
+PEspring2 = (khip*((q3 - q5 - hipl)*(q3 - q5 - hipl)))/2. + (kswing*((q6 - ...
+swingl)*(q6 - swingl)))/2.;
+
+stanceE = (kstance*((q4 - stancel)*(q4 - stancel)))/2.;
+
+swingE = (kswing*((q6 - swingl)*(q6 - swingl)))/2.;
+
+hipE = (khip*((q3 - q5 - hipl)*(q3 - q5 - hipl)))/2.;
         else
-            kineticEnergy = (mpelvis*(u1*u1 + u2*u2))/2.;
-            
-            potentialEnergy = g*mpelvis*(q2*cos(gslope) - q1*sin(gslope));
-            
-            PEgrav = -(mpelvis*(-(q2*g*cos(gslope)) + q1*g*sin(gslope)));
-            
-            PEspring = 0;
-            
-            kineticEnergy2 = KE2;
-            
-            potentialEnergy2 = 2*q2*g*cos(gslope) + (khip*((q3 - q5 - hipl)*(q3 - q5 - ...
-                hipl)))/2. + (kswing*((q4 - swingl)*(q4 - swingl)))/2. + (kswing*((q6 - ...
-                swingl)*(q6 - swingl)))/2. + q4*g*sin(q3 - gslope) + q6*g*sin(q5 - gslope) - ...
-                2*q1*g*sin(gslope);
-            
-            PEgrav2 = 2*q2*g*cos(gslope) + q4*g*sin(q3 - gslope) + q6*g*sin(q5 - gslope) ...
-                - 2*q1*g*sin(gslope);
-            
-            PEspring2 = (khip*((q3 - q5 - hipl)*(q3 - q5 - hipl)))/2. + (kswing*((q4 - ...
-                swingl)*(q4 - swingl)))/2. + (kswing*((q6 - swingl)*(q6 - swingl)))/2.;
+
+kineticEnergy = (mpelvis*(u1*u1 + u2*u2))/2.;
+
+potentialEnergy = g*mpelvis*(q2*cos(gslope) - q1*sin(gslope));
+
+PEgrav = -(mpelvis*(-(q2*g*cos(gslope)) + q1*g*sin(gslope)));
+
+PEspring = 0;
+
+kineticEnergy2 = (mfoot*(-2*q4*s3*u1*u3 + 2*s3*u2*u4 + c3*(2*q4*u2*u3 + ...
+2*u1*u4) + u1*u1 + u2*u2 + q4*q4*(u3*u3) + u4*u4) + mfoot*(-2*q6*s5*u1*u5 + ...
+2*s5*u2*u6 + c5*(2*q6*u2*u5 + 2*u1*u6) + u1*u1 + u2*u2 + q6*q6*(u5*u5) + ...
+u6*u6))/2.;
+
+potentialEnergy2 = 2*q2*g*cos(gslope) + (khip*((q3 - q5 - hipl)*(q3 - q5 - ...
+hipl)))/2. + (kswing*((q4 - swingl)*(q4 - swingl)))/2. + (kswing*((q6 - ...
+swingl)*(q6 - swingl)))/2. + q4*g*sin(q3 - gslope) + q6*g*sin(q5 - gslope) - ...
+2*q1*g*sin(gslope);
+
+PEgrav2 = 2*q2*g*cos(gslope) + q4*g*sin(q3 - gslope) + q6*g*sin(q5 - gslope) ...
+- 2*q1*g*sin(gslope);
+
+PEspring2 = (khip*((q3 - q5 - hipl)*(q3 - q5 - hipl)))/2. + (kswing*((q4 - ...
+swingl)*(q4 - swingl)))/2. + (kswing*((q6 - swingl)*(q6 - swingl)))/2.;
+
+stanceE = (kswing*((q4 - swingl)*(q4 - swingl)))/2.;
+
+swingE = (kswing*((q6 - swingl)*(q6 - swingl)))/2.;
+
+hipE = (khip*((q3 - q5 - hipl)*(q3 - q5 - hipl)))/2.;
         end
         
-
+        E.stanceE = stanceE;
+        E.swingE = swingE;
+        E.hipE = hipE;
+        
         E.KE = kineticEnergy;
         E.PE = potentialEnergy;
         E.PEgrav = PEgrav;
-        E.PEspring = E.PEspringinertial;
+        E.PEspring = PEspring;
         E.Total = E.KE + E.PE;
   
         E.KE2 = kineticEnergy2;
         E.PE2 = potentialEnergy2;
         E.PEgrav2 = PEgrav2;
-        E.PEspring2 = E.PEspringinertial2;
+        E.PEspring2 = PEspring2;
         E.Total2 = E.KE2 + E.PE2;      
         
     end
