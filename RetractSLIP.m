@@ -13,12 +13,18 @@ classdef RetractSLIP < Runner
         stancel=1; swingl = .8;
         %rest angles
         hipl = 0;
-        toeoffimpulse = 0;
+        impulsecoeff = 2;
+        rigidlegimpulse = 0;
         
         %Springs
         kstance = 12; kswing = 0.01; khip = 0.01;
         %Dampers
         cstance = 0; cswing = 0; chip = 0;
+        
+        runcharic = struct('speed',0.9745,'steplength',1.1905,'airfrac',0.2703);
+        
+        useHSevent = 0;
+        sephips = 0;
         
         phases = {'Stance' 'Toe' 'Aerial'};
     end
@@ -34,7 +40,7 @@ classdef RetractSLIP < Runner
             aviname = [savepath 'RetractSLIP2.avi'];
             onephasesim = 0;
             manystep = 0;
-            test = 'toeimpulse';
+            test = 'step';
             
             LineWidth=3;
             LineSize=3;
@@ -48,89 +54,33 @@ classdef RetractSLIP < Runner
             
             IC = RetractSLIPState;
             switch test
-                case 'goodstep'
-                    load('./SavedGaits/RetractSLIP1.mat','r','xstar')
-                    runner = r;
-                    x0 = xstar;
-                    
-                case 'toeimpulse'
-                    load('./SavedGaits/RetractSLIP1.mat','r','xstar')
-                    runner = r;
-                    x0 = xstar;
-                    
-                    runner.toeoffimpulse = 1;
-                    runner.swingl = 1;
-                    runner.kswing = 4;
-                    runner.khip = 12;
-                    runner.hipl = -1.6;
-                    
-                    IC = RetractSLIPState(x0);
-                    IC.swingfoot.Angle = -2.0;
-                    IC.swingfoot.Length = 0.85;
-                    IC.swingfoot.AngleDot = 0.5;
-                    IC.swingfoot.LengthDot = -1;
-                    x0 = IC.getVector(); 
-                    
                 case 'step'
-                    
-                    runner.kstance = 12.8734; %12
-                    runner.kswing = 60; %0.01
-                    runner.khip = 10; %0.01
+                    runner.rigidlegimpulse = 1;
+                    runner.useHSevent = 1;
+                    runner.kstance = 13.5; %12
+                    runner.kswing = 0.1; %0.01
+                    runner.khip = 2; %0.01
                     runner.cstance = 0;
                     runner.cswing = 0;
                     runner.chip = 0;
                     runner.gslope = 0;
                     runner.swingl = 1;
-                    runner.hipl = -1.9;
+                    runner.hipl = -0.5;
                     IC.stancefoot.Angle = -1.1287;
                     IC.stancefoot.Length = runner.stancel;
                     
                     
                     %
-                    IC.pelvis.xDot = 1.0138;
-                    IC.pelvis.yDot = -0.1651;
+                    IC.pelvis.xDot = 1.1;
+                    IC.pelvis.yDot = -0.2;
                     
                     IC.stancefoot.AngleDot = -0.8457;
                     IC.stancefoot.LengthDot = -0.5830;
                     
                     IC.swingfoot.Angle = -2.0;
                     IC.swingfoot.Length = 0.8062;
-                    IC.swingfoot.AngleDot = 1;
-                    IC.swingfoot.LengthDot = -3;
-                    x0 = IC.getVector();
-                case 'Vertical Fall'
-                    IC.stancefoot.Angle = -1.1287;
-                    IC.stancefoot.Length = runner.stancel;
-                    IC.swingfoot.Angle = -0.8457;
-                    IC.swingfoot.Length = -0.5830;
-                    
-                    IC.stancefoot.AngleDot = 0;
-                    IC.stancefoot.LengthDot = 0;
-                    IC.swingfoot.AngleDot = 0;
-                    IC.swingfoot.LengthDot = -0;
-                    x0 = IC.getVector();
-                    
-                case 'Switch Set Point'
-                    IC.stancefoot.Angle = -1.1287;
-                    IC.stancefoot.Length = runner.stancel;
-                    IC.swingfoot.Angle = -2.1955;
-                    IC.swingfoot.Length = 0.8874;
-                    
-                    IC.stancefoot.AngleDot = -0.8457;
-                    IC.stancefoot.LengthDot = -.5830;
-                    IC.swingfoot.AngleDot = -.3376;
-                    IC.swingfoot.LengthDot = -1.2144;
-                    
-                    IC.pelvis.x = -0.4279;
-                    IC.pelvis.y = 0.9038;
-                    IC.pelvis.xDot = 1.0138;
-                    IC.pelvis.yDot = -0.1651;
-                    
-                    runner.phases = {'Stance' 'Aerial'};
-                    runner.swingl = 0.5527;
-                    runner.kstance = 12.8;
-                    runner.kswing = 13.0636;
-                    runner.khip = 1.5983;
+                    IC.swingfoot.AngleDot = -0.85;
+                    IC.swingfoot.LengthDot = -0.6;
                     x0 = IC.getVector();
                 otherwise
                     error('Undefined Test Case')
@@ -307,7 +257,7 @@ classdef RetractSLIP < Runner
             %%
             RelTol = 1e-6; %10; %
             AbsTol = 1e-6; %10; %
-            tmax = 2; %2; %6;
+            tmax = 1.5; %2; %6;
             dt = 1e-2;
             interleaveAnimation = 0; %1; %
             interleaveAnimationFrameskip = 2;
@@ -347,29 +297,22 @@ classdef RetractSLIP < Runner
             %             phaseevents = { @(t,x) this.HeelToeEvents(t,x), @(t,x) this.BottomedEvents(t,x),...
             %                 @(t,x) this.ToeEvents(t,x)  , @(t,x) this.AerialEvents(t,x) };
             if length(this.phases)==3
-            phaseevents = { @(t,x) this.StanceEvents(t,x), @(t,x) this.ToeEvents(t,x), @(t,x) this.AerialEvents(t,x)};
+                phaseevents = { @(t,x) this.StanceEvents(t,x), @(t,x) this.ToeEvents(t,x), @(t,x) this.AerialEvents(t,x)};
             else
-              phaseevents = { @(t,x) this.StanceEvents(t,x), @(t,x) this.AerialEvents(t,x)};  
+                phaseevents = { @(t,x) this.StanceEvents(t,x), @(t,x) this.AerialEvents(t,x)};
             end
             %
             
             while sim
                 %% Phase transition & Integration
                 phase =  this.phases{phasenum}; %Get name of phase corresponding to phasenum
-                if strcmp(phase,'Toe')
-                    if this.toeoffimpulse
-%                        x0(9) = (-sin(x0(3))*x0(7) + cos(x0(3))*x0(8))/x0(4)/1;
-%                        x0(10) = (cos(x0(3))*x0(7) + sin(x0(3))*x0(8))/1;
-                         fv = [x0(7);x0(8)] + x0(4)*x0(9)*[-sin(x0(3));cos(x0(3))];
-                       x0(9) = (fv(2)*cos(x0(3))-fv(1)*sin(x0(3))+sin(x0(3))*x0(7)-cos(x0(3))*x0(8)/x0(4));
-                       x0(10) = fv(1)*cos(x0(3))+fv(2)*sin(x0(3))-cos(x0(3))*x0(7)-sin(x0(3))*x0(8);
-                       vels = this.getVels(x0);
-                    end
-                    [GRF] = this.getGRF(t,x0,'Toe');
-                    if GRF(end)>0 || this.toeoffimpulse
-                        phasenum = phasenum+1;
-                        continue;
-                    end
+                if strcmp(phase,'Toe') && this.rigidlegimpulse
+                    x0 = getYankImpulse(this,x0,tstart);
+                    phasenum = phasenum+1;
+                    phase = this.phases{phasenum};
+                elseif strcmp('Toe',phase)
+                    phasenum = phasenum+1;
+                    phase = this.phases{phasenum};
                 end
                 odex0 = x0;
                 opts = odeset('Events', phaseevents{phasenum},'RelTol',RelTol','AbsTol',AbsTol); %Set integration options
@@ -387,19 +330,14 @@ classdef RetractSLIP < Runner
                 x0 = allx(end,:);
                 
                 %% Decide which Phase to Move To
-                [eventpossibilities] = phaseevents{phasenum}(tstart,x0);
-                fallevent = length(eventpossibilities); %Event in which model falls for that phase
-                
                 if isempty(ie)
                     sim = 0;
                     break;
                 end
-                if ie == fallevent || phasenum == length(this.phases) %Fallen or reached last phase
+                if phasenum == length(this.phases) %Fallen or reached last phase
                     sim = 0;
-                elseif ie ==1 %First event is reserved for expected behavior
-                    phasenum = phasenum+1; %Move forward one phase
                 else
-                    sim = 0;
+                    phasenum = phasenum + 1;
                 end
                 
             end
@@ -484,13 +422,6 @@ classdef RetractSLIP < Runner
             
         end
         
-        function  [value, isTerminal, direction] = Fall(this,t,state)
-            ss = RetractSLIPState(state);
-            fell = ss.pelvis.y;
-            value=fell;
-            isTerminal=1;
-            direction=0;
-        end
         
         function [value, isTerminal, direction]  = StanceEvents(this,t,state)
             %Leg reaches full extention
@@ -502,55 +433,26 @@ classdef RetractSLIP < Runner
             else
                 isTerminal = 0;
             end
-            %Swing Leg Trips
-            pts = this.getPoints(state);
-            value(2,1) = pts.swingfoot(2);
-            direction(2,1) = 0;
-            isTerminal(2,1) = 1;
-            
-            
-            [value(3,1),isTerminal(3,1),direction(3,1)] = this.Fall(t,state);
         end
         
         function [value, isTerminal, direction]  = ToeEvents(this,t,state)
-            %Leg reaches full extention
             [GRF] = this.getGRF(t,state,'Toe');
-%             value = GRF(2);
             value = GRF(end);
             direction = 0;
             isTerminal = 1;
-        
-%             legforce = this.getStanceForce(state,'Toe');
-%             hipforce = this.getHipForce(state);
-%             legforcevec = legforce*sin(state(3));
-%             hipforcevec = hipforce*cos(state(3))/state(4);
-%             resforce = legforcevec + hipforcevec - this.g;
-%             value = resforce;
-%             direction = 0;
-%             isTerminal = 1;
-            
-            %Swing Leg Trips
-            pts = this.getPoints(state);
-            value(2,1) = pts.swingfoot(2);
-            direction(2,1) = 0;
-            isTerminal(2,1) = 1;
-            
-            
-            [value(3,1),isTerminal(3,1),direction(3,1)] = this.Fall(t,state);
         end
 
         function [value, isTerminal, direction]  = AerialEvents(this,t,state)
-            pts = this.getPoints(state);
-            value = pts.swingfoot(2);       
-            direction = 0;
-            isTerminal = 1;
-            
-                        value(2) = pts.stancefoot(2);
-            direction(2) = -1;
-            isTerminal(2) = 1;
-            
-            
-            [value(3,1),isTerminal(3,1),direction(3,1)] = this.Fall(t,state);
+            if ~this.useHSevent
+                value(1) = this.runcharic.steplength/this.runcharic.speed - t;
+                direction(1) = 0;
+                isTerminal(1) = 1;
+            else
+                pts = this.getPoints(state);
+                value(1) = pts.swingfoot(2);
+                direction(1) = 0;
+                    isTerminal(1) = 1;
+            end
         end
         
         function [newstate,this] = GoodInitialConditions(this,x0,varargin)
@@ -1151,6 +1053,14 @@ vels.COM(2) = u2;
         end
         
         %% Other Gait Information
+        
+                    function [] = print(this,x0,varargin)
+               this.printStepCharacteristics(x0,varargin{:}); 
+            end
+        
+        function x0 = getYankImpulse(this,x0,tstart)
+            x0(10) = x0(10) - this.impulsecoeff*x0(10);
+        end
         
         function [speed] = getSpeed(this, x0, xf, tf)
             if isempty(xf)
