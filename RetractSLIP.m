@@ -670,172 +670,108 @@ classdef RetractSLIP < Runner
         
             end
     
-    function [xddot, constraintForces] = XDoubleDot(this,time,x,phase)
-        %%
+            function [MM,rhs] = getMMandRHS(this,time,x,phase)
+                %%
+                %Phase specifies what equations to use, EG 'aerial' or 'stance'
+                state = x;
+                this.getParams();
+                this.getQandUdefs(state);
+                u = x(this.N/2+1:end); %velocity states
+                
+                c3 = cos(q3); c5 = cos(q5); s3 = sin(q3); s5 = sin(q5);
+                
+                MM = zeros(6,6); rhs = zeros(6,1);
+                
+                % righthand side terms
+                if strcmp(phase,'Aerial')
+                    % Mass Matrix
+                    MM(1,1) = mpelvis; MM(1,2) = 0; MM(1,3) = 0; MM(1,4) = 0; MM(1,5) = 0; ...
+                        MM(1,6) = 0;
+                    MM(2,1) = 0; MM(2,2) = mpelvis; MM(2,3) = 0; MM(2,4) = 0; MM(2,5) = 0; ...
+                        MM(2,6) = 0;
+                    MM(3,1) = -(q4*s3); MM(3,2) = c3*q4; MM(3,3) = q4*q4; MM(3,4) = 0; MM(3,5) = ...
+                        0; MM(3,6) = 0;
+                    MM(4,1) = c3; MM(4,2) = s3; MM(4,3) = 0; MM(4,4) = 1; MM(4,5) = 0; MM(4,6) = ...
+                        0;
+                    MM(5,1) = -(q6*s5); MM(5,2) = c5*q6; MM(5,3) = 0; MM(5,4) = 0; MM(5,5) = ...
+                        q6*q6; MM(5,6) = 0;
+                    MM(6,1) = c5; MM(6,2) = s5; MM(6,3) = 0; MM(6,4) = 0; MM(6,5) = 0; MM(6,6) = ...
+                        1;
+                    
+                    % righthand side terms
+                    rhs(1) = g*mpelvis*sin(gslope);
+                    rhs(2) = -(g*mpelvis*cos(gslope));
+                    rhs(3) = -(u3*chip) + u5*chip - q3*khip + q5*khip + hipl*khip - q4*(2*u3*u4 + ...
+                        g*cos(q3 - gslope));
+                    rhs(4) = -(u4*cswing) + kswing*swingl + q4*(-kswing + u3*u3) - g*sin(q3 - ...
+                        gslope);
+                    rhs(5) = -2*q6*u5*u6 + (u3 - u5)*chip - (-q3 + q5 + hipl)*khip - q6*g*cos(q5 ...
+                        - gslope);
+                    rhs(6) = -(u6*cswing) + kswing*swingl + q6*(-kswing + u5*u5) - g*sin(q5 - ...
+                        gslope);
+                else
+                    % Mass Matrix
+                    MM(1,1) = mpelvis; MM(1,2) = 0; MM(1,3) = 0; MM(1,4) = 0; MM(1,5) = 0; ...
+                        MM(1,6) = 0;
+                    MM(2,1) = 0; MM(2,2) = mpelvis; MM(2,3) = 0; MM(2,4) = 0; MM(2,5) = 0; ...
+                        MM(2,6) = 0;
+                    MM(3,1) = 0; MM(3,2) = 0; MM(3,3) = 0; MM(3,4) = 0; MM(3,5) = 0; MM(3,6) = 0;
+                    MM(4,1) = 0; MM(4,2) = 0; MM(4,3) = 0; MM(4,4) = 0; MM(4,5) = 0; MM(4,6) = 0;
+                    MM(5,1) = -(q6*s5); MM(5,2) = c5*q6; MM(5,3) = 0; MM(5,4) = 0; MM(5,5) = ...
+                        q6*q6; MM(5,6) = 0;
+                    MM(6,1) = c5; MM(6,2) = s5; MM(6,3) = 0; MM(6,4) = 0; MM(6,5) = 0; MM(6,6) = ...
+                        1;
+                    
+                    % righthand side terms
+                    rhs(1) = g*mpelvis*sin(gslope);
+                    rhs(2) = -(g*mpelvis*cos(gslope));
+                    rhs(3) = 0;
+                    rhs(4) = -(u4*cstance) - q4*kstance + kstance*stancel;
+                    rhs(5) = -2*q6*u5*u6 + (u3 - u5)*chip - (-q3 + q5 + hipl)*khip - q6*g*cos(q5 ...
+                        - gslope);
+                    rhs(6) = -(u6*cswing) + kswing*swingl + q6*(-kswing + u5*u5) - g*sin(q5 - ...
+                        gslope);
+                end
+                
+                
+                
+                
+            end
+            
+                function [xddot, constraintForces] = XDoubleDot(this,time,x,phase)
+        %% 
         %Phase specifies what equations to use, EG 'aerial' or 'stance'
-        state = x;
-        this.getParams();
-        this.getQandUdefs(state);
+        
+        [MM,rhs] = this.getMMandRHS(time,x,phase);
+        [Jc,Jcdot] = this.getConstraints(x,phase);
+        
+        [d1,~] = size(Jc);
         u = x(this.N/2+1:end); %velocity states
         
-                    c3 = cos(q3); c5 = cos(q5); s3 = sin(q3); s5 = sin(q5);
-        if strcmp(phase,'Aerial')
-            
-            kstance = this.kswing;
-            cstance = this.cswing;
-            stancel = this.swingl;
-            
-            MM = zeros(6,6); rhs = zeros(6,1);
-            % Mass Matrix
-            mfoot = 0;
-            MM(1,1) = 2*mfoot + mpelvis; MM(1,2) = 0; MM(1,3) = -(q4*s3*mfoot); MM(1,4) = ...
-                c3*mfoot; MM(1,5) = -(q6*s5*mfoot); MM(1,6) = c5*mfoot;
-            MM(2,1) = MM(1,2); MM(2,2) = 2*mfoot + mpelvis; MM(2,3) = c3*q4*mfoot; ...
-                MM(2,4) = s3*mfoot; MM(2,5) = c5*q6*mfoot; MM(2,6) = s5*mfoot;
-            mfoot = 1;
-            MM(3,1) = MM(1,3); MM(3,2) = MM(2,3); MM(3,3) = mfoot*(q4*q4); MM(3,4) = 0; ...
-                MM(3,5) = 0; MM(3,6) = 0;
-            MM(4,1) = MM(1,4); MM(4,2) = MM(2,4); MM(4,3) = MM(3,4); MM(4,4) = mfoot; ...
-                MM(4,5) = 0; MM(4,6) = 0;
-            MM(5,1) = MM(1,5); MM(5,2) = MM(2,5); MM(5,3) = MM(3,5); MM(5,4) = MM(4,5); ...
-                MM(5,5) = mfoot*(q6*q6); MM(5,6) = 0;
-            MM(6,1) = MM(1,6); MM(6,2) = MM(2,6); MM(6,3) = MM(3,6); MM(6,4) = MM(4,6); ...
-                MM(6,5) = MM(5,6); MM(6,6) = mfoot;
-            
-            % righthand side terms
-            mfoot = 0;
-            rhs(1) = 2*s3*u3*u4*mfoot + 2*s5*u5*u6*mfoot + c3*q4*mfoot*(u3*u3) + ...
-                c5*q6*mfoot*(u5*u5) + 2*g*mfoot*sin(gslope) + g*mpelvis*sin(gslope);
-            rhs(2) = -2*c3*u3*u4*mfoot - 2*c5*u5*u6*mfoot - 2*g*mfoot*cos(gslope) - ...
-                g*mpelvis*cos(gslope) + q4*s3*mfoot*(u3*u3) + q6*s5*mfoot*(u5*u5);
-            mfoot = 1;
-            rhs(3) = -(u3*chip) + u5*chip - q3*khip + q5*khip + hipl*khip - ...
-                q4*mfoot*(2*u3*u4 + g*cos(q3 - gslope));
-            rhs(4) = -(u4*cstance) + kstance*stancel + q4*(-kstance + mfoot*(u3*u3)) - ...
-                g*mfoot*sin(q3 - gslope);
-            rhs(5) = (u3 - u5)*chip - (-q3 + q5 + hipl)*khip - 2*q6*u5*u6*mfoot - ...
-                q6*g*mfoot*cos(q5 - gslope);
-            rhs(6) = -(u6*cswing) + kswing*swingl + q6*(-kswing + mfoot*(u5*u5)) - ...
-                g*mfoot*sin(q5 - gslope);
-            
-                xddot = [u;MM\rhs];
-                constraintForces = [];
-
-            
-        elseif strcmp(phase,'Toe')
-            kstance = this.kswing;
-            cstance = this.cswing;
-            stancel = this.swingl;
-            
-            MM = zeros(6,6); rhs = zeros(6,1);
-            % Mass Matrix
-            mfoot = 0;
-            MM(1,1) = 2*mfoot + mpelvis; MM(1,2) = 0; MM(1,3) = -(q4*s3*mfoot); MM(1,4) = ...
-                c3*mfoot; MM(1,5) = -(q6*s5*mfoot); MM(1,6) = c5*mfoot;
-            MM(2,1) = MM(1,2); MM(2,2) = 2*mfoot + mpelvis; MM(2,3) = c3*q4*mfoot; ...
-                MM(2,4) = s3*mfoot; MM(2,5) = c5*q6*mfoot; MM(2,6) = s5*mfoot;
-            mfoot = 1;
-            MM(3,1) = MM(1,3); MM(3,2) = MM(2,3); MM(3,3) = mfoot*(q4*q4); MM(3,4) = 0; ...
-                MM(3,5) = 0; MM(3,6) = 0;
-            MM(4,1) = MM(1,4); MM(4,2) = MM(2,4); MM(4,3) = MM(3,4); MM(4,4) = mfoot; ...
-                MM(4,5) = 0; MM(4,6) = 0;
-            MM(5,1) = MM(1,5); MM(5,2) = MM(2,5); MM(5,3) = MM(3,5); MM(5,4) = MM(4,5); ...
-                MM(5,5) = mfoot*(q6*q6); MM(5,6) = 0;
-            MM(6,1) = MM(1,6); MM(6,2) = MM(2,6); MM(6,3) = MM(3,6); MM(6,4) = MM(4,6); ...
-                MM(6,5) = MM(5,6); MM(6,6) = mfoot;
-            
-            % righthand side terms
-            mfoot = 0;
-            rhs(1) = 2*s3*u3*u4*mfoot + 2*s5*u5*u6*mfoot + c3*q4*mfoot*(u3*u3) + ...
-                c5*q6*mfoot*(u5*u5) + 2*g*mfoot*sin(gslope) + g*mpelvis*sin(gslope);
-            rhs(2) = -2*c3*u3*u4*mfoot - 2*c5*u5*u6*mfoot - 2*g*mfoot*cos(gslope) - ...
-                g*mpelvis*cos(gslope) + q4*s3*mfoot*(u3*u3) + q6*s5*mfoot*(u5*u5);
-            mfoot = 1;
-            rhs(3) = -(u3*chip) + u5*chip - q3*khip + q5*khip + hipl*khip - ...
-                q4*mfoot*(2*u3*u4 + g*cos(q3 - gslope));
-            rhs(4) = -(u4*cstance) + kstance*stancel + q4*(-kstance + mfoot*(u3*u3)) - ...
-                g*mfoot*sin(q3 - gslope);
-            rhs(5) = (u3 - u5)*chip - (-q3 + q5 + hipl)*khip - 2*q6*u5*u6*mfoot - ...
-                q6*g*mfoot*cos(q5 - gslope);
-            rhs(6) = -(u6*cswing) + kswing*swingl + q6*(-kswing + mfoot*(u5*u5)) - ...
-                g*mfoot*sin(q5 - gslope);
-            
-            pelvaccs = [0;-this.g]; %Don't let pelvis be affected by leg springs
-            
-            [Jc,Jcdot] = this.getConstraints(x,'Toe');
-%             Jc = Jc(2,:);
-%             Jcdot = Jcdot(2,:);
-            [d1,~] = size(Jc);
-            MMbig = [MM Jc'; Jc zeros(d1)];
+        MMbig = [MM Jc'; Jc zeros(d1)];
+        
+        if numel(Jcdot)>0
             RHSbig = [rhs;-Jcdot*u];
-            
-            
-            MMbig(1:2,7:8) = 0;
-%             MMbig(7:8,1:2) = 0;
-            
-            AccsAndConstraints = MMbig \ RHSbig;
-            xddot = [u;AccsAndConstraints(1:6)];
-            constraintForces = AccsAndConstraints(7:8);
-%             C2 = MMbig(3:end,1:2);
-%             M2 = MMbig(3:end,3:end);
-%             AccsAndConstraints = M2 \ (RHSbig(3:end) - C2*pelvaccs);
-%             
-%             legaccs(1:4,1) = AccsAndConstraints(1:4);
-%             xddot = [u;pelvaccs;legaccs];
-%             constraintForces = -AccsAndConstraints(5:6);
-            
-            
-        elseif strcmp(phase,'Stance')
-%             q3 = q3 + pi;
-            
-             MM = zeros(6,6); rhs = zeros(6,1);
-            % Mass Matrix
-            mfoot = 0;
-            MM(1,1) = 2*mfoot + mpelvis; MM(1,2) = 0; MM(1,3) = -(q4*s3*mfoot); MM(1,4) = ...
-                c3*mfoot; MM(1,5) = -(q6*s5*mfoot); MM(1,6) = c5*mfoot;
-            MM(2,1) = MM(1,2); MM(2,2) = 2*mfoot + mpelvis; MM(2,3) = c3*q4*mfoot; ...
-                MM(2,4) = s3*mfoot; MM(2,5) = c5*q6*mfoot; MM(2,6) = s5*mfoot;
-            MM(3,1) = MM(1,3); MM(3,2) = MM(2,3); MM(3,3) = mfoot*(q4*q4); MM(3,4) = 0; ...
-                MM(3,5) = 0; MM(3,6) = 0;
-            MM(4,1) = MM(1,4); MM(4,2) = MM(2,4); MM(4,3) = MM(3,4); MM(4,4) = mfoot; ...
-                MM(4,5) = 0; MM(4,6) = 0;
-            mfoot = 1;
-            MM(5,1) = MM(1,5); MM(5,2) = MM(2,5); MM(5,3) = MM(3,5); MM(5,4) = MM(4,5); ...
-                MM(5,5) = mfoot*(q6*q6); MM(5,6) = 0;
-            MM(6,1) = MM(1,6); MM(6,2) = MM(2,6); MM(6,3) = MM(3,6); MM(6,4) = MM(4,6); ...
-                MM(6,5) = MM(5,6); MM(6,6) = mfoot;
-            
-            % righthand side terms
-            mfoot = 0;
-            khip = 0;
-            rhs(1) = 2*s3*u3*u4*mfoot + 2*s5*u5*u6*mfoot + c3*q4*mfoot*(u3*u3) + ...
-                c5*q6*mfoot*(u5*u5) + 2*g*mfoot*sin(gslope) + g*mpelvis*sin(gslope);
-            rhs(2) = -2*c3*u3*u4*mfoot - 2*c5*u5*u6*mfoot - 2*g*mfoot*cos(gslope) - ...
-                g*mpelvis*cos(gslope) + q4*s3*mfoot*(u3*u3) + q6*s5*mfoot*(u5*u5);
-            rhs(3) = -(u3*chip) + u5*chip - q3*khip + q5*khip + hipl*khip - ...
-                q4*mfoot*(2*u3*u4 + g*cos(q3 - gslope));
-            rhs(4) = -(u4*cstance) + kstance*stancel + q4*(-kstance + mfoot*(u3*u3)) - ...
-                g*mfoot*sin(q3 - gslope);
-            mfoot = 1;
-            khip = this.khip;
-            rhs(5) = (u3 - u5)*chip - (-q3 + q5 + hipl)*khip - 2*q6*u5*u6*mfoot - ...
-                q6*g*mfoot*cos(q5 - gslope);
-            rhs(6) = -(u6*cswing) + kswing*swingl + q6*(-kswing + mfoot*(u5*u5)) - ...
-                g*mfoot*sin(q5 - gslope);
-            
-            [Jc,Jcdot] = this.getConstraints(x,'Stance');
-            [d1,~] = size(Jc);
-             MMbig = [MM Jc'; Jc zeros(d1)];
-             RHSbig = [rhs;-Jcdot*u];
-            AccsAndConstraints = MMbig \ RHSbig;
+        else
+            RHSbig = rhs;
+        end
+        
+
+        AccsAndConstraints = MMbig \ RHSbig;
         
         accs = AccsAndConstraints(1:this.N/2);
         
         xddot = [u;accs];
         
        constraintForces = -AccsAndConstraints(this.N/2+1:end);
-        end
+%        if strcmp(phase,'stance')
+%        constraintForces = constraintForces - [0;rhs(7)]; 
+%        end
+        %Check Constraints, these should be equal to zero if constraints
+        %are working.  For debugging.
         
+%         constraintacc = Jc*accs +Jcdot*u;
+%         constraintvel = Jc*u;
         
     end
     
@@ -886,50 +822,67 @@ classdef RetractSLIP < Runner
     function [E] = getEnergies(this,state,phase)
         this.getParams();
         this.getQandUdefs(state);
-        if strcmp(phase,'Aerial')
-            kstance = this.kswing;
-            stancel = this.swingl;
-        end
         c3 = cos(q3); c5 = cos(q5); s3 = sin(q3); s5 = sin(q5);
         
-        kineticEnergy = (mpelvis*(u1*u1 + u2*u2))/2.;
-        PEgrav = -(mpelvis*(-(q2*g*cos(gslope)) + q1*g*sin(gslope)));
-        PEstance = (kstance*((q4 - stancel)*(q4 - stancel)))/2.;
-        if strcmp(phase,'Aerial') || strcmp(phase,'Toe')
-            PEspringinertial = 0;
+        if strcmp(phase,'Stance')
+            kineticEnergy = (mpelvis*(u1*u1 + u2*u2))/2.;
+            
+            potentialEnergy = (kstance*((-q4 + swingl)*(-q4 + swingl)))/2. + ...
+                g*mpelvis*(q2*cos(gslope) - q1*sin(gslope));
+            
+            PEgrav = -(mpelvis*(-(q2*g*cos(gslope)) + q1*g*sin(gslope)));
+            
+            PEspring = (kstance*((q4 - swingl)*(q4 - swingl)))/2.;
+            
+            kineticEnergy2 = (mfoot*(-2*q6*s5*u1*u5 + 2*s5*u2*u6 + c5*(2*q6*u2*u5 + ...
+                2*u1*u6) + u1*u1 + u2*u2 + q6*q6*(u5*u5) + u6*u6) + mfoot*((2*q4*u2*u3 + ...
+                2*u1*u4)*cos(q3) + u1*u1 + u2*u2 + q4*q4*(u3*u3) + u4*u4 - 2*q4*u1*u3*sin(q3) ...
+                + 2*u2*u4*sin(q3)))/2.;
+            
+            potentialEnergy2 = 2*q2*g*cos(gslope) + (khip*((q3 - q5 - hipl)*(q3 - q5 - ...
+                hipl)))/2. + (kswing*((q6 - swingl)*(q6 - swingl)))/2. + q4*g*sin(q3 - ...
+                gslope) + q6*g*sin(q5 - gslope) - 2*q1*g*sin(gslope);
+            
+            PEgrav2 = 2*q2*g*cos(gslope) + q4*g*sin(q3 - gslope) + q6*g*sin(q5 - gslope) ...
+                - 2*q1*g*sin(gslope);
+            
+            PEspring2 = (khip*((q3 - q5 - hipl)*(q3 - q5 - hipl)))/2. + (kswing*((q6 - ...
+                swingl)*(q6 - swingl)))/2.;
         else
-            PEspringinertial = PEstance;
+            kineticEnergy = (mpelvis*(u1*u1 + u2*u2))/2.;
+            
+            potentialEnergy = g*mpelvis*(q2*cos(gslope) - q1*sin(gslope));
+            
+            PEgrav = -(mpelvis*(-(q2*g*cos(gslope)) + q1*g*sin(gslope)));
+            
+            PEspring = 0;
+            
+            kineticEnergy2 = KE2;
+            
+            potentialEnergy2 = 2*q2*g*cos(gslope) + (khip*((q3 - q5 - hipl)*(q3 - q5 - ...
+                hipl)))/2. + (kswing*((q4 - swingl)*(q4 - swingl)))/2. + (kswing*((q6 - ...
+                swingl)*(q6 - swingl)))/2. + q4*g*sin(q3 - gslope) + q6*g*sin(q5 - gslope) - ...
+                2*q1*g*sin(gslope);
+            
+            PEgrav2 = 2*q2*g*cos(gslope) + q4*g*sin(q3 - gslope) + q6*g*sin(q5 - gslope) ...
+                - 2*q1*g*sin(gslope);
+            
+            PEspring2 = (khip*((q3 - q5 - hipl)*(q3 - q5 - hipl)))/2. + (kswing*((q4 - ...
+                swingl)*(q4 - swingl)))/2. + (kswing*((q6 - swingl)*(q6 - swingl)))/2.;
         end
         
-        
-        [vels] = this.getVels(state);
-        [pts] = this.getPoints(state);
-        
-        KEmassless = 1/2*norm(vels.stancefoot)^2 + 1/2*norm(vels.swingfoot)^2;
-        PEgravmassless = this.g*pts.stancefoot(2)*cos(gslope) + this.g*pts.swingfoot(2)*cos(gslope) + ...
-            g*pts.stancefoot(1)*sin(gslope) + g*pts.swingfoot(1)*sin(gslope);
-        
-        
-        PEswing = (kswing*((q6 - swingl)*(q6 - swingl)))/2.;
-        PEswing2 = (kswing*((q4 - swingl)*(q4 - swingl)))/2.;
-        PEhip = (khip*((q3 - q5 - hipl)*(q3 - q5 - hipl)))/2.;
-        PEspringmassless = PEswing+PEhip+PEswing2;
-        PEmassless = PEspringmassless + PEgravmassless;
-        
+
         E.KE = kineticEnergy;
-        E.KEmassless = KEmassless;
-        E.PEmassless = PEmassless;
-        E.PE = PEgrav + PEspringinertial;
+        E.PE = potentialEnergy;
         E.PEgrav = PEgrav;
-        E.PEspringinertial = PEspringinertial;
         E.PEspring = E.PEspringinertial;
-        E.PEspringmassless = PEspringmassless;
-        E.PEgravmassless = PEgravmassless;
-        E.PEswing = PEswing;
-        E.PEswing2 = PEswing2;
-        E.PEhip = PEhip;
-        E.PEstance = PEstance;
         E.Total = E.KE + E.PE;
+  
+        E.KE2 = kineticEnergy2;
+        E.PE2 = potentialEnergy2;
+        E.PEgrav2 = PEgrav2;
+        E.PEspring2 = E.PEspringinertial2;
+        E.Total2 = E.KE2 + E.PE2;      
         
     end
     
