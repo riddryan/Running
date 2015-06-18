@@ -44,7 +44,7 @@ classdef Swing < Runner
             aviname = [savepath 'Swing1.avi'];
             onephasesim = 0;
             manystep = 0;
-            test = 'experiment';
+            test = 'leg yank';
             
             LineWidth=3;
             LineSize=3;
