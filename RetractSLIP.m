@@ -7,14 +7,15 @@ classdef RetractSLIP < Runner
         gslope = 0;
         g = 1;
         N = 12;
-        statestovary = [3 5 6 9:12];
-        statestomeasure = [3:6 9:12];
+        statestovary = [3 5 6 7:8 11:12];
+        statestomeasure = [3 5 6 7:8 11:12];
         %rest lengths
         stancel=1; swingl = .8;
         %rest angles
         hipl = 0;
         impulsecoeff = 2;
         rigidlegimpulse = 0;
+        tanimpulsecoeff = 0;
         
         %Springs
         kstance = 12; kswing = 0.01; khip = 0.01;
@@ -40,7 +41,7 @@ classdef RetractSLIP < Runner
             aviname = [savepath 'RetractSLIP2.avi'];
             onephasesim = 0;
             manystep = 0;
-            test = 'step';
+            test = 'tanimpulse';
             
             LineWidth=3;
             LineSize=3;
@@ -54,20 +55,86 @@ classdef RetractSLIP < Runner
             
             IC = RetractSLIPState;
             switch test
-                case 'step'
+                case 'tanimpulse'
+                    runner.tanimpulsecoeff = 1;
+                                        runner.sephips=1;
                     runner.rigidlegimpulse = 1;
+                    runner.impulsecoeff = 3;
                     runner.useHSevent = 1;
-                    runner.kstance = 13.5; %12
-                    runner.kswing = 0.1; %0.01
-                    runner.khip = 2; %0.01
+                    runner.kstance = 15; %12
+                    runner.kswing = 0; %0.01
+                    runner.khip = 3; %0.01
                     runner.cstance = 0;
                     runner.cswing = 0;
                     runner.chip = 0;
                     runner.gslope = 0;
                     runner.swingl = 1;
-                    runner.hipl = -0.5;
+                    runner.hipl = pi/2;
                     IC.stancefoot.Angle = -1.1287;
                     IC.stancefoot.Length = runner.stancel;
+                    runner.statestomeasure = [3 5 6 7:8 11:12];
+                    
+                    
+                    %
+                    IC.pelvis.xDot = 1;
+                    IC.pelvis.yDot = -0.3;
+                    
+                    IC.stancefoot.AngleDot = -0.7;
+                    IC.stancefoot.LengthDot = -0.5830;
+                    
+                    IC.swingfoot.Angle = -2.15;
+                    IC.swingfoot.Length = 0.88;
+                    IC.swingfoot.AngleDot = -0.85;
+                    IC.swingfoot.LengthDot = -1.2;
+                    x0 = IC.getVector();
+                    
+                case 'sephipsimpulse'
+                    runner.sephips=1;
+                    runner.rigidlegimpulse = 1;
+                    runner.impulsecoeff = 3;
+                    runner.useHSevent = 1;
+                    runner.kstance = 15; %12
+                    runner.kswing = 0; %0.01
+                    runner.khip = 3; %0.01
+                    runner.cstance = 0;
+                    runner.cswing = 0;
+                    runner.chip = 0;
+                    runner.gslope = 0;
+                    runner.swingl = 1;
+                    runner.hipl = pi/2;
+                    IC.stancefoot.Angle = -1.1287;
+                    IC.stancefoot.Length = runner.stancel;
+                    runner.statestomeasure = [3 5 6 7:8 11:12];
+                    
+                    
+                    %
+                    IC.pelvis.xDot = 1;
+                    IC.pelvis.yDot = -0.3;
+                    
+                    IC.stancefoot.AngleDot = -0.7;
+                    IC.stancefoot.LengthDot = -0.5830;
+                    
+                    IC.swingfoot.Angle = -2.15;
+                    IC.swingfoot.Length = 0.88;
+                    IC.swingfoot.AngleDot = -0.85;
+                    IC.swingfoot.LengthDot = -1.2;
+                    x0 = IC.getVector();
+                case 'no impulse'
+                    runner.rigidlegimpulse = 0;
+                    runner.impulsecoeff = 2.5;
+                    runner.useHSevent = 1;
+                    runner.kstance = 10; %12
+                    runner.kswing = 10; %0.01
+                    runner.khip = 2.5; %0.01
+                    runner.cstance = 0;
+                    runner.cswing = 0;
+                    runner.chip = 0;
+                    runner.gslope = 0;
+                    runner.swingl = 0.65;
+                    runner.hipl = -0.6;
+                    IC.stancefoot.Angle = -1.1287;
+                    IC.stancefoot.Length = runner.stancel;
+                    runner.statestomeasure = [3 5 6 7:8 11:12];
                     
                     
                     %
@@ -77,10 +144,41 @@ classdef RetractSLIP < Runner
                     IC.stancefoot.AngleDot = -0.8457;
                     IC.stancefoot.LengthDot = -0.5830;
                     
-                    IC.swingfoot.Angle = -2.0;
-                    IC.swingfoot.Length = 0.8062;
+                    IC.swingfoot.Angle = -1.8;
+                    IC.swingfoot.Length = 0.95;
                     IC.swingfoot.AngleDot = -0.85;
-                    IC.swingfoot.LengthDot = -0.6;
+                    IC.swingfoot.LengthDot = -.5;
+                    x0 = IC.getVector();
+                    
+                                    case 'step'
+                    runner.rigidlegimpulse = 1;
+                    runner.impulsecoeff = 2.5;
+                    runner.useHSevent = 1;
+                    runner.kstance = 13.5; %12
+                    runner.kswing = 0; %0.01
+                    runner.khip = 2; %0.01
+                    runner.cstance = 0;
+                    runner.cswing = 0;
+                    runner.chip = 0;
+                    runner.gslope = 0;
+                    runner.swingl = 1;
+                    runner.hipl = -0.4;
+                    IC.stancefoot.Angle = -1.1287;
+                    IC.stancefoot.Length = runner.stancel;
+                    runner.statestomeasure = [3 5 6 7:8 11:12];
+                    
+                    
+                    %
+                    IC.pelvis.xDot = 1.1;
+                    IC.pelvis.yDot = -0.11;
+                    
+                    IC.stancefoot.AngleDot = -0.8457;
+                    IC.stancefoot.LengthDot = -0.5830;
+                    
+                    IC.swingfoot.Angle = -2.15;
+                    IC.swingfoot.Length = 0.88;
+                    IC.swingfoot.AngleDot = -0.85;
+                    IC.swingfoot.LengthDot = -0.85;
                     x0 = IC.getVector();
                 otherwise
                     error('Undefined Test Case')
@@ -301,6 +399,7 @@ classdef RetractSLIP < Runner
                 phase =  this.phases{phasenum}; %Get name of phase corresponding to phasenum
                 if strcmp(phase,'Toe') && this.rigidlegimpulse
                     x0 = getYankImpulse(this,x0,tstart);
+                    x0(9) = x0(9) - this.tanimpulsecoeff*x0(9);
                     phasenum = phasenum+1;
                     phase = this.phases{phasenum};
                 elseif strcmp('Toe',phase)
@@ -472,10 +571,13 @@ classdef RetractSLIP < Runner
                 newstate([1 2])=[pelvx pelvy];
                 
                 %Get consistent velocities w/ constraints
-                Jc = this.getConstraints(newstate,'Stance');
-                nullJc = null(Jc);
-                unew = nullJc * (nullJc \ newstate(7:12)');
-                newstate = [newstate(1:6) unew'];
+%                 Jc = this.getConstraints(newstate,'Stance');
+%                 nullJc = null(Jc);
+%                 unew = nullJc * (nullJc \ newstate(7:12)');
+                unew = x0(7:12);
+                unew(3) = (sin(q3)*u1-cos(q3)*u2)/q4;
+                unew(4) = -cos(q3)*(u1+tan(q3)*u2);
+                newstate = [newstate(1:6) unew];
             else
                 
                 unew = x0(7:12);
@@ -692,6 +794,7 @@ classdef RetractSLIP < Runner
                         1;
                     
                     % righthand side terms
+                    if ~this.sephips
                     rhs(1) = g*mpelvis*sin(gslope);
                     rhs(2) = -(g*mpelvis*cos(gslope));
                     rhs(3) = -(u3*chip) + u5*chip - q3*khip + q5*khip + hipl*khip - q4*(2*u3*u4 + ...
@@ -702,6 +805,18 @@ classdef RetractSLIP < Runner
                         - gslope);
                     rhs(6) = -(u6*cswing) + kswing*swingl + q6*(-kswing + u5*u5) - g*sin(q5 - ...
                         gslope);
+                    else
+                        rhs(1) = g*mpelvis*sin(gslope); 
+rhs(2) = -(g*mpelvis*cos(gslope)); 
+rhs(3) = -(u3*chip) - q3*khip - hipl*khip - q4*(2*u3*u4 + g*cos(q3 - ...
+gslope)); 
+rhs(4) = -(u4*cswing) + kswing*swingl + q4*(-kswing + u3*u3) - g*sin(q3 - ...
+gslope); 
+rhs(5) = -(u5*chip) - q5*khip - hipl*khip - q6*(2*u5*u6 + g*cos(q5 - ...
+gslope)); 
+rhs(6) = -(u6*cswing) + kswing*swingl + q6*(-kswing + u5*u5) - g*sin(q5 - ...
+gslope); 
+                    end
                 else
                     % Mass Matrix
                     MM(1,1) = mpelvis; MM(1,2) = 0; MM(1,3) = 0; MM(1,4) = 0; MM(1,5) = 0; ...
@@ -716,6 +831,7 @@ classdef RetractSLIP < Runner
                         1;
                     
                     % righthand side terms
+                    if ~this.sephips
                     rhs(1) = g*mpelvis*sin(gslope);
                     rhs(2) = -(g*mpelvis*cos(gslope));
                     rhs(3) = 0;
@@ -724,6 +840,16 @@ classdef RetractSLIP < Runner
                         - gslope);
                     rhs(6) = -(u6*cswing) + kswing*swingl + q6*(-kswing + u5*u5) - g*sin(q5 - ...
                         gslope);
+                    else
+                        rhs(1) = g*mpelvis*sin(gslope); 
+rhs(2) = -(g*mpelvis*cos(gslope)); 
+rhs(3) = 0; 
+rhs(4) = -(u4*cstance) - q4*kstance + kstance*stancel; 
+rhs(5) = -(u5*chip) - q5*khip - hipl*khip - q6*(2*u5*u6 + g*cos(q5 - ...
+gslope)); 
+rhs(6) = -(u6*cswing) + kswing*swingl + q6*(-kswing + u5*u5) - g*sin(q5 - ...
+gslope); 
+                    end
                 end
                 
                 
@@ -818,6 +944,7 @@ classdef RetractSLIP < Runner
         c3 = cos(q3); c5 = cos(q5); s3 = sin(q3); s5 = sin(q5);
         mfoot = 1;
         if strcmp(phase,'Stance')
+            if ~this.sephips
 kineticEnergy = (mpelvis*(u1*u1 + u2*u2))/2.;
 
 potentialEnergy = (kstance*((-q4 + stancel)*(-q4 + stancel)))/2. + ...
@@ -847,8 +974,40 @@ stanceE = (kstance*((q4 - stancel)*(q4 - stancel)))/2.;
 swingE = (kswing*((q6 - swingl)*(q6 - swingl)))/2.;
 
 hipE = (khip*((q3 - q5 - hipl)*(q3 - q5 - hipl)))/2.;
+            else
+                kineticEnergy = (mpelvis*(u1*u1 + u2*u2))/2.;
+
+potentialEnergy = (kstance*((-q4 + stancel)*(-q4 + stancel)))/2. + ...
+g*mpelvis*(q2*cos(gslope) - q1*sin(gslope));
+
+PEgrav = -(mpelvis*(-(q2*g*cos(gslope)) + q1*g*sin(gslope)));
+
+PEspring = (kstance*((q4 - stancel)*(q4 - stancel)))/2.;
+
+kineticEnergy2 = (mfoot*(-2*q6*s5*u1*u5 + 2*s5*u2*u6 + c5*(2*q6*u2*u5 + ...
+2*u1*u6) + u1*u1 + u2*u2 + q6*q6*(u5*u5) + u6*u6) + mfoot*((2*q4*u2*u3 + ...
+2*u1*u4)*cos(q3) + u1*u1 + u2*u2 + q4*q4*(u3*u3) + u4*u4 - 2*q4*u1*u3*sin(q3) ...
++ 2*u2*u4*sin(q3)))/2.;
+
+potentialEnergy2 = 2*q2*g*cos(gslope) + (khip*((-q5 - hipl)*(-q5 - hipl)))/2. ...
++ (kswing*((q6 - swingl)*(q6 - swingl)))/2. + q4*g*sin(q3 - gslope) + ...
+q6*g*sin(q5 - gslope) - 2*q1*g*sin(gslope);
+
+PEgrav2 = 2*q2*g*cos(gslope) + q4*g*sin(q3 - gslope) + q6*g*sin(q5 - gslope) ...
+- 2*q1*g*sin(gslope);
+
+PEspring2 = (khip*((-q5 - hipl)*(-q5 - hipl)))/2. + (kswing*((q6 - ...
+swingl)*(q6 - swingl)))/2.;
+
+stanceE = (kstance*((q4 - stancel)*(q4 - stancel)))/2.;
+
+swingE = (kswing*((q6 - swingl)*(q6 - swingl)))/2.;
+
+hipE = (khip*((-q5 - hipl)*(-q5 - hipl)))/2.;
+            end
         else
 
+            if ~this.sephips
 kineticEnergy = (mpelvis*(u1*u1 + u2*u2))/2.;
 
 potentialEnergy = g*mpelvis*(q2*cos(gslope) - q1*sin(gslope));
@@ -878,6 +1037,39 @@ stanceE = (kswing*((q4 - swingl)*(q4 - swingl)))/2.;
 swingE = (kswing*((q6 - swingl)*(q6 - swingl)))/2.;
 
 hipE = (khip*((q3 - q5 - hipl)*(q3 - q5 - hipl)))/2.;
+            else
+               kineticEnergy = (mpelvis*(u1*u1 + u2*u2))/2.;
+
+potentialEnergy = g*mpelvis*(q2*cos(gslope) - q1*sin(gslope));
+
+PEgrav = -(mpelvis*(-(q2*g*cos(gslope)) + q1*g*sin(gslope)));
+
+PEspring = 0;
+
+kineticEnergy2 = (mfoot*(-2*q4*s3*u1*u3 + 2*s3*u2*u4 + c3*(2*q4*u2*u3 + ...
+2*u1*u4) + u1*u1 + u2*u2 + q4*q4*(u3*u3) + u4*u4) + mfoot*(-2*q6*s5*u1*u5 + ...
+2*s5*u2*u6 + c5*(2*q6*u2*u5 + 2*u1*u6) + u1*u1 + u2*u2 + q6*q6*(u5*u5) + ...
+u6*u6))/2.;
+
+potentialEnergy2 = 2*q2*g*cos(gslope) + (khip*((-q3 - hipl)*(-q3 - hipl)))/2. ...
++ (khip*((-q5 - hipl)*(-q5 - hipl)))/2. + (kswing*((q4 - swingl)*(q4 - ...
+swingl)))/2. + (kswing*((q6 - swingl)*(q6 - swingl)))/2. + q4*g*sin(q3 - ...
+gslope) + q6*g*sin(q5 - gslope) - 2*q1*g*sin(gslope);
+
+PEgrav2 = 2*q2*g*cos(gslope) + q4*g*sin(q3 - gslope) + q6*g*sin(q5 - gslope) ...
+- 2*q1*g*sin(gslope);
+
+PEspring2 = (khip*((-q3 - hipl)*(-q3 - hipl)))/2. + (khip*((-q5 - hipl)*(-q5 ...
+- hipl)))/2. + (kswing*((q4 - swingl)*(q4 - swingl)))/2. + (kswing*((q6 - ...
+swingl)*(q6 - swingl)))/2.;
+
+stanceE = (kswing*((q4 - swingl)*(q4 - swingl)))/2.;
+
+swingE = (kswing*((q6 - swingl)*(q6 - swingl)))/2.;
+
+hipE = (khip*((-q3 - hipl)*(-q3 - hipl)))/2. + (khip*((-q5 - hipl)*(-q5 - ...
+hipl)))/2.; 
+            end
         end
         
         E.stanceE = stanceE;
@@ -959,7 +1151,23 @@ vels.COM(2) = u2;
             r = this;
             C=[];
             Ceq = 1 - r.mpelvis - 2*r.mfoot;
-        end
+                end
+        
+                function [C,Ceq] = SetPointConstraint(this,varargin)
+                   C=[];
+                   Ceq = 1 - this.swingl;
+                end
+                
+                function [C,Ceq] = PositiveImpulse(this,varargin)
+                    C=-this.impulsecoeff;
+                    Ceq = 1 - this.swingl;
+                end
+                
+                function [C,Ceq] = NoTanImpulse(this,varargin)
+                   C = -this.impulsecoeff;
+                   Ceq(1,1) = 1 - this.swingl;
+                   Ceq(2,1) = this.tanimpulsecoeff;
+                end
         
         %% Additional Dynamics Calculations
         
