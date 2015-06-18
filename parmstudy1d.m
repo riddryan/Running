@@ -82,6 +82,7 @@ for i = fliplr(lowindices)
     if ~isempty(parmstovary)
         runner = runner.setParametersFromList(parmstovary,finalPs);
     end
+    runner
     runners(i)=runner;
     x0 = xstars(:,i)';
     if cnvrg(i)<=0 
@@ -103,6 +104,7 @@ for i = highindices
     if ~isempty(parmstovary)
         runner = runner.setParametersFromList(parmstovary,finalPs);
     end
+    runner
     runners(i)=runner;
     x0 = xstars(:,i)';
     if cnvrg(i)<=0 
