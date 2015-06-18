@@ -85,6 +85,7 @@ for i = fliplr(lowindices)
     runner
     runners(i)=runner;
     x0 = xstars(:,i)';
+    runner.anim(x0);
     if cnvrg(i)<=0 
        cnvrg(i+1:lowindices(1)) = NaN;
        xstars(:,i+1:lowindices(1)) = NaN;
@@ -107,6 +108,7 @@ for i = highindices
     runner
     runners(i)=runner;
     x0 = xstars(:,i)';
+    runner.anim(x0);
     if cnvrg(i)<=0 
                cnvrg(i+1:highindices(end)) = NaN;
        xstars(:,i+1:highindices(end)) = NaN;
