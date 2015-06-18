@@ -110,18 +110,18 @@ First make a class that interprets the states of the model that you will build i
 * Also open MyStomach.m in the "EOM Notebooks" folder to access the exported Mathematica code.  Note that this has the same file name as your class definition but is in a different folder.
 
 * Copy and paste from the exported code into class methods:
-1)`MM` and `rhs` into the method `getMMandrhs`.
-2) All constraint matrices & their derivatives into method `getConstraints`.  Make sure you copy and paste the constraint matrices into the correct location in the if-else statement such that the stance constraint matrices are under the `strcmp(phase,'Stance')` section of the if-else statement.
-3) All fields of the structure `points` into method `getPoints`.
-4) All fields of the structure `vels` into method `getVels`.
-5) All potential & kinetic energies into `getEnergies`.
+1.`MM` and `rhs` into the method `getMMandrhs`.
+2. All constraint matrices & their derivatives into method `getConstraints`.  Make sure you copy and paste the constraint matrices into the correct location in the if-else statement such that the stance constraint matrices are under the `strcmp(phase,'Stance')` section of the if-else statement.
+3. All fields of the structure `points` into method `getPoints`.
+4. All fields of the structure `vels` into method `getVels`.
+5. All potential & kinetic energies into `getEnergies`.
 
 * In class properties default declarations:
-1) Set `statestomeasure = [3:5 8:10]`. `statestomeasure` tells the optimizer what initial conditions it is allowed to change to get a limit cycle.  The reason the states of the pelvis are not included is because there are two constraints acting on the system which negate the need to specify the IC of all states.  
-2) Set `statestovary = [3 5 8:10]`.  `statestomeasure` say which states need to be equal to the IC at the start of the next step to be a limit cycle.  State 4, leg length, is not included because we always want the leg to be equal to the rest length of the spring at the start of a step.
-3) Set `N=10` to tell it how many states are in the model.
-4) Create a property `kstomach = 1;`, `stomachl = 0.2`, `mstomach = 0.2` as arbitrary default values for the stomach parameters.
-5) Set `mpelvis = 0.8`.  The reason to do this is so that the total mass of the system is equal to 1, which makes it easier to work with the numbers.
+1. Set `statestomeasure = [3:5 8:10]`. `statestomeasure` tells the optimizer what initial conditions it is allowed to change to get a limit cycle.  The reason the states of the pelvis are not included is because there are two constraints acting on the system which negate the need to specify the IC of all states.  
+2. Set `statestovary = [3 5 8:10]`.  `statestomeasure` say which states need to be equal to the IC at the start of the next step to be a limit cycle.  State 4, leg length, is not included because we always want the leg to be equal to the rest length of the spring at the start of a step.
+3. Set `N=10` to tell it how many states are in the model.
+4. Create a property `kstomach = 1;`, `stomachl = 0.2`, `mstomach = 0.2` as arbitrary default values for the stomach parameters.
+5. Set `mpelvis = 0.8`.  The reason to do this is so that the total mass of the system is equal to 1, which makes it easier to work with the numbers.
 
 * In the method `plot`, add the following lines to draw the stomach mass and stomach spring during animations:
 ```matlab
