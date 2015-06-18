@@ -1158,15 +1158,34 @@ vels.COM(2) = u2;
                    Ceq = 1 - this.swingl;
                 end
                 
-                function [C,Ceq] = PositiveImpulse(this,varargin)
+                function [C,Ceq] = PositiveImpulseAndSwingl(this,varargin)
                     C=-this.impulsecoeff;
                     Ceq = 1 - this.swingl;
+                end
+                
+                function [C,Ceq] = PositiveImpulse(this,varargin)
+                    C=-this.impulsecoeff;
+                    Ceq = [];
                 end
                 
                 function [C,Ceq] = NoTanImpulse(this,varargin)
                    C = -this.impulsecoeff;
                    Ceq(1,1) = 1 - this.swingl;
                    Ceq(2,1) = this.tanimpulsecoeff;
+                end
+                
+                function [c,ceq] = floorconstraint(this,~,~,~,allx,allt,varargin)
+                    
+                    fty = zeros(size(allx,1),1);
+                    for i = 1:size(allx,1)
+                        pts = this.getPoints(allx(i,:));
+                        fty(i) = pts.swingfoot(2);
+                    end
+                    c= [];
+                    ceq = sum(fty(fty<0));
+                    if isempty(ceq)
+                        ceq = 0;
+                    end
                 end
         
         %% Additional Dynamics Calculations
