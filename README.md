@@ -121,11 +121,11 @@ First make a class that interprets the states of the model that you will build i
     2. Set `statestovary = [3 5 8:10]`.  `statestomeasure` say which states need to be equal to the IC at the start of the next step to be a limit cycle.  State 4, leg length, is not included because we always want the leg to be equal to the rest length of the spring at the start of a step.
     3. Set `N=10` to tell it how many states are in the model.
     4. Create the following properties as arbitrary default values for the stomach parameters:
-```matlab
-kstomach = 1;
-stomachl = 0.2;
-mstomach = 0.2;
-```
+      ```matlab
+         kstomach = 1;
+         stomachl = 0.2;
+         mstomach = 0.2;
+      ```
     5. Set `mpelvis = 0.8`.  The reason to do this is so that the total mass of the system is equal to 1, which makes it easier to work with the numbers.
 
 * In the method `plot`, add the following lines to draw the stomach mass and stomach spring during animations:
