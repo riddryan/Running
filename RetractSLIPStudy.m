@@ -12,6 +12,7 @@ parmstovary = [];
 constrainttolerance = 1e-4;
 MaxEvals = 1200;
 forcerun = 0; %Run cells even if results exist
+saveresults = 1;
 
 LineSize=3;
 TextSize=12;
@@ -35,11 +36,12 @@ if sum(cellstouse==1)
         loadname = 'TanImpulse.mat';
         load([loadfolder loadname]);
         
-        parmrange = sort(linspace(r.tanimpulsecoeff,0,20));
+        parmrange = sort([linspace(0,0.1,20) linspace(r.tanimpulsecoeff,0.1,20)]);
         parmstovary=[{'kswing'} {'khip'} {'hipl'} {'impulsecoeff'}];
 
         %Extra changes to the loaded gait
         extraconstraint = @(r,varargin) r.PositiveImpulse(varargin);
+        r.statestovary = [5 6 11 12];
 %         r.rigidlegimpulse = 1;
 %         r.impulsecoeff = 0;
         
@@ -81,7 +83,7 @@ if sum(cellstouse==1)
                     else
         load([rootdir pfolder classfolder savename],'-regexp', '^(?!cellstouse)\w')
         
-        
+                    
         h=figure;
         for j = 1:numparams
             subplot(numparams,1,j)
@@ -96,12 +98,15 @@ if sum(cellstouse==1)
         legend('Good','No Floor','Foot Above Pelvis')
         xlabel(PNAME)
         
+        
         set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
         hgexport(h,[exportfolder savename '.bmp'])
+        saveresults = 0;
     end
     
 end
 %% Saving & Export
+if saveresults
 rootdir = cd;
 pfolder = '\ParameterStudies';
 classfolder = ['\' class(r) '\'];
@@ -129,7 +134,7 @@ end
 
 
 
-
+end
 
 
 
