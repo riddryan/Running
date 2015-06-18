@@ -108,8 +108,37 @@ First make a class that interprets the states of the model that you will build i
 * Make a copy of SLIP.m in the main directory and rename it MyStomach.m
 * Open MyStomach.m and do a find "SLIP" and replace all with "MyStomach"
 * Also open MyStomach.m in the "EOM Notebooks" folder to access the exported Mathematica code.  Note that this has the same file name as your class definition but is in a different folder.
-* Copy and paste `MM` and `rhs` from the exported code into the method `getMMandrhs`
 
+* Copy and paste from the exported code into class methods:
+    1. `MM` and `rhs` into the method `getMMandrhs`.
+    2. All constraint matrices & their derivatives into method `getConstraints`.  Make sure you copy and paste the constraint matrices into the correct location in the if-else statement such that the stance constraint matrices are under the `strcmp(phase,'Stance')` section of the if-else statement.
+    3. All fields of the structure `points` into method `getPoints`.
+    4. All fields of the structure `vels` into method `getVels`.
+    5. All potential & kinetic energies into `getEnergies`.
+
+* In class properties default declarations:
+    1. Set `statestomeasure = [3:5 8:10]`. `statestomeasure` tells the optimizer what initial conditions it is allowed to change to get a limit cycle.  The reason the states of the pelvis are not included is because there are two constraints acting on the system which negate the need to specify the IC of all states.  
+    2. Set `statestovary = [3 5 8:10]`.  `statestomeasure` say which states need to be equal to the IC at the start of the next step to be a limit cycle.  State 4, leg length, is not included because we always want the leg to be equal to the rest length of the spring at the start of a step.
+    3. Set `N=10` to tell it how many states are in the model.
+    4. Create the following properties as arbitrary default values for the stomach parameters:
+      ```matlab
+         kstomach = 1;
+         stomachl = 0.2;
+         mstomach = 0.2;
+      ```
+    5. Set `mpelvis = 0.8`.  The reason to do this is so that the total mass of the system is equal to 1, which makes it easier to work with the numbers.
+
+* In the method `plot`, add the following lines to draw the stomach mass and stomach spring during animations:
+```matlab
+stomachcoils = 3;
+stomachspringwidth = 0.1;
+plotter.plotSpring(points.pelvis(1),points.pelvis(2),points.stomach(1),points.stomach(2),stomachcoils,this.stomachl,stomachspringwidth);
+plotter.plotMass(points.pelvis,'scaling',this.mstomach/this.mpelvis);
+```
+
+* Luckily, since we want `MyStomach` to have the same phases and event functions (detecting take off and heel strike) as `SLIP`, you do not need to change the `onestep` or any of the event methods.
+
+### Test the Matlab Class ###
 
 ## Important Methods  ##
 
