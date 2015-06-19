@@ -8,7 +8,7 @@ classdef RetractSLIP < Runner
         g = 1;
         N = 12;
         statestovary = [3 5 6 7:8 11:12];
-        statestomeasure = [3 5 6 7:8 11:12];
+        statestomeasure = [3 4 5 6 7:8 11:12];
         %rest lengths
         stancel=1; swingl = .8;
         %rest angles
@@ -72,7 +72,7 @@ classdef RetractSLIP < Runner
                     runner.hipl = pi/2;
                     IC.stancefoot.Angle = -1.1287;
                     IC.stancefoot.Length = runner.stancel;
-                    runner.statestomeasure = [3 5 6 7:8 11:12];
+                    runner.statestomeasure = [3 4 5 6 7:8 11:12];
                     
                     
                     %
