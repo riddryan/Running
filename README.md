@@ -46,6 +46,7 @@ This example will show you how to start with the SLIP model and then add a degre
 ```mathematica
 AddBody[stomach, pelvis, Slider, TAxis -> ground[2], Mass -> mstomach];
 ```
+![MM_SetUpBodies1.PNG](https://bitbucket.org/repo/gMBbbp/images/421868159-MM_SetUpBodies1.PNG)
 
 * In the `Gravity` Section, add the line 
 ```mathematica
