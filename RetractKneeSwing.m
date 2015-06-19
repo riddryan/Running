@@ -45,7 +45,7 @@ classdef RetractKneeSwing < Runner
             savepath = [dir '\Animations\'];
             onephasesim = 0;
             manystep = 0;
-            test = 'nokneeunder';
+            test = 'kneelock';
             aviname = [test '.avi'];
             
             LineWidth=3;
@@ -96,11 +96,9 @@ classdef RetractKneeSwing < Runner
                     runner.kneel = 2.5;
                     runner.hipl = -0.7;
                     
-                    IC.foot.Angle = runner.SLIPx0(1);
-                    IC.knee.Angle = runner.SLIPx0(1);
-                    
                     IC.foot.AngleDot = 0;
                     IC.knee.AngleDot = 0;
+                    
                     
                     x0 = IC.getVector();
                 case 'kneelock'
@@ -111,6 +109,8 @@ classdef RetractKneeSwing < Runner
                     
                     runner.kknee = 3; %0.01
                     runner.khip = 7; %0.01
+%                     runner.kknee = 0; %0.01
+%                     runner.khip = 0; %0.01
                     
                     runner.gslope = 0;
                     runner.kneel = 1;
@@ -119,6 +119,21 @@ classdef RetractKneeSwing < Runner
                     IC.foot.Angle = runner.SLIPx0(1);
                     IC.knee.Angle = runner.SLIPx0(1);
                     
+                    %This would be the correct equation if the leg wasn't
+                    %singular
+%                     vels0 = [-runner.lshank*sin(IC.foot.Angle) -runner.lthigh*sin(IC.knee.Angle);...
+%                              runner.lshank*cos(IC.foot.Angle) runner.lthigh*cos(IC.knee.Angle)]...
+%                              \ runner.SLIPdata(end,[8 9])';
+
+%             vels.foot(1) = u1 - s4*u4*lshank - s3*u3*lthigh;
+%             vels.foot(2) = u2 + c4*u4*lshank + c3*u3*lthigh;
+                    
+                    %Instead assume they have equal and opposite velocity
+%                     vels0 = [(-runner.lshank*sin(IC.foot.Angle) - runner.lthigh*sin(IC.knee.Angle))]...
+%                              \ -runner.SLIPdata(end,[8])';
+                    
+%                     IC.foot.AngleDot = vels0(1);
+%                     IC.knee.AngleDot = vels0(1);
                     IC.foot.AngleDot = 0;
                     IC.knee.AngleDot = 0;
                     

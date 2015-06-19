@@ -28,8 +28,8 @@ SLIPdata = [allt accs(:,[1 2]) SLIPstates(:,3:4) SLIPstates(:,1:2) SLIPstates(:,
 thetaf=atan2(-xf(2),-xf(1));
 rf = norm(xf(1:2));
 SLIPdata(end,[4 5]) = [thetaf rf];
-SLIPx0 = [SLIPdata(end,4);SLIPdata(end,5)];
-SLIPxf = [SLIPdata(1,4);SLIPdata(1,5)];
+SLIPx0 = SLIPdata(end,[4 5 10 11])';
+SLIPxf = SLIPdata(1,[4 5 10 11])';
            
 clear SLIPtimes targettimes SLIPstates dexes i
 save(fname)
