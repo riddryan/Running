@@ -19,11 +19,10 @@ Calculates multi body dynamics for models for the purpose of investigating the d
 
 * Also includes some simulations of models that fall under the category of Differential Algebraic Equations, located in the folder DAE.  This is a result of setting unconstrained degrees of freedom to have zero mass, which can still be solved for if there are springs and/or dampers that act on those DOF.
 
-## Tutorial ##
 
-The process of describing a model, solving the equations of motion, constructing a class definition of that model, and then using the model to find and analyze limit cycles are described here.
+## Outline ##
 
-### Outline ###
+The following steps are the general workflow for building a new model and analyzing limit cycles with it.
 
 1. Use the Dynamics Workbench packages to build a 2D or 3D model, and then export the equations of motion into a .m file for use in Matlab.  It is also helpful to export the energy of each body & spring, the position & velocity vectors of each point, and the Constraint matrices and their derivatives as well.
 
@@ -40,7 +39,7 @@ The process of describing a model, solving the equations of motion, constructing
 
 5.  Use that limit cycle to find other limit cycles and analyze how parameters effect dynamics and energetics using `parmstudy1d.m` and `parmstudy2d.m`
 
-### Example ###
+## Tutorial Example ##
 
 This example will show you how to start with the SLIP model and then add a degree of freedom with a spring and mass above the pelvis to represent a soft stomach.  You can look in the files Tutorial.nb, and the class definition Tutorial.m to check you work.
 
