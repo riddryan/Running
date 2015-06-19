@@ -19,7 +19,7 @@
 
 
 %% Initialization & Options
-useguess=0; %set to 1 to attempt to find limit cycle using user-set initial conditions (within each cell).  
+useguess=1; %set to 1 to attempt to find limit cycle using user-set initial conditions (within each cell).  
 %Otherwise, try to load an existing limit cycle to start from
 usenominal = 1; %Use subject 7 trial 2.  If 0, will use average running characteristics from all trials
 savegait=1; %1 for saving the limit cycles.  Make sure you set the name of the save files
