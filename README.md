@@ -12,14 +12,6 @@ Calculates multi body dynamics for models for the purpose of investigating the d
 
 * Download the human data and folders that store model data & animations from `\\hbcl-server.engin.umich.edu\hbcl\projects\RunModels` and place these folders and files into the same folder as the repository.
 
-## General Info ##
-* `Runner` is an abstract class that is a superclass to all the other classes (e.g. `SLIP`, `SoftParRunner`, `Swing`, etc.)
-
-* Each class also has an associated state definition class located in the folder State_Definitions which makes it easier to parse the states of each class.  For example, it converts a vector of states to a nicely labeled structure that tells you Knee Velocity, Pelvis Position, etc.
-
-* Also includes some simulations of models that fall under the category of Differential Algebraic Equations, located in the folder DAE.  This is a result of setting unconstrained degrees of freedom to have zero mass, which can still be solved for if there are springs and/or dampers that act on those DOF.
-
-
 ## Outline ##
 
 The following steps are the general workflow for building a new model and analyzing limit cycles with it.
@@ -146,7 +138,11 @@ plotter.plotMass(points.pelvis,'scaling',this.mstomach/this.mpelvis);
 
 ### Test the Matlab Class ###
 
-## Important Methods  ##
+## Matlab Class Structure and Methods ##
+* `Runner` is an abstract class that is a superclass to all the other classes (e.g. `SLIP`, `SoftParRunner`, `Swing`, etc.)
+
+* Each class also has an associated state definition class located in the folder State_Definitions which makes it easier to parse the states of each class.  For example, it converts a vector of states to a nicely labeled structure that tells you Knee Velocity, Pelvis Position, etc.
+
 
 * `test` is a static method used to test energy conservation, that constraints are working, that event functions are working, and to play with initial conditions and parameters to try to get close to a limit cycle.  It is basically a mess and a playground.  It might be better to divide `test` into multiple static methods that each contain a single test.
 
@@ -155,6 +151,11 @@ plotter.plotMass(points.pelvis,'scaling',this.mstomach/this.mpelvis);
 * `plot` plots the model at one state
 
 * `anim` animates the model at the states given to its input.  If only initial conditions of the model are given, it calls onestep first, and then animates the results
+
+## Differential Algebraic Equations (DAE) ##
+
+* Also includes some simulations of models that fall under the category of Differential Algebraic Equations, located in the folder DAE.  This is a result of setting unconstrained degrees of freedom to have zero mass, which can still be solved for if there are springs and/or dampers that act on those DOF.
+* `MasslessAchillesRunner` is DAE system, but the DAE solvers in Matlab do a poor job of solving the dynamics because of the difficult kinematics.  Instead, an optimization is performed each step of the integrator to solve for the states that meet the kinematic constraints and minimize the Lagrangian.
 
 ## Who do I talk to? ##
 
