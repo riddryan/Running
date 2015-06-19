@@ -49,6 +49,8 @@ methods
       TolX = [];
       MaxEvals = [];
       algorithm = 'sqp';
+      LB = [];
+      FinDiffType = [];
       
       for i = 1 : 2 : length(varargin)
           option = varargin{i};
@@ -72,6 +74,10 @@ methods
                   MaxEvals = value;
               case 'Algo'
                   algorithm = value;
+              case 'LB'
+                  LB = value;
+              case 'FinDiffType'
+                  FinDiffType= value;
           end
       end
       if isempty(algorithm)
@@ -87,23 +93,27 @@ methods
         optimizerGuess = [optimizerGuess this.getParametersFromList(parametersToAlter)'];
       end
       
-      LB = -Inf*ones(size(optimizerGuess));
+      if isempty(LB)
+          LB = -Inf*ones(size(optimizerGuess));
+      end
       UB = Inf*ones(size(optimizerGuess));
       %If parameter is a mass, length, spring, or damping, don't let it be
       %negative.
-      for i = 1:length(parametersToAlter)
-         if strcmp(parametersToAlter{i}(1),'c') ||  strcmp(parametersToAlter{i}(1),'l') || strcmp(parametersToAlter{i}(1),'k')
-            LB(length(this.statestovary)+i) = 0; 
-            
-         elseif  strcmp(parametersToAlter{i}(1),'m')
-             LB(length(this.statestovary)+i) = minmass;
-             
-         elseif regexpi(parametersToAlter{i},'transition')
-             LB(length(this.statestovary)+i) = .8;
-             UB(length(this.statestovary)+i) = 1;
-%          elseif regexpi(parametersToAlter{i},'impulsecoeff')
-%              LB(length(this.statestovary)+i) = 0;
-         end
+      if isempty(LB)
+          for i = 1:length(parametersToAlter)
+              if strcmp(parametersToAlter{i}(1),'c') ||  strcmp(parametersToAlter{i}(1),'l') || strcmp(parametersToAlter{i}(1),'k')
+                  LB(length(this.statestovary)+i) = 0;
+                  
+              elseif  strcmp(parametersToAlter{i}(1),'m')
+                  LB(length(this.statestovary)+i) = minmass;
+                  
+              elseif regexpi(parametersToAlter{i},'transition')
+                  LB(length(this.statestovary)+i) = .8;
+                  UB(length(this.statestovary)+i) = 1;
+                  %          elseif regexpi(parametersToAlter{i},'impulsecoeff')
+                  %              LB(length(this.statestovary)+i) = 0;
+              end
+          end
       end
       
       if plotiter
@@ -122,6 +132,7 @@ methods
       opt.PlotFcns = plotfcns;
       opt.TolX = TolX;
       opt.MaxFunEvals = MaxEvals;
+      opt.FinDiffType = FinDiffType;
       if strcmp(opt.Algorithm,'active-set') && isempty(addedCostFcn)
       opt.TolFun = 0;
       end
