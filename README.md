@@ -36,7 +36,7 @@ The following steps are the general workflow for building a new model and analyz
 
 ## Tutorial Example ##
 
-This example will show you how to start with the SLIP model and then add a degree of freedom with a spring and mass above the pelvis to represent a soft stomach.  You can look in the files Tutorial.nb, and the class definition Tutorial.m to check you work.
+This example will show you how to start with the SLIP model and then add a degree of freedom with a spring and mass above the pelvis to represent a soft stomach.  You can look in the files Stomach.nb, and the class definition Stomach.m to check your work.
 
 ### Build the Model in Mathematica ###
 
@@ -46,7 +46,6 @@ This example will show you how to start with the SLIP model and then add a degre
 ```mathematica
 AddBody[stomach, pelvis, Slider, TAxis -> ground[2], Mass -> mstomach];
 ```
-![MM_SetUpBodies1.PNG](https://bitbucket.org/repo/gMBbbp/images/421868159-MM_SetUpBodies1.PNG)
 
 * In the `Gravity` Section, add the line 
 ```mathematica
