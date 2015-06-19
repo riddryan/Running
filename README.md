@@ -43,23 +43,23 @@ This example will show you how to start with the SLIP model and then add a degre
 * Open SLIP.nb in Mathematica, located in the folder EOM Notebooks.  Save file as MyStomach.nb and change the line `savename = workdir <> "\\SLIP.m";` to `savename = workdir <> "\\MyStomach.m";` This is the name of the m-file Mathematica will export Matlab code into
 
 * In the `Set Up Bodies` section, add the line 
-```nb
+```mathematica
 AddBody[stomach, pelvis, Slider, TAxis -> ground[2], Mass -> mstomach];
 ```
 
 * In the `Gravity` Section, add the line 
-```nb
+```mathematica
 AppFrc[stomach, Mass[stomach] grav, 0];
 ```
 
 * Under `Springs`, add the lines
-```nb
+```mathematica
 AppFrc[stomach, -kstomach ( q[5] - stomachl ) stomach[1], 0];
 AppFrc[pelvis, kstomach (q[5] - stomachl) stomach[1], 0];
 ```
 
 * Under `Energy`, replace the code with the lines:
-```nb
+```mathematica
 gravE = -(Mass[pelvis] grav.PosCOM[pelvis]);
 springE = 1/2 kstance (q[4] - stancel)^2 + 1/2kstomach (q[5] - stomachl)^2;
 PE = gravE + springE // Simplify;
@@ -67,13 +67,13 @@ KE = 1/2(Mass[pelvis] VelCOM[pelvis].VelCOM[pelvis])+1/2(Mass[stomach] VelCOM[st
 ```
 
 * Under `Kinematic Vectors`, add the lines:
-```nb
+```mathematica
 stomachpos = PosCOM[stomach];
 stomachvel = VelCOM[stomach];
 ```
 
 * Under Export, replace the list `expressionsToExport` with:
-```nb
+```mathematica
 expressionsToExport = {{constraintJacobianStance, "constraintJacobianStance"}, {constraintJacobianStanceDot, "constraintJacobianStanceDot"}, {constraintJacobianAerial, "constraintJacobianAerial"}, {constraintJacobianAerialDot, "constraintJacobianAerialDot"}, {KE, "kineticEnergy"}, {PE, "potentialEnergy"}, {gravE, "PEgrav"}, {springE, "PEspring"},
     
     {inGroundFrame2D[stancefootpos], "points.stancefoot"}, {inGroundFrame2D[pelvpos], "points.pelvis"}, {inGroundFrame2D[COMpos], "points.COM"},{inGroundFrame2D[stomachpos], "points.stomach"},
