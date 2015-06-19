@@ -10,9 +10,7 @@ Calculates multi body dynamics for models for the purpose of investigating the d
 
 * Add folder State_Definitions to your Matlab Path.
 
-* Human data is not stored on this repository, but is used in some of the analysis.  Animations and saved mat files are also not included in the repository, although some functions reference such files.  You may need to create the local folders: "Animations", "SavedGaits", "ParameterStudies", "ReturnMapStudies", and "Figures" in order for the saving functions & methods to work properly; else make changes to the code such that it saves elsewhere.
-
-* The data & folders can be found at `\\hbcl-server.engin.umich.edu\hbcl\projects\RunModels`
+* Download the human data and folders that store model data & animations from `\\hbcl-server.engin.umich.edu\hbcl\projects\RunModels` and place these folders and files into the same folder as the repository.
 
 ## General Info ##
 * `Runner` is an abstract class that is a superclass to all the other classes (e.g. `SLIP`, `SoftParRunner`, `Swing`, etc.)
