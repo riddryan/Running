@@ -1,4 +1,4 @@
-classdef TutorialState
+classdef StomachState
     %A class to label the states in the state vector
     
     properties
@@ -15,13 +15,13 @@ classdef TutorialState
     
     methods
         
-        function [this] = TutorialState(input)
+        function [this] = StomachState(input)
            if nargin == 0
               return; 
            end
            
            if isnumeric(input)
-              this = TutorialState;
+              this = StomachState;
               this = this.setFromVector(input);
               return;
            end

@@ -10,10 +10,10 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       157,          7]
-NotebookDataLength[     58056,       1464]
-NotebookOptionsPosition[     55567,       1375]
-NotebookOutlinePosition[     55914,       1390]
-CellTagsIndexPosition[     55871,       1387]
+NotebookDataLength[     58438,       1474]
+NotebookOptionsPosition[     55751,       1379]
+NotebookOutlinePosition[     56286,       1400]
+CellTagsIndexPosition[     56243,       1397]
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -70,7 +70,7 @@ Cell[BoxData[{
    RowBox[{"Directory", "[", "]"}]}], ";"}], "\n", 
  RowBox[{
   RowBox[{"savename", "=", 
-   RowBox[{"workdir", "<>", "\"\<\\\\Tutorial.m\>\""}]}], ";"}], "\n", 
+   RowBox[{"workdir", "<>", "\"\<\\\\Stomach.m\>\""}]}], ";"}], "\n", 
  RowBox[{
   RowBox[{"NewModel", "[", "]"}], ";"}]}], "Input",
  CellChangeTimes->{{3.638543223027*^9, 3.638543241002*^9}, {3.640352555085*^9,
@@ -79,7 +79,7 @@ Cell[BoxData[{
    3.6434710087609997`*^9}, {3.6434755945*^9, 3.64347559962*^9}, 
    3.643475644347*^9, {3.643475968716*^9, 3.6434759852200003`*^9}, {
    3.643476331861*^9, 3.643476333468*^9}, {3.643478551421*^9, 
-   3.6434785616359997`*^9}}]
+   3.6434785616359997`*^9}, {3.6437277236247997`*^9, 3.6437277246308002`*^9}}]
 }, Open  ]],
 
 Cell[CellGroupData[{
@@ -563,7 +563,7 @@ Cell[BoxData[
   3.643476358125*^9, {3.643477344659*^9, 3.6434773557609997`*^9}, 
    3.6434777396879997`*^9, {3.6434792255360003`*^9, 3.643479244274*^9}, {
    3.643479311166*^9, 3.6434793457019997`*^9}, 3.643479456951*^9, 
-   3.6434794932530003`*^9, 3.643479875744*^9}],
+   3.6434794932530003`*^9, 3.643479875744*^9, 3.6437277429638*^9}],
 
 Cell[BoxData[
  TagBox[
@@ -651,7 +651,7 @@ Cell[BoxData[
   3.643476358125*^9, {3.643477344659*^9, 3.6434773557609997`*^9}, 
    3.6434777396879997`*^9, {3.6434792255360003`*^9, 3.643479244274*^9}, {
    3.643479311166*^9, 3.6434793457019997`*^9}, 3.643479456951*^9, 
-   3.6434794932530003`*^9, 3.643479875749*^9}]
+   3.6434794932530003`*^9, 3.643479875744*^9, 3.6437277429868*^9}]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
@@ -1316,7 +1316,8 @@ Cell[BoxData[
   3.6434762861619997`*^9, 3.643476337049*^9, {3.643477344724*^9, 
    3.643477355832*^9}, 3.6434777397679996`*^9, {3.643479225775*^9, 
    3.643479244526*^9}, {3.643479311333*^9, 3.6434793458640003`*^9}, 
-   3.643479457098*^9, 3.64347949335*^9, 3.643479875899*^9}],
+   3.643479457098*^9, 3.64347949335*^9, 3.643479875899*^9, 
+   3.6437277432427998`*^9}],
 
 Cell[CellGroupData[{
 
@@ -1324,18 +1325,19 @@ Cell[BoxData[
  InterpretationBox[
   RowBox[{"\<\"Opening file \\\"\"\>", 
    "\[InvisibleSpace]", "\<\"C:\\\\Users\\\\HBCL \
-Student\\\\Documents\\\\RunModels\\\\EOM Notebooks\\\\Tutorial.m\"\>", 
+Student\\\\Documents\\\\RunModels\\\\EOM Notebooks\\\\Stomach.m\"\>", 
    "\[InvisibleSpace]", "\<\"\\\"\"\>"}],
   SequenceForm[
   "Opening file \"", 
-   "C:\\Users\\HBCL Student\\Documents\\RunModels\\EOM Notebooks\\Tutorial.m",
-    "\""],
+   "C:\\Users\\HBCL Student\\Documents\\RunModels\\EOM Notebooks\\Stomach.m", 
+   "\""],
   Editable->False]], "Print",
  CellChangeTimes->{
   3.643476286164*^9, 3.643476337053*^9, {3.643477344727*^9, 
    3.643477355836*^9}, 3.643477739773*^9, {3.6434792257860003`*^9, 
    3.6434792445369997`*^9}, {3.643479311344*^9, 3.643479345875*^9}, 
-   3.643479457108*^9, 3.643479493361*^9, 3.643479875909*^9}],
+   3.643479457108*^9, 3.643479493361*^9, 3.643479875909*^9, 
+   3.6437277432608*^9}],
 
 Cell[BoxData[
  InterpretationBox[
@@ -1350,31 +1352,39 @@ Student\\\\Documents\\\\RunModels\\\\EOM Notebooks\"\>"}],
   3.643476286164*^9, 3.643476337053*^9, {3.643477344727*^9, 
    3.643477355836*^9}, 3.643477739773*^9, {3.6434792257860003`*^9, 
    3.6434792445369997`*^9}, {3.643479311344*^9, 3.643479345875*^9}, 
-   3.643479457108*^9, 3.643479493361*^9, 3.6434798759110003`*^9}],
+   3.643479457108*^9, 3.643479493361*^9, 3.643479875909*^9, 
+   3.6437277432628*^9}],
 
 Cell[BoxData[
  InterpretationBox[
   RowBox[{"\<\"Closing file \\\"\"\>", 
    "\[InvisibleSpace]", "\<\"C:\\\\Users\\\\HBCL \
-Student\\\\Documents\\\\RunModels\\\\EOM Notebooks\\\\Tutorial.m\"\>", 
+Student\\\\Documents\\\\RunModels\\\\EOM Notebooks\\\\Stomach.m\"\>", 
    "\[InvisibleSpace]", "\<\"\\\"\"\>"}],
   SequenceForm[
   "Closing file \"", 
-   "C:\\Users\\HBCL Student\\Documents\\RunModels\\EOM Notebooks\\Tutorial.m",
-    "\""],
+   "C:\\Users\\HBCL Student\\Documents\\RunModels\\EOM Notebooks\\Stomach.m", 
+   "\""],
   Editable->False]], "Print",
  CellChangeTimes->{
   3.643476286164*^9, 3.643476337053*^9, {3.643477344727*^9, 
    3.643477355836*^9}, 3.643477739773*^9, {3.6434792257860003`*^9, 
    3.6434792445369997`*^9}, {3.643479311344*^9, 3.643479345875*^9}, 
-   3.643479457108*^9, 3.643479493361*^9, 3.643479875943*^9}]
+   3.643479457108*^9, 3.643479493361*^9, 3.643479875909*^9, 
+   3.6437277433338003`*^9}]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
 },
 WindowSize->{1904, 1085},
-WindowMargins->{{-1, Automatic}, {Automatic, 31}},
+WindowMargins->{{Automatic, 142}, {Automatic, 68}},
+PrintingCopies->1,
+PrintingPageRange->{32000, 32000},
+PrintingOptions->{"Magnification"->1.,
+"PaperOrientation"->"Portrait",
+"PaperSize"->{612, 792}},
+Magnification->1.3000000715255737`,
 FrontEndVersion->"9.0 for Microsoft Windows (64-bit) (November 20, 2012)",
 StyleDefinitions->"Default.nb"
 ]
@@ -1390,78 +1400,78 @@ CellTagsIndex->{}
 (*NotebookFileOutline
 Notebook[{
 Cell[CellGroupData[{
-Cell[579, 22, 453, 6, 90, "Title"],
-Cell[1035, 30, 369, 7, 30, "Text"],
+Cell[579, 22, 453, 6, 117, "Title"],
+Cell[1035, 30, 369, 7, 39, "Text"],
 Cell[CellGroupData[{
-Cell[1429, 41, 395, 6, 79, "Section"],
-Cell[1827, 49, 625, 10, 30, "Text"],
-Cell[2455, 61, 906, 20, 112, "Input"]
+Cell[1429, 41, 395, 6, 102, "Section"],
+Cell[1827, 49, 625, 10, 39, "Text"],
+Cell[2455, 61, 955, 20, 140, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[3398, 86, 332, 4, 79, "Section"],
-Cell[3733, 92, 653, 11, 30, "Text"],
+Cell[3447, 86, 332, 4, 102, "Section"],
+Cell[3782, 92, 653, 11, 64, "Text"],
 Cell[CellGroupData[{
-Cell[4411, 107, 328, 4, 43, "Subsection"],
-Cell[4742, 113, 897, 19, 52, "Input"]
+Cell[4460, 107, 328, 4, 57, "Subsection"],
+Cell[4791, 113, 897, 19, 65, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[5676, 137, 282, 4, 43, "Subsection"],
-Cell[5961, 143, 1331, 26, 52, "Input"]
+Cell[5725, 137, 282, 4, 57, "Subsection"],
+Cell[6010, 143, 1331, 26, 65, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[7329, 174, 512, 7, 43, "Subsection"],
-Cell[7844, 183, 850, 17, 73, "Code"]
+Cell[7378, 174, 512, 7, 57, "Subsection"],
+Cell[7893, 183, 850, 17, 88, "Code"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[8743, 206, 1026, 15, 79, "Section"],
+Cell[8792, 206, 1026, 15, 102, "Section"],
 Cell[CellGroupData[{
-Cell[9794, 225, 1018, 15, 43, "Subsection"],
-Cell[10815, 242, 1489, 29, 52, "Input"],
-Cell[12307, 273, 1254, 22, 52, "Code"],
-Cell[13564, 297, 1654, 36, 31, "Input"]
+Cell[9843, 225, 1018, 15, 57, "Subsection"],
+Cell[10864, 242, 1489, 29, 65, "Input"],
+Cell[12356, 273, 1254, 22, 64, "Code"],
+Cell[13613, 297, 1654, 36, 39, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[15255, 338, 1018, 15, 43, "Subsection"],
+Cell[15304, 338, 1018, 15, 57, "Subsection"],
 Cell[CellGroupData[{
-Cell[16298, 357, 1065, 16, 34, "Subsubsection"],
-Cell[17366, 375, 1756, 36, 52, "Input"]
+Cell[16347, 357, 1065, 16, 43, "Subsubsection"],
+Cell[17415, 375, 1756, 36, 65, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[19159, 416, 1254, 19, 34, "Subsubsection"],
-Cell[20416, 437, 1678, 34, 73, "Code"],
+Cell[19208, 416, 1254, 19, 43, "Subsubsection"],
+Cell[20465, 437, 1678, 34, 88, "Code"],
 Cell[CellGroupData[{
-Cell[22119, 475, 1555, 29, 92, "Input"],
-Cell[23677, 506, 2133, 59, 91, "Output"],
-Cell[25813, 567, 3095, 86, 102, "Output"]
+Cell[22168, 475, 1555, 29, 115, "Input"],
+Cell[23726, 506, 2153, 59, 146, "Output"],
+Cell[25882, 567, 3115, 86, 156, "Output"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[28981, 661, 420, 6, 79, "Section"],
-Cell[29404, 669, 779, 12, 49, "Text"],
-Cell[30186, 683, 2172, 64, 113, "Code"]
+Cell[29070, 661, 420, 6, 102, "Section"],
+Cell[29493, 669, 779, 12, 64, "Text"],
+Cell[30275, 683, 2172, 64, 134, "Code"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[32395, 752, 874, 13, 79, "Section"],
-Cell[33272, 767, 1434, 22, 49, "Text"],
-Cell[34709, 791, 4303, 108, 272, "Input"]
+Cell[32484, 752, 874, 13, 102, "Section"],
+Cell[33361, 767, 1434, 22, 89, "Text"],
+Cell[34798, 791, 4303, 108, 340, "Input"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[39049, 904, 796, 11, 79, "Section"],
-Cell[39848, 917, 1281, 33, 192, "Input"],
-Cell[41132, 952, 622, 14, 73, "Code"]
+Cell[39138, 904, 796, 11, 102, "Section"],
+Cell[39937, 917, 1281, 33, 240, "Input"],
+Cell[41221, 952, 622, 14, 88, "Code"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[41791, 971, 258, 4, 79, "Section"],
+Cell[41880, 971, 258, 4, 102, "Section"],
 Cell[CellGroupData[{
-Cell[42074, 979, 3332, 82, 233, "Code"],
-Cell[45409, 1063, 8116, 255, 175, "Output"],
+Cell[42163, 979, 3332, 82, 272, "Code"],
+Cell[45498, 1063, 8144, 256, 273, "Output"],
 Cell[CellGroupData[{
-Cell[53550, 1322, 675, 15, 23, "Print"],
-Cell[54228, 1339, 609, 13, 23, "Print"],
-Cell[54840, 1354, 675, 15, 23, "Print"]
+Cell[53667, 1323, 697, 16, 28, "Print"],
+Cell[54367, 1341, 628, 14, 28, "Print"],
+Cell[54998, 1357, 701, 16, 28, "Print"]
 }, Open  ]]
 }, Open  ]]
 }, Open  ]]
