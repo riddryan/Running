@@ -31,6 +31,8 @@ initialguessrule = [];
 plotiter = 0;
 MaxEvals = [];
 algorithm = [];
+LB = [];
+FinDiffType = [];
 
 for i = 1 : 2 : length(varargin)
     option = varargin{i};
@@ -48,6 +50,12 @@ for i = 1 : 2 : length(varargin)
            constrainttolerance = value;
         case 'Algo'
             algorithm = value;
+        case 'LB'
+            LB = value;
+        case 'FinDiffType'
+            FinDiffType = value;
+        case 'plotier'
+            plotiter = val;
     end
 end
 
@@ -78,7 +86,8 @@ for i = fliplr(lowindices)
     clear -global xLast
     [xstars(:,i),finalPs,~,~,~,cnvrg(i)]=runner.findLimitCycle(x0,'runcharic',runcharic,...
         'TolCon',constrainttolerance,'additionalConstraintFunction',extraconstraint,...
-        'plotiter',plotiter,'parametersToAlter',parmstovary,'MaxEvals',MaxEvals,'Algo',algorithm);
+        'plotiter',plotiter,'parametersToAlter',parmstovary,'MaxEvals',MaxEvals,'Algo',algorithm,...
+         'LB',LB,'FinDiffType',FinDiffType);
     if ~isempty(parmstovary)
         runner = runner.setParametersFromList(parmstovary,finalPs);
     end
@@ -101,7 +110,8 @@ for i = highindices
     clear -global xLast
     [xstars(:,i),finalPs,~,~,~,cnvrg(i)]=runner.findLimitCycle(x0,'runcharic',runcharic,...
         'TolCon',constrainttolerance,'additionalConstraintFunction',extraconstraint,...
-        'plotiter',plotiter,'parametersToAlter',parmstovary,'MaxEvals',MaxEvals,'Algo',algorithm);
+        'plotiter',plotiter,'parametersToAlter',parmstovary,'MaxEvals',MaxEvals,'Algo',algorithm,...
+        'LB',LB,'FinDiffType',FinDiffType);
     if ~isempty(parmstovary)
         runner = runner.setParametersFromList(parmstovary,finalPs);
     end
