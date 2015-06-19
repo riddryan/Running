@@ -6,7 +6,9 @@ Calculates multi body dynamics for models for the purpose of investigating the d
 
 ## How do I get set up? ##
 
-* You need Mathematica, Dynamics Workbench, and a recent version of Matlab to use this repository.  Created on Matlab 2014b, Mathematica 9.0.0.0, and [Dynamics Workbench 3.7](http://www-personal.umich.edu/~artkuo/DynamicsWorkbench/).  Add folder State_Definitions to your Matlab Path.
+* You need Mathematica, Dynamics Workbench, and a recent version of Matlab to use this repository.  Created on Matlab 2014b, Mathematica 9.0.0.0, and [Dynamics Workbench 3.7](http://www-personal.umich.edu/~artkuo/DynamicsWorkbench/).  
+
+*Add folder State_Definitions to your Matlab Path.
 
 * Human data is not stored on this repository, but is used in some of the analysis.  Animations and saved mat files are also not included in the repository, although some functions reference such files.  You may need to create the local folders: "Animations", "SavedGaits", "ParameterStudies", "ReturnMapStudies", and "Figures" in order for the saving functions & methods to work properly; else make changes to the code such that it saves elsewhere.
 
@@ -29,8 +31,11 @@ The following steps are the general workflow for building a new model and analyz
 2.  Copy an old class definition file that most resembles your desired model, rename it appropriately, and then go through the annoying process of copy/pasting and class-specific changes that are required in each method.
 
      * If desired, for your class `MyClass.m`, also create an m-file `MyClassState.m` in the State_Definitions folder to allow easier decoding of which state is which.
+
      * If you created your class from `OldClass.m`, replace each call to `OldClass` and `OldClassState` by `MyClass` and `MyClassState` respectively.
+
      * Copy and paste the appropiate output from Mathematica into the methods `getMMandRHS`, `getConstraints`, `getVelJacob`, `getEnergies`, `getPoints`, and `getcomWR`
+
      * You will probably have to change several other class methods by hand including: `onestep` , `plot`, methods that serve as event functions for simulations, methods that calculate special quantities such as      power going through a spring (could also export from Mathematica).  You may also have to change `getSpeed`, `getStepLength`, and `getAerialFraction`.
 
 3.  Use the static method `test` to simulate the model and test for energy conservation, that event functions are working properly, that constraints are working properly, and to get initial conditions that look like they could be close to a limit cycle.
@@ -91,7 +96,9 @@ expressionsToExport = {{constraintJacobianStance, "constraintJacobianStance"}, {
 First make a class that interprets the states of the model that you will build in Matlab into readable words.  This is most useful when you are working with a lot of models or degrees of freedom and don't remember which state is which.
 
 * Make a copy of SLIPState.m in the folder State_Definitions and rename it MyStomachState.m
+
 * Open MyStomachState.m, and do a find "SLIPState" and replace all with "MyStomachState"
+
 * Under properties, you need to define the structures with sensible names that correspond to each element of the vector.  For example, replace the code under properties with the following:
 ```matlab
         pelvis = struct('x', 0, 'y', 0, 'xDot', 0, 'yDot',0);
@@ -105,7 +112,9 @@ First make a class that interprets the states of the model that you will build i
 ### Develop the Class Definition in Matlab ###
 
 * Make a copy of SLIP.m in the main directory and rename it MyStomach.m
+
 * Open MyStomach.m and do a find "SLIP" and replace all with "MyStomach"
+
 * Also open MyStomach.m in the "EOM Notebooks" folder to access the exported Mathematica code.  Note that this has the same file name as your class definition but is in a different folder.
 
 * Copy and paste from the exported code into class methods:
