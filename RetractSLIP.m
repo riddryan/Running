@@ -638,12 +638,16 @@ classdef RetractSLIP < Runner
                 points.pelvis(1),points.pelvis(2),...
                 numcoils,this.stancel,springwidth) %stance spring
             
+            if this.kswing>0
             plotter.plotSpring(points.swingfoot(1),points.swingfoot(2),...
                 points.pelvis(1),points.pelvis(2),...
-                numcoils,this.swingl,springwidth) %swing spring
+                2,this.swingl,0.04,'Color',[101 156 255]/255) %swing spring
+            else
+                plotter.plotLine(points.pelvis,points.swingfoot,'LineStyle','--');
+            end
             
             
-
+            if this.khip>0
             stancedir = (points.stancefoot - points.pelvis)/norm(points.stancefoot - points.pelvis);
             swingdir = (points.swingfoot - points.pelvis)/norm(points.swingfoot - points.pelvis);
             stancepoint = points.pelvis + .2 * this.stancel * stancedir;
@@ -651,7 +655,7 @@ classdef RetractSLIP < Runner
             
             plotter.plotAngSpring(stancepoint,swingpoint,points.pelvis,2,.05,...
                 'Color',[232 40 76]/255) %achilles spring
-            
+            end
             
             %Draw Masses
             plotter.plotMass(points.pelvis);

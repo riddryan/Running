@@ -609,7 +609,9 @@ end
             if this.kswing>0
             plotter.plotSpring(points.swingfoot(1),points.swingfoot(2),...
                 points.pelvis(1),points.pelvis(2),...
-                numcoils,this.swingl,springwidth) %swing spring
+                2,this.swingl,0.04,'Color',[101 156 255]/255) %swing spring
+            else
+                plotter.plotLine(points.pelvis,points.swingfoot,'LineStyle','--')
             end
             
             if this.khip>0

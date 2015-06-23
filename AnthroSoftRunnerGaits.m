@@ -32,7 +32,7 @@ savepath = [dir '\SavedGaits\'];
 % 2. Soft Stomach Series
 % 3. Soft Stomach Series Parallel
 
-cellstouse=[13];
+cellstouse=[12];
 
 %Optimizer Constraint Tolerance
 constrainttolerance = 1e-5;
@@ -794,7 +794,7 @@ parmstovary=[{'kstance'}];
                                    'xf','tf','allx','allt','tair','phasevec');
     end 
 end
-%%
+%% Swing
 if any(cellstouse==12) %Swing Runner
     runner = Swing;
     IC = SwingState;
@@ -811,26 +811,25 @@ if any(cellstouse==12) %Swing Runner
 %             SLIPdata(steps+1:end,6) = SLIPdata(steps+1:end,6) + finalx;
 %             SLIPdata(2*steps:end,1) = SLIPdata(2*steps:end,1) + finaltime;
 %             SLIPdata(2*steps:end,6) = SLIPdata(2*steps:end,6) + finalx;
-            runner.SLIPdata = SLIPdata;
-        
-            
-        runner.rigidlegimpulse = 1;
-        runner.kswing = 0.5; %0.01
-        runner.khip = 1.2; %0.01
-        
-        runner.gslope = 0;
-        runner.swingl = 1;
-        runner.hipl = -1.3;
-        
-        IC.swingfoot.Angle = runner.SLIPx0(1);
-        IC.swingfoot.Length = runner.SLIPx0(2);
-        
-        IC.swingfoot.AngleDot = 0;
-        IC.swingfoot.LengthDot = 0;
-        
-        x0 = IC.getVector();
-        
-        runner.statestovary = [3 4];
+runner.SLIPdata = SLIPdata;
+
+
+runner.kswing = 0;
+runner.khip = 0;
+
+runner.gslope = 0;
+runner.swingl = 0.95;
+runner.hipl = -.65;
+
+IC.swingfoot.Angle = runner.SLIPx0(1);
+IC.swingfoot.Length = runner.SLIPx0(2);
+
+IC.swingfoot.AngleDot = 1.05;
+IC.swingfoot.LengthDot = -1;
+
+x0 = IC.getVector();
+
+runner.statestovary = [3 4];
         
         [x0,runner] = runner.GoodInitialConditions(x0);
     else
@@ -848,7 +847,7 @@ if any(cellstouse==12) %Swing Runner
     runcharic.steplength = [];
     %%%%%%%%%%%%%%%%%%%%%%%
     
-    parmstovary=[{'kswing'} {'khip'} {'hipl'} {'impulsecoeff'}];
+    parmstovary=[];
 % parmstovary=[{'kswing'} {'khip'} {'hipl'}];
     %       addedconstraints = @(r,x0) r.additionalConstraints(x0);
     addedconstraints=[];
@@ -873,7 +872,7 @@ if any(cellstouse==12) %Swing Runner
     x0 = xstar;
     r.printStepCharacteristics(x0,xf,tf,tair);
     if savegait
-        save([savepath 'Swing/' 'Swing_minyank.mat'],'r','xstar','parmstovary','limitCycleError',...
+        save([savepath 'Swing/' 'NoSprings.mat'],'r','xstar','parmstovary','limitCycleError',...
                                    'c','ceq','eflag','optimoutput','lambda',...
                                    'xf','tf','allx','allt','tair','phasevec');
     end 
