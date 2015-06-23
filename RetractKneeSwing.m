@@ -268,6 +268,8 @@ classdef RetractKneeSwing < Runner
                 footvely(i) = vels.foot(2);
                 GRF(i,:) = runner.getGRF(allt(i),allx(i,:),phase);
                 knee(i) = allx(i,1)-allx(i,2);
+                pvelx(i) = vels.pelvis(1);
+                pvely(i) = vels.pelvis(2);
                 
                 [~,cforce(i)] = runner.XDoubleDot(allt(i),allx(i,:)',phase);
             end
@@ -284,6 +286,11 @@ classdef RetractKneeSwing < Runner
             figure
             plot(allt,cforce)
             title('knee lock constraint force')
+            
+            figure
+            plot(allt,pvelx)
+            hold on
+            plot(allt,pvely)
             
 
             
@@ -379,6 +386,10 @@ end
             while sim
                 %% Phase transition & Integration
                 phase =  this.phases{phasenum}; %Get name of phase corresponding to phasenum
+                
+                if strcmp(phase,'KneeLock')
+                   x0([2 4]) = x0([1 3]); 
+                end
 
                 odex0 = x0;
                 opts = odeset('Events', phaseevents{phasenum},'RelTol',RelTol','AbsTol',AbsTol); %Set integration options

@@ -44,7 +44,7 @@ classdef Swing < Runner
             aviname = [savepath 'Swing1.avi'];
             onephasesim = 0;
             manystep = 0;
-            test = 'leg yank';
+            test = 'nosprings';
             
             LineWidth=3;
             LineSize=3;
@@ -606,12 +606,13 @@ end
                 points.pelvis(1),points.pelvis(2),...
                 numcoils,1,springwidth) %stance spring
             
+            if this.kswing>0
             plotter.plotSpring(points.swingfoot(1),points.swingfoot(2),...
                 points.pelvis(1),points.pelvis(2),...
                 numcoils,this.swingl,springwidth) %swing spring
+            end
             
-            
-
+            if this.khip>0
             stancedir = (points.stancefoot - points.pelvis)/norm(points.stancefoot - points.pelvis);
             swingdir = (points.swingfoot - points.pelvis)/norm(points.swingfoot - points.pelvis);
             stancepoint = points.pelvis + .2 * stancel * stancedir;
@@ -619,6 +620,7 @@ end
             
             plotter.plotAngSpring(stancepoint,swingpoint,points.pelvis,2,.05,...
                 'Color',[232 40 76]/255) %achilles spring
+            end
             
             
             %Draw Masses

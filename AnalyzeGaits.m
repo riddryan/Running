@@ -4,7 +4,7 @@ clearvars
 %% Initialization & Options
 
 %within each cell that you want, each time you run it
-cellstouse=[12];
+cellstouse=[11];
 
 
 saveAnimation=0;
@@ -23,6 +23,8 @@ fonttype='Times New Roman';
 savepath = [cd '\SavedGaits\'];
 avipath = [cd '\Animations\'];
 figpath = [cd '\Figures\'];
+
+exportfolder = figpath;
 
 
 %% Gaits
@@ -437,7 +439,7 @@ if any(cellstouse==6) %Soft Par
     toeoffmodel = find(allt==tair,1);
     
     subject=7; trial=2;
-    [datasoft,dsp,dsl,daf,dsf,datagrf] = getHumanData( subject, trial);
+    [datasoft,dsp,dsl,daf,dsf,datagrfz] = getHumanData( subject, trial);
     
     figure
     stancetimevec = linspace(0,(1-daf)*(1/dsf),length(datasoft));
@@ -452,9 +454,9 @@ if any(cellstouse==6) %Soft Par
     set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
     
     figure
-    plot(datagrf)
+    plot(datagrfz)
     hold on
-    plot(interp1(linspace(1,length(datagrf),length(parallelPower(1:toeoffmodel))),GRF(1:toeoffmodel,2),1:length(datagrf)),'r')
+    plot(interp1(linspace(1,length(datagrfz),length(parallelPower(1:toeoffmodel))),GRF(1:toeoffmodel,2),1:length(datagrfz)),'r')
     legend('Data','Model')
     xlabel('Sample')
     ylabel('GRF-Z')
@@ -553,7 +555,7 @@ if any(cellstouse==7) %Nonlin Par soft Runner
     toeoffmodel = find(allt==tair,1);
     
     subject=7; trial=2;
-    [datasoft,dsp,dsl,daf,dsf,datagrf] = getHumanData( subject, trial);
+    [datasoft,dsp,dsl,daf,dsf,datagrfz] = getHumanData( subject, trial);
     
     figure
     subplot(211)
@@ -593,10 +595,10 @@ if any(cellstouse==7) %Nonlin Par soft Runner
     title('Soft Tissue Power')
     
     subplot(211)
-    stancetimevec = linspace(0,(1-daf)*(1/dsf),length(datagrf));
-    plot(stancetimevec,datagrf,'LineWidth',3)
+    stancetimevec = linspace(0,(1-daf)*(1/dsf),length(datagrfz));
+    plot(stancetimevec,datagrfz,'LineWidth',3)
     hold on
-    plot(stancetimevec,interp1(linspace(1,length(datagrf),length(parallelPower(1:toeoffmodel))),GRF(1:toeoffmodel,2),1:length(datagrf)),'r',...
+    plot(stancetimevec,interp1(linspace(1,length(datagrfz),length(parallelPower(1:toeoffmodel))),GRF(1:toeoffmodel,2),1:length(datagrfz)),'r',...
         'LineWidth',3)
     legend('Data','Model')
     xlabel('Time')
@@ -692,7 +694,7 @@ if any(cellstouse==8) %Foot Achilles Runner
     toeoffmodel = find(allt==tair,1);
     
     subject=7; trial=2;
-    [datasoft,dsp,dsl,daf,dsf,datagrf] = getHumanData( subject, trial);
+    [datasoft,dsp,dsl,daf,dsf,datagrfz] = getHumanData( subject, trial);
     
     
     figure
@@ -995,13 +997,13 @@ end
 
 if any(cellstouse==11) %SLIP Runner
     %%
-    
-    fname = 'SLIP_NoAerial_unmatchedSL.mat';
+    savepath = [savepath 'SLIP/'];
+    fname = 'SLIPNominal.mat';
     load([savepath fname])
     runner=r;
     x0 = xstar;
 %     gifname = [avipath 'RetractSLIP1.gif'];
-    gifname = [avipath 'SLIPNoAerial.avi'];
+    gifname = [avipath 'SLIPNominal.avi'];
     
     [xf,tf,allx,allt,tair,runner,phasevec] = runner.onestep(xstar);
     xstar = allx(1,:);
@@ -1059,9 +1061,6 @@ if any(cellstouse==11) %SLIP Runner
             legend('Tot','KE','PE','PEgrav')
             
             
-           figure
-           plot(allt,GRF)
-           title('GRF')
            
            figure
            plot(allt,stancefootx)
@@ -1073,6 +1072,39 @@ if any(cellstouse==11) %SLIP Runner
            rf = norm(xf(1:2));
            altstate = xf;
            altstate([3 4]) = [thetaf rf];
+           
+           subject=7;
+           trial=2;
+           [datasoft,dsp,dsl,daf,dsf,datagrfz,datagrfy] = getHumanData( subject, trial);
+           
+           samps = length(datagrfz);
+           [~,tairsamp]=min(abs(allt-tair));
+           stancex=allx(1:tairsamp,:);
+           modelstates = interp1(linspace(0,1,size(stancex,1)),stancex,linspace(0,1,samps));
+           
+           modelgrfy = zeros(samps,1);
+           modelgrfx = zeros(samps,1);
+           for i = 1:samps
+               phase = r.phases{phasevec(i)};
+               grfs = r.getGRF(0,modelstates(i,:),phase);
+               modelgrfy(i) = grfs(2);
+               modelgrfx(i) = grfs(1);
+           end
+           
+           h=figure;
+           stancecycle = linspace(0,100,length(modelgrfy));
+           plot(stancecycle,modelgrfy,'b','LineWidth',2.5)
+           hold on
+           plot(stancecycle,datagrfz,'r','LineWidth',2.5)
+           plot(stancecycle,modelgrfx,'b','LineWidth',2.5)
+           plot(stancecycle,datagrfy,'r','LineWidth',2.5)
+           legend('Model','Data')
+           xlabel('Stance Phase')
+           ylabel('Force')
+           title('GRF')
+           
+                   set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
+        hgexport(h,[exportfolder 'SLIPModelvsData.jpg'])
 
     
 end
