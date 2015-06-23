@@ -1,4 +1,4 @@
-function [SoftPower,Speed,StepLength,AirFrac,StepFreq,grf_z] = getHumanData( subject, trial)
+function [SoftPower,Speed,StepLength,AirFrac,StepFreq,grf_z,grf_y] = getHumanData( subject, trial)
 %getHumanData outputs soft tissue power & gait characterstics from human
 %running experiment on treadmill.
 
@@ -22,6 +22,7 @@ filtsoft = filtfilt(B,A,datasoftpower(1:toeoff));
 filtsoft = interp1(linspace(0,1,length(filtsoft)),filtsoft,linspace(0,1,samplestouse));
 filtsoft = filtsoft*fp.powernorm{trial,subject};
 grf_z = fp.mRgrf{trial,subject}(1:toeoff,3)/fp.m{trial,subject}/9.81;
+grf_y = fp.mRgrf{trial,subject}(1:toeoff,2)/fp.m{trial,subject}/9.81;
 
 SoftPower = filtsoft;
 
