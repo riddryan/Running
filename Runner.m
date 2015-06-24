@@ -245,7 +245,11 @@ methods
             ceqExtra = [];
         else
             if ~isa(additionalConstraintFunction,'cell')
+                if nargin(additionalConstraintFunction)<8
             [cExtra, ceqExtra] = additionalConstraintFunction(this,x0,xf,tf,allx,allt,tair);
+                else
+                 [cExtra, ceqExtra] = additionalConstraintFunction(this,x0,xf,tf,allx,allt,tair,phasevec);   
+                end
             else
                 cExtra=[];ceqExtra=[];
                 for i = 1:length(additionalConstraintFunction)
