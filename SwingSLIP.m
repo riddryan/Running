@@ -1,4 +1,4 @@
-classdef RetractSLIP < Runner
+classdef SwingSLIP < Runner
     %Running Model with a spring leg, and a soft-stomach: a mass on a
     %spring above the pelvis
     
@@ -7,14 +7,14 @@ classdef RetractSLIP < Runner
         gslope = 0;
         g = 1;
         N = 12;
-        statestovary = [3 5 6 7:8 11:12];
-        statestomeasure = [3 4 5 6 7:8 11:12];
+        statestovary = [3 5 7:8]; 
+        statestomeasure = [3 4 5 6 7:8];   
         %rest lengths
         stancel=1; swingl = .8;
         %rest angles
         hipl = 0;
-        impulsecoeff = 2;
-        rigidlegimpulse = 0;
+        
+        impulsecoeff = 0;
         tanimpulsecoeff = 0;
         lockable = 0;
         lockstate = 0;
@@ -27,9 +27,8 @@ classdef RetractSLIP < Runner
         runcharic = struct('speed',0.9745,'steplength',1.1905,'airfrac',0.2703);
         
         useHSevent = 0;
-        sephips = 0;
         
-        phases = {'Stance' 'Aerial'};
+        phases = {'Aerial' 'Stance' 'Aerial'};
     end
     
     
@@ -40,10 +39,10 @@ classdef RetractSLIP < Runner
             dir = cd;
             saveAnimation=1;
             savepath = [dir '\Animations\'];
-            aviname = [savepath 'RetractSLIP2.avi'];
+            aviname = [savepath 'SwingSLIP2.avi'];
             onephasesim = 0;
             manystep = 0;
-            test = 'locksephips';
+            test = 'experiment';
             
             LineWidth=3;
             LineSize=3;
@@ -51,226 +50,43 @@ classdef RetractSLIP < Runner
             fontstyle='bold';
             fonttype='Times New Roman';
             
-            runner = RetractSLIP;
+            runner = SwingSLIP;
             
 
             
-            IC = RetractSLIPState;
+            IC = SwingSLIPState;
             switch test
                 
                 case 'experiment'
-                    load('./SavedGaits/RetractSLIP/LockSepHips.mat')
-                    runner = r; x0 = xstar;
-                    
-                    
-                                                case 'locksephips'
+
                     runner.lockable = 1;
                     runner.tanimpulsecoeff = 0;
-                    runner.sephips=1;
-                    runner.rigidlegimpulse = 1;
-                    runner.impulsecoeff = 3;
-                    runner.useHSevent = 1;
+                    runner.impulsecoeff = 0;
+%                     runner.useHSevent = 1;
                     runner.kstance = 12.8734; %12
-                    runner.kswing = 0; %0.01
-                    runner.khip = 5; %0.01
-                    runner.cstance = 0;
-                    runner.cswing = 0;
-                    runner.chip = 0;
+                    runner.kswing = 15; %0.01
+                    runner.khip = 10; %0.01
                     runner.gslope = 0;
-                    runner.swingl = 1;
-                    runner.hipl = 1.3;
-                    IC.stancefoot.Angle = -1.1287;
-                    IC.stancefoot.Length = runner.stancel;
-                    runner.statestomeasure = [3 4 5 6 7:8 11:12];
+                    runner.swingl = 0.7;
+                    runner.hipl = 1.5;
                     
-                    
-                    %
-                    IC.pelvis.x = -0.4278;
-                    IC.pelvis.y = 0.9039;
                     IC.pelvis.xDot = 1.0138;
-                    IC.pelvis.yDot = -0.1651;
-                   
-                    IC.stancefoot.AngleDot = -0.8457;
-                    IC.stancefoot.LengthDot = -0.5830;
+                    IC.pelvis.yDot = 0.1651;
                     
-                    IC.swingfoot.Angle = -2.0;
-                    IC.swingfoot.Length = 0.75;
-                    IC.swingfoot.AngleDot = 0.35;
-                    IC.swingfoot.LengthDot = -1.2;
-                    x0 = IC.getVector();
-                    
-                                case 'tanimpulse_hipstogether'
-                    runner.tanimpulsecoeff = 1;
-                    runner.sephips=0;
-                    runner.rigidlegimpulse = 1;
-                    runner.impulsecoeff = 3;
-                    runner.useHSevent = 1;
-                    runner.kstance = 12.8734; %12
-                    runner.kswing = 0; %0.01
-                    runner.khip = 2.5; %0.01
-                    runner.cstance = 0;
-                    runner.cswing = 0;
-                    runner.chip = 0;
-                    runner.gslope = 0;
-                    runner.swingl = 1;
-                    runner.hipl = 0.1;
                     IC.stancefoot.Angle = -1.1287;
                     IC.stancefoot.Length = runner.stancel;
-                    runner.statestomeasure = [3 4 5 6 7:8 11:12];
                     
-                    
-                    %
-                    IC.pelvis.x = -0.4279;
-                    IC.pelvis.y = 0.9038;
-                    IC.pelvis.xDot = 1;
-                    IC.pelvis.yDot = -0.3;
-                   
-                    IC.stancefoot.AngleDot = -0.7;
-                    IC.stancefoot.LengthDot = -0.5830;
-                    
-                    IC.swingfoot.Angle = -2.0;
-                    IC.swingfoot.Length = 0.93;
-                    IC.swingfoot.AngleDot = 0.2;
-                    IC.swingfoot.LengthDot = -1.34;
+                    IC.swingfoot.Angle = -2;
+                    IC.swingfoot.Length = runner.stancel;
+
                     x0 = IC.getVector();
                     
-                case 'tanimpulse'
-                    runner.tanimpulsecoeff = 1;
-                                        runner.sephips=1;
-                    runner.rigidlegimpulse = 1;
-                    runner.impulsecoeff = 3;
-                    runner.useHSevent = 1;
-                    runner.kstance = 15; %12
-                    runner.kswing = 0; %0.01
-                    runner.khip = 3; %0.01
-                    runner.cstance = 0;
-                    runner.cswing = 0;
-                    runner.chip = 0;
-                    runner.gslope = 0;
-                    runner.swingl = 1;
-                    runner.hipl = pi/2;
-                    IC.stancefoot.Angle = -1.1287;
-                    IC.stancefoot.Length = runner.stancel;
-                    runner.statestomeasure = [3 4 5 6 7:8 11:12];
-                    
-                    
-                    %
-                    IC.pelvis.xDot = 1;
-                    IC.pelvis.yDot = -0.3;
-                    
-                    IC.stancefoot.AngleDot = -0.7;
-                    IC.stancefoot.LengthDot = -0.5830;
-                    
-                    IC.swingfoot.Angle = -2.15;
-                    IC.swingfoot.Length = 0.88;
-                    IC.swingfoot.AngleDot = -0.85;
-                    IC.swingfoot.LengthDot = -1.2;
-                    x0 = IC.getVector();
-                    
-                case 'sephipsimpulse'
-                    runner.sephips=1;
-                    runner.rigidlegimpulse = 1;
-                    runner.impulsecoeff = 3;
-                    runner.useHSevent = 1;
-                    runner.kstance = 15; %12
-                    runner.kswing = 0; %0.01
-                    runner.khip = 3; %0.01
-                    runner.cstance = 0;
-                    runner.cswing = 0;
-                    runner.chip = 0;
-                    runner.gslope = 0;
-                    runner.swingl = 1;
-                    runner.hipl = pi/2;
-                    IC.stancefoot.Angle = -1.1287;
-                    IC.stancefoot.Length = runner.stancel;
-                    runner.statestomeasure = [3 5 6 7:8 11:12];
-                    
-                    
-                    %
-                    IC.pelvis.xDot = 1;
-                    IC.pelvis.yDot = -0.3;
-                    
-                    IC.stancefoot.AngleDot = -0.7;
-                    IC.stancefoot.LengthDot = -0.5830;
-                    
-                    IC.swingfoot.Angle = -2.15;
-                    IC.swingfoot.Length = 0.88;
-                    IC.swingfoot.AngleDot = -0.85;
-                    IC.swingfoot.LengthDot = -1.2;
-                    x0 = IC.getVector();
-                case 'no impulse'
-                    runner.rigidlegimpulse = 0;
-                    runner.impulsecoeff = 2.5;
-                    runner.useHSevent = 1;
-                    runner.kstance = 10; %12
-                    runner.kswing = 10; %0.01
-                    runner.khip = 2.5; %0.01
-                    runner.cstance = 0;
-                    runner.cswing = 0;
-                    runner.chip = 0;
-                    runner.gslope = 0;
-                    runner.swingl = 0.65;
-                    runner.hipl = -0.6;
-                    IC.stancefoot.Angle = -1.1287;
-                    IC.stancefoot.Length = runner.stancel;
-                    runner.statestomeasure = [3 5 6 7:8 11:12];
-                    
-                    
-                    %
-                    IC.pelvis.xDot = 1.1;
-                    IC.pelvis.yDot = -0.2;
-                    
-                    IC.stancefoot.AngleDot = -0.8457;
-                    IC.stancefoot.LengthDot = -0.5830;
-                    
-                    IC.swingfoot.Angle = -1.8;
-                    IC.swingfoot.Length = 0.95;
-                    IC.swingfoot.AngleDot = -0.85;
-                    IC.swingfoot.LengthDot = -.5;
-                    x0 = IC.getVector();
-                    
-                                    case 'step'
-                    runner.rigidlegimpulse = 1;
-                    runner.impulsecoeff = 2.5;
-                    runner.useHSevent = 1;
-                    runner.kstance = 13.5; %12
-                    runner.kswing = 0; %0.01
-                    runner.khip = 2; %0.01
-                    runner.cstance = 0;
-                    runner.cswing = 0;
-                    runner.chip = 0;
-                    runner.gslope = 0;
-                    runner.swingl = 1;
-                    runner.hipl = -0.4;
-                    IC.stancefoot.Angle = -1.1287;
-                    IC.stancefoot.Length = runner.stancel;
-                    runner.statestomeasure = [3 5 6 7:8 11:12];
-                    
-                    
-                    %
-                    IC.pelvis.xDot = 1.1;
-                    IC.pelvis.yDot = -0.11;
-                    
-                    IC.stancefoot.AngleDot = -0.8457;
-                    IC.stancefoot.LengthDot = -0.5830;
-                    
-                    IC.swingfoot.Angle = -2.15;
-                    IC.swingfoot.Length = 0.88;
-                    IC.swingfoot.AngleDot = -0.85;
-                    IC.swingfoot.LengthDot = -0.85;
-                    x0 = IC.getVector();
+                               
                 otherwise
                     error('Undefined Test Case')
             end
             
             [x0,runner] = runner.GoodInitialConditions(x0);
-
-            %Make sure foot starts on ground
-            
-%             runner.kstance = 0.3;
-%             runner.footangle = x0(5) - x0(6)+.3;
-            
-            
             
             %% Simulate a single phase
             if onephasesim
@@ -407,7 +223,7 @@ classdef RetractSLIP < Runner
     
     methods
         %% Class Constructor and Properties-related Functions
-        function [this] = RetractSLIP(input)
+        function [this] = SwingSLIP(input)
             %%
             this = this@Runner();
             
@@ -457,29 +273,28 @@ classdef RetractSLIP < Runner
             if iscolumn(x0)
                 x0 = x0';
             end
-            [x0,this] = this.GoodInitialConditions(x0,'keeppelvisstates',keeppelvisstates);
+            [x0,this] = this.GoodInitialConditions(x0);
             sim = 1;
             phasenum= 1;
             tstart = 0;
             allt = [];
             allx = [];
             phasevec = [];
-            phaseevents = { @(t,x) this.StanceEvents(t,x), @(t,x) this.AerialEvents(t,x)};
+            phaseevents = {@(t,x) this.AerialEvents1(t,x), @(t,x) this.StanceEvents(t,x), @(t,x) this.AerialEvents2(t,x)};;
             %
             
             while sim
                 %% Phase transition & Integration
                 phase =  this.phases{phasenum}; %Get name of phase corresponding to phasenum
-                if strcmp(phase,'Aerial') && this.rigidlegimpulse && phasevec(end) == 1
-                    x0 = getYankImpulse(this,x0,tstart);
-                    x0 = getTanImpulse(this,x0,tstart);
+                if phasenum == 1 || (strcmp(phase,'Aerial') && phasevec(end) == 2)
+                    x0 = this.getTOImpulse(x0);
                 end
-                
+                x0 = this.phaseTransition(tstart,x0,phase);
                 odex0 = x0;
                 opts = odeset('Events', phaseevents{phasenum},'RelTol',RelTol','AbsTol',AbsTol); %Set integration options
                 [t,x,~,~,ie] = ode45(@(t,x) this.XDoubleDot(t,x,phase),tstart:dt:tstart+tmax,odex0,opts); %Integrate dynamics
                 
-                if ~isempty(ie)
+                if ~isempty(ie) || t(end) == tmax;
                     ie = ie(end);
                 end
                 
@@ -491,25 +306,28 @@ classdef RetractSLIP < Runner
                 x0 = allx(end,:);
                 
                 %% Decide which Phase to Move To
-                if isempty(ie)
+                if isempty(ie) || ie == 3
                     sim = 0;
                     break;
                 end
-                if ie == 1 && phasenum == 1
-                   phasenum = phasenum+1; 
-                elseif ie == 1 && phasenum ==2
-                    sim = 0;
-                elseif ie == 2 %Lock the leg
+                if ie == 1
+                    if phasenum == 3
+                        sim = 0;
+                    else
+                        phasenum = phasenum+1;
+                    end
+                end
+                
+                if ie == 2
                     phasenum = phasenum;
                     this.lockstate = 1;
-                    phaseevents = { @(t,x) this.StanceEvents(t,x), @(t,x) this.AerialEvents(t,x)};
-                    x0 = this.phaseTransition(allt(end),allx(end,:),phase);
+                    phaseevents = {@(t,x) this.AerialEvents1(t,x), @(t,x) this.StanceEvents(t,x), @(t,x) this.AerialEvents2(t,x)};
                 end
                 
             end
             this.lockstate = 0;
             xf = allx(end,:); tf = allt(end);
-            tair = allt(find(phasevec==2,1));
+            tair = allt(find(phasevec==3,1));
             if isempty(tair)
                 tair = tf;
             end
@@ -585,10 +403,29 @@ classdef RetractSLIP < Runner
             
         end
         
+        function [value, isTerminal, direction]  = AerialEvents1(this,t,state)
+
+                pts = this.getPoints(state);
+                value(1) = pts.stancefoot(2);
+                direction(1) = 0;
+                isTerminal(1) = 1;
+
+            %Event at full extension if not already locked, and locking is enabled
+            if this.lockable && ~this.lockstate
+                ss = SwingSLIPState(state);
+                value(2) = ss.swingfoot.Length - this.stancel;
+                if t>0.05
+                isTerminal(2) = 1;
+                else
+                   isTerminal(2) = 0; 
+                end
+                direction(2) = 1;
+            end
+        end
         
         function [value, isTerminal, direction]  = StanceEvents(this,t,state)
             %Leg reaches full extention
-            ss = RetractSLIPState(state);
+            ss = SwingSLIPState(state);
             value = ss.stancefoot.Length - this.stancel;
             direction = 1;
             if t>0.05
@@ -601,13 +438,19 @@ classdef RetractSLIP < Runner
             if this.lockable && ~this.lockstate
                 value(2) = ss.swingfoot.Length - this.stancel;
                 isTerminal(2) = 1;
-                direction(2) = 0;
+                direction(2) = 1;
+            end
+            
+            if ~this.useHSevent
+                value(3) = this.runcharic.steplength/this.runcharic.speed - t;
+                direction(3) = 0;
+                isTerminal(3) = 1;
             end
         end
 
-        function [value, isTerminal, direction]  = AerialEvents(this,t,state)
+        function [value, isTerminal, direction]  = AerialEvents2(this,t,state)
             if ~this.useHSevent
-                value(1) = this.runcharic.steplength/this.runcharic.speed - t;
+                value(1) = (this.runcharic.steplength/this.runcharic.speed - t)*(1+this.runcharic.airfrac);
                 direction(1) = 0;
                 isTerminal(1) = 1;
             else
@@ -619,51 +462,34 @@ classdef RetractSLIP < Runner
             
             %Event at full extension if not already locked, and locking is enabled
             if this.lockable && ~this.lockstate
-                ss = RetractSLIPState(state);
+                ss = SwingSLIPState(state);
                 value(2) = ss.swingfoot.Length - this.stancel;
                 isTerminal(2) = 1;
-                direction(2) = 0;
+                direction(2) = 1;
             end
         end
         
         function [newstate,this] = GoodInitialConditions(this,x0,varargin)
-            keeppelvisstates = 0; %Set to 1 to solve consistent IC w/o changing pelvis states
-            for i = 1 : 2 : length(varargin)
-                option = varargin{i};
-                value = varargin{i + 1};
-                switch option
-                    case 'keeppelvisstates'
-                        keeppelvisstates = value;
-                end
-            end
-            
             this.getQandUdefs(x0);
             
-            newstate = x0;
-            
-            
-            if ~keeppelvisstates
+
                 %Shift body (without changing configuration) so that heel is on ground
-                points = this.getPoints(newstate);
-                pelvx = points.pelvis(1) - points.stancefoot(1);
-                pelvy = points.pelvis(2) - points.stancefoot(2);
-                newstate([1 2])=[pelvx pelvy];
+                ss = SwingSLIPState(x0);
+                points = this.getPoints(x0);
+                ss.pelvis.x = points.pelvis(1) - points.swingfoot(1);
+                ss.pelvis.y = points.pelvis(2) - points.swingfoot(2);
                 
-                %Get consistent velocities w/ constraints
-%                 Jc = this.getConstraints(newstate,'Stance');
-%                 nullJc = null(Jc);
-%                 unew = nullJc * (nullJc \ newstate(7:12)');
-                unew = x0(7:12);
-                unew(3) = (sin(q3)*u1-cos(q3)*u2)/q4;
-                unew(4) = -cos(q3)*(u1+tan(q3)*u2);
-                newstate = [newstate(1:6) unew];
-            else
+                ang = ss.swingfoot.Angle;
+                length = ss.swingfoot.Length;
+                vpelx = ss.pelvis.xDot;
+                vpely = ss.pelvis.yDot;
                 
-                unew = x0(7:12);
-                unew(3) = (sin(q3)*u1-cos(q3)*u2)/q4;
-                unew(4) = -cos(q3)*(u1+tan(q3)*u2);
-                newstate = [newstate(1:6) unew];
-            end
+                %Conserve Velocity of Pelvis; determine required leg
+                %velocities
+                ss.swingfoot.AngleDot = (sin(ang)*vpelx - cos(ang)*vpely)/length;
+                ss.swingfoot.LengthDot = -cos(ang)*(vpelx + tan(ang)*vpely);
+%                 
+                newstate = ss.getVector;
         end
         
 
@@ -725,14 +551,13 @@ classdef RetractSLIP < Runner
                 plotter.plotLine(points.pelvis,points.swingfoot,'LineStyle','--');
             end
             
-            if this.sephips
-                lpelvis = 0.3;
-                torso = points.pelvis + [0 lpelvis];
-                plotter.plotLine(points.pelvis,torso)
-            end
+
             
             if this.khip>0
-                if this.sephips
+                                lpelvis = 0.3;
+                torso = points.pelvis + [0 lpelvis];
+                plotter.plotLine(points.pelvis,torso)
+                
                     torsodir = [0 1];
                     torsopoint = points.pelvis + 0.7 * lpelvis * torsodir;
                     stancedir = (points.stancefoot - points.pelvis)/norm(points.stancefoot - points.pelvis);
@@ -745,20 +570,6 @@ classdef RetractSLIP < Runner
                         (state(5)-this.hipl),'Color',[101 156 255]/255)
 %                     end
                     
-%                     if points.stancefoot(2)>1e-4
-                    plotter.plotCircSpring(torsopoint,stancepoint,0.05,1,2,.05,...
-                        (state(3)-this.hipl),'Color',[0 0 0]/255)
-%                     end
-                    
-                else
-                    stancedir = (points.stancefoot - points.pelvis)/norm(points.stancefoot - points.pelvis);
-                    swingdir = (points.swingfoot - points.pelvis)/norm(points.swingfoot - points.pelvis);
-                    stancepoint = points.pelvis + .2 * this.stancel * stancedir;
-                    swingpoint = points.pelvis + .2 * this.stancel * swingdir;
-                    
-                    plotter.plotAngSpring(stancepoint,swingpoint,points.pelvis,2,.05,...
-                        'Color',[232 40 76]/255) %achilles spring
-                end
             end
             
             %Draw Masses
@@ -842,215 +653,68 @@ classdef RetractSLIP < Runner
         
         %% Mathematica Output
         
-            function [xNew,Impulse] = phaseTransition(this,time,x,phaseToSwitchTo)
-        %%  
-        % Transition between two phases.  That is, switch between two sets
-        % of equation of motion.  This in general will be associated with
-        % instantaneous collisions that cause a net energy loss of the
-        % system.  However, if other parameters such as springs are changed
-        % between phases, it is also possible to insert energy into the
-        % system.
-        
-        %make x is a column vector
-        if size(x,1)==1
-            x = x';
-        end
-        this.getQandUdefs(x);
-        
-        if strcmp(phaseToSwitchTo,'Stance') && ~this.lockstate
-        unew = x(7:12);
-        unew(3) = (sin(q3)*u1-cos(q3)*u2)/q4;
-        unew(4) = -cos(q3)*(u1+tan(q3)*u2);
-        
-        xNew = x;
-        xNew(7:12) = unew;
-        Impulse = [];
-        else
-            phase = phaseToSwitchTo;
-            [MM,rhs] = this.getMMandRHS(time,x,phase);
-            [Jc,Jcdot] = this.getConstraints(x,phase);
-            
-            [d1,d2] = size(Jc);
-            u = x(this.N/2+1:end);
-            
-            
-            
-            MMbig = [MM Jc'; Jc zeros(d1)];
-            RHSbig = [MM*u;zeros(d1,1)];
-            
-            VelsAndImpulses = MMbig \ RHSbig;
-            xNew = [x(1:this.N/2);VelsAndImpulses(1:this.N/2)];
-            
-            xNew = this.positionSwitches(xNew);
-            
-            Impulse = -VelsAndImpulses(this.N/2+1:end);
-        end
-        
-        if (sum(isnan(xNew)))
-            xNew
-            phaseToSwitchTo
-            error('xNew cannot have any NaNs!')
-        end
-        
-            end
     
-            function [MM,rhs] = getMMandRHS(this,time,x,phase)
+            function [MM,rhs] = getMMandRHS(this,time,x)
                 %%
                 %Phase specifies what equations to use, EG 'aerial' or 'stance'
                 state = x;
                 this.getParams();
                 this.getQandUdefs(state);
-                u = x(this.N/2+1:end); %velocity states
-                
-                c3 = cos(q3); c5 = cos(q5); s3 = sin(q3); s5 = sin(q5);
+                c5 = cos(q5); s5 = sin(q5); 
                 
                 MM = zeros(6,6); rhs = zeros(6,1);
                 
-                % righthand side terms
-                if strcmp(phase,'Aerial')
-                    % Mass Matrix
-                    MM(1,1) = mpelvis; MM(1,2) = 0; MM(1,3) = 0; MM(1,4) = 0; MM(1,5) = 0; ...
-                        MM(1,6) = 0;
-                    MM(2,1) = 0; MM(2,2) = mpelvis; MM(2,3) = 0; MM(2,4) = 0; MM(2,5) = 0; ...
-                        MM(2,6) = 0;
-                    MM(3,1) = -(q4*s3); MM(3,2) = c3*q4; MM(3,3) = q4*q4; MM(3,4) = 0; MM(3,5) = ...
-                        0; MM(3,6) = 0;
-                    MM(4,1) = c3; MM(4,2) = s3; MM(4,3) = 0; MM(4,4) = 1; MM(4,5) = 0; MM(4,6) = ...
-                        0;
-                    MM(5,1) = -(q6*s5); MM(5,2) = c5*q6; MM(5,3) = 0; MM(5,4) = 0; MM(5,5) = ...
-                        q6*q6; MM(5,6) = 0;
-                    MM(6,1) = c5; MM(6,2) = s5; MM(6,3) = 0; MM(6,4) = 0; MM(6,5) = 0; MM(6,6) = ...
-                        1;
-                    
-                    % righthand side terms
-                    if ~this.sephips
-                    rhs(1) = g*mpelvis*sin(gslope);
-                    rhs(2) = -(g*mpelvis*cos(gslope));
-                    rhs(3) = -(u3*chip) + u5*chip - q3*khip + q5*khip + hipl*khip - q4*(2*u3*u4 + ...
-                        g*cos(q3 - gslope));
-                    rhs(4) = -(u4*cswing) + kswing*swingl + q4*(-kswing + u3*u3) - g*sin(q3 - ...
-                        gslope);
-                    rhs(5) = -2*q6*u5*u6 + (u3 - u5)*chip - (-q3 + q5 + hipl)*khip - q6*g*cos(q5 ...
-                        - gslope);
-                    rhs(6) = -(u6*cswing) + kswing*swingl + q6*(-kswing + u5*u5) - g*sin(q5 - ...
-                        gslope);
-                    else
-                        rhs(1) = g*mpelvis*sin(gslope); 
-rhs(2) = -(g*mpelvis*cos(gslope)); 
-rhs(3) = -(u3*chip) - q3*khip - hipl*khip - q4*(2*u3*u4 + g*cos(q3 - ...
-gslope)); 
-rhs(4) = -(u4*cswing) + kswing*swingl + q4*(-kswing + u3*u3) - g*sin(q3 - ...
-gslope); 
-rhs(5) = -(u5*chip) - q5*khip - hipl*khip - q6*(2*u5*u6 + g*cos(q5 - ...
-gslope)); 
-rhs(6) = -(u6*cswing) + kswing*swingl + q6*(-kswing + u5*u5) - g*sin(q5 - ...
-gslope); 
-                    end
-                else
-                    % Mass Matrix
-                    MM(1,1) = mpelvis; MM(1,2) = 0; MM(1,3) = 0; MM(1,4) = 0; MM(1,5) = 0; ...
-                        MM(1,6) = 0;
-                    MM(2,1) = 0; MM(2,2) = mpelvis; MM(2,3) = 0; MM(2,4) = 0; MM(2,5) = 0; ...
-                        MM(2,6) = 0;
-                    MM(3,1) = 0; MM(3,2) = 0; MM(3,3) = 0; MM(3,4) = 0; MM(3,5) = 0; MM(3,6) = 0;
-                    MM(4,1) = 0; MM(4,2) = 0; MM(4,3) = 0; MM(4,4) = 0; MM(4,5) = 0; MM(4,6) = 0;
-                    MM(5,1) = -(q6*s5); MM(5,2) = c5*q6; MM(5,3) = 0; MM(5,4) = 0; MM(5,5) = ...
-                        q6*q6; MM(5,6) = 0;
-                    MM(6,1) = c5; MM(6,2) = s5; MM(6,3) = 0; MM(6,4) = 0; MM(6,5) = 0; MM(6,6) = ...
-                        1;
-                    
-                    % righthand side terms
-                    if ~this.sephips
-                    rhs(1) = g*mpelvis*sin(gslope);
-                    rhs(2) = -(g*mpelvis*cos(gslope));
-                    rhs(3) = 0;
-                    rhs(4) = -(u4*cstance) - q4*kstance + kstance*stancel;
-                    rhs(5) = -2*q6*u5*u6 + (u3 - u5)*chip - (-q3 + q5 + hipl)*khip - q6*g*cos(q5 ...
-                        - gslope);
-                    rhs(6) = -(u6*cswing) + kswing*swingl + q6*(-kswing + u5*u5) - g*sin(q5 - ...
-                        gslope);
-                    else
-                        rhs(1) = g*mpelvis*sin(gslope); 
-rhs(2) = -(g*mpelvis*cos(gslope)); 
-rhs(3) = 0; 
-rhs(4) = -(u4*cstance) - q4*kstance + kstance*stancel; 
-rhs(5) = -(u5*chip) - q5*khip - hipl*khip - q6*(2*u5*u6 + g*cos(q5 - ...
-gslope)); 
-rhs(6) = -(u6*cswing) + kswing*swingl + q6*(-kswing + u5*u5) - g*sin(q5 - ...
-gslope); 
-                    end
-                end
+                % Mass Matrix
+                MM(1,1) = mpelvis; MM(1,2) = 0; MM(1,3) = 0; MM(1,4) = 0; MM(1,5) = 0; ...
+                    MM(1,6) = 0;
+                MM(2,1) = 0; MM(2,2) = mpelvis; MM(2,3) = 0; MM(2,4) = 0; MM(2,5) = 0; ...
+                    MM(2,6) = 0;
+                MM(3,1) = 0; MM(3,2) = 0; MM(3,3) = 0; MM(3,4) = 0; MM(3,5) = 0; MM(3,6) = 0;
+                MM(4,1) = 0; MM(4,2) = 0; MM(4,3) = 0; MM(4,4) = 0; MM(4,5) = 0; MM(4,6) = 0;
+                MM(5,1) = -(q6*s5); MM(5,2) = c5*q6; MM(5,3) = 0; MM(5,4) = 0; MM(5,5) = ...
+                    q6*q6; MM(5,6) = 0;
+                MM(6,1) = c5; MM(6,2) = s5; MM(6,3) = 0; MM(6,4) = 0; MM(6,5) = 0; MM(6,6) = ...
+                    1;
                 
+                % righthand side terms
+                rhs(1) = g*mpelvis*sin(gslope);
+                rhs(2) = -(g*mpelvis*cos(gslope));
+                rhs(3) = 0;
+                rhs(4) = -(u4*cstance) - q4*kstance + kstance*stancel;
+                rhs(5) = -(u5*chip) - q5*khip - hipl*khip - q6*(2*u5*u6 + g*cos(q5 - ...
+                    gslope));
+                rhs(6) = -(u6*cswing) + kswing*swingl + q6*(-kswing + u5*u5) - g*sin(q5 - ...
+                    gslope);
                 
                 
                 
             end
-            
-                function [xddot, constraintForces] = XDoubleDot(this,time,x,phase)
-        %% 
-        %Phase specifies what equations to use, EG 'aerial' or 'stance'
-        
-        [MM,rhs] = this.getMMandRHS(time,x,phase);
-        [Jc,Jcdot] = this.getConstraints(x,phase);
-        
-        [d1,~] = size(Jc);
-        u = x(this.N/2+1:end); %velocity states
-        
-        MMbig = [MM Jc'; Jc zeros(d1)];
-        
-        if numel(Jcdot)>0
-            RHSbig = [rhs;-Jcdot*u];
-        else
-            RHSbig = rhs;
-        end
-        
-%         if cond(MMbig)<1e-10
-%            blah = 1; 
-%         end
-
-        AccsAndConstraints = MMbig \ RHSbig;
-        
-        accs = AccsAndConstraints(1:this.N/2);
-        
-        xddot = [u;accs];
-        
-       constraintForces = -AccsAndConstraints(this.N/2+1:end);
-%        if strcmp(phase,'stance')
-%        constraintForces = constraintForces - [0;rhs(7)]; 
-%        end
-        %Check Constraints, these should be equal to zero if constraints
-        %are working.  For debugging.
-        
-%         constraintacc = Jc*accs +Jcdot*u;
-%         constraintvel = Jc*u;
-        
-    end
     
     
     function [C, CDot] = getConstraints(this,state,phase)
         %%
         this.getQandUdefs(state);
         
-        c3 = cos(q3); c5 = cos(q5); s3 = sin(q3); s5 = sin(q5);
-        
         switch phase
             case {'Stance'}
-                constraintJacobianStance(1,1) = 1; constraintJacobianStance(1,2) = 0; ...
-                    constraintJacobianStance(1,3) = -(q4*s3); constraintJacobianStance(1,4) = c3; ...
-                    constraintJacobianStance(1,5) = 0; constraintJacobianStance(1,6) = 0;
-                constraintJacobianStance(2,1) = 0; constraintJacobianStance(2,2) = 1; ...
-                    constraintJacobianStance(2,3) = c3*q4; constraintJacobianStance(2,4) = s3; ...
-                    constraintJacobianStance(2,5) = 0; constraintJacobianStance(2,6) = 0;
-                
-                
-                constraintJacobianStanceDot(1,1) = 0; constraintJacobianStanceDot(1,2) = 0; ...
-                    constraintJacobianStanceDot(1,3) = -(c3*q4*u3) - s3*u4; ...
-                    constraintJacobianStanceDot(1,4) = -(s3*u3); constraintJacobianStanceDot(1,5) ...
-                    = 0; constraintJacobianStanceDot(1,6) = 0;
-                constraintJacobianStanceDot(2,1) = 0; constraintJacobianStanceDot(2,2) = 0; ...
-                    constraintJacobianStanceDot(2,3) = -(q4*s3*u3) + c3*u4; ...
-                    constraintJacobianStanceDot(2,4) = c3*u3; constraintJacobianStanceDot(2,5) = ...
-                    0; constraintJacobianStanceDot(2,6) = 0;
+constraintJacobianStance(1,1) = 1; constraintJacobianStance(1,2) = 0; ...
+constraintJacobianStance(1,3) = -(q4*sin(q3)); constraintJacobianStance(1,4) ...
+= cos(q3); constraintJacobianStance(1,5) = 0; constraintJacobianStance(1,6) = ...
+0; 
+constraintJacobianStance(2,1) = 0; constraintJacobianStance(2,2) = 1; ...
+constraintJacobianStance(2,3) = q4*cos(q3); constraintJacobianStance(2,4) = ...
+sin(q3); constraintJacobianStance(2,5) = 0; constraintJacobianStance(2,6) = ...
+0; 
+
+
+constraintJacobianStanceDot(1,1) = 0; constraintJacobianStanceDot(1,2) = 0; ...
+constraintJacobianStanceDot(1,3) = -(q4*u3*cos(q3)) - u4*sin(q3); ...
+constraintJacobianStanceDot(1,4) = -(u3*sin(q3)); ...
+constraintJacobianStanceDot(1,5) = 0; constraintJacobianStanceDot(1,6) = 0; 
+constraintJacobianStanceDot(2,1) = 0; constraintJacobianStanceDot(2,2) = 0; ...
+constraintJacobianStanceDot(2,3) = u4*cos(q3) - q4*u3*sin(q3); ...
+constraintJacobianStanceDot(2,4) = u3*cos(q3); ...
+constraintJacobianStanceDot(2,5) = 0; constraintJacobianStanceDot(2,6) = 0; 
                 
                 
                 
@@ -1058,8 +722,23 @@ gslope);
                 CDot = constraintJacobianStanceDot;
                 
             case 'Aerial'
-                C = [];
-                CDot = [];
+constraintJacobianAerial(1,1) = 0; constraintJacobianAerial(1,2) = 0; ...
+constraintJacobianAerial(1,3) = 1; constraintJacobianAerial(1,4) = 0; ...
+constraintJacobianAerial(1,5) = 0; constraintJacobianAerial(1,6) = 0; 
+constraintJacobianAerial(2,1) = 0; constraintJacobianAerial(2,2) = 0; ...
+constraintJacobianAerial(2,3) = 0; constraintJacobianAerial(2,4) = 1; ...
+constraintJacobianAerial(2,5) = 0; constraintJacobianAerial(2,6) = 0; 
+
+
+constraintJacobianAerialDot(1,1) = 0; constraintJacobianAerialDot(1,2) = 0; ...
+constraintJacobianAerialDot(1,3) = 0; constraintJacobianAerialDot(1,4) = 0; ...
+constraintJacobianAerialDot(1,5) = 0; constraintJacobianAerialDot(1,6) = 0; 
+constraintJacobianAerialDot(2,1) = 0; constraintJacobianAerialDot(2,2) = 0; ...
+constraintJacobianAerialDot(2,3) = 0; constraintJacobianAerialDot(2,4) = 0; ...
+constraintJacobianAerialDot(2,5) = 0; constraintJacobianAerialDot(2,6) = 0; 
+
+                C = constraintJacobianAerial;
+                CDot = constraintJacobianAerialDot;
                 
             otherwise
                 error('Unknown phase for running model: %s', phase);
@@ -1078,11 +757,11 @@ gslope);
     function [E] = getEnergies(this,state,phase)
         this.getParams();
         this.getQandUdefs(state);
-        c3 = cos(q3); c5 = cos(q5); s3 = sin(q3); s5 = sin(q5);
+         c5 = cos(q5); s5 = sin(q5);
+         
         mfoot = 1;
-        if strcmp(phase,'Stance')
-            if ~this.sephips
-kineticEnergy = (mpelvis*(u1*u1 + u2*u2))/2.;
+        
+        kineticEnergy = (mpelvis*(u1*u1 + u2*u2))/2.;
 
 potentialEnergy = (kstance*((-q4 + stancel)*(-q4 + stancel)))/2. + ...
 g*mpelvis*(q2*cos(gslope) - q1*sin(gslope));
@@ -1092,46 +771,13 @@ PEgrav = -(mpelvis*(-(q2*g*cos(gslope)) + q1*g*sin(gslope)));
 PEspring = (kstance*((q4 - stancel)*(q4 - stancel)))/2.;
 
 kineticEnergy2 = (mfoot*(-2*q6*s5*u1*u5 + 2*s5*u2*u6 + c5*(2*q6*u2*u5 + ...
-2*u1*u6) + u1*u1 + u2*u2 + q6*q6*(u5*u5) + u6*u6) + mfoot*((2*q4*u2*u3 + ...
-2*u1*u4)*cos(q3) + u1*u1 + u2*u2 + q4*q4*(u3*u3) + u4*u4 - 2*q4*u1*u3*sin(q3) ...
-+ 2*u2*u4*sin(q3)))/2.;
+2*u1*u6) + u1*u1 + u2*u2 + q6*q6*(u5*u5) + u6*u6))/2.;
 
-potentialEnergy2 = 2*q2*g*cos(gslope) + (khip*((q3 - q5 - hipl)*(q3 - q5 - ...
-hipl)))/2. + (kswing*((q6 - swingl)*(q6 - swingl)))/2. + q4*g*sin(q3 - ...
-gslope) + q6*g*sin(q5 - gslope) - 2*q1*g*sin(gslope);
+potentialEnergy2 = q2*g*cos(gslope) + (khip*((-q5 - hipl)*(-q5 - hipl)))/2. + ...
+(kswing*((q6 - swingl)*(q6 - swingl)))/2. + q6*g*sin(q5 - gslope) - ...
+q1*g*sin(gslope);
 
-PEgrav2 = 2*q2*g*cos(gslope) + q4*g*sin(q3 - gslope) + q6*g*sin(q5 - gslope) ...
-- 2*q1*g*sin(gslope);
-
-PEspring2 = (khip*((q3 - q5 - hipl)*(q3 - q5 - hipl)))/2. + (kswing*((q6 - ...
-swingl)*(q6 - swingl)))/2.;
-
-stanceE = (kstance*((q4 - stancel)*(q4 - stancel)))/2.;
-
-swingE = (kswing*((q6 - swingl)*(q6 - swingl)))/2.;
-
-hipE = (khip*((q3 - q5 - hipl)*(q3 - q5 - hipl)))/2.;
-            else
-                kineticEnergy = (mpelvis*(u1*u1 + u2*u2))/2.;
-
-potentialEnergy = (kstance*((-q4 + stancel)*(-q4 + stancel)))/2. + ...
-g*mpelvis*(q2*cos(gslope) - q1*sin(gslope));
-
-PEgrav = -(mpelvis*(-(q2*g*cos(gslope)) + q1*g*sin(gslope)));
-
-PEspring = (kstance*((q4 - stancel)*(q4 - stancel)))/2.;
-
-kineticEnergy2 = (mfoot*(-2*q6*s5*u1*u5 + 2*s5*u2*u6 + c5*(2*q6*u2*u5 + ...
-2*u1*u6) + u1*u1 + u2*u2 + q6*q6*(u5*u5) + u6*u6) + mfoot*((2*q4*u2*u3 + ...
-2*u1*u4)*cos(q3) + u1*u1 + u2*u2 + q4*q4*(u3*u3) + u4*u4 - 2*q4*u1*u3*sin(q3) ...
-+ 2*u2*u4*sin(q3)))/2.;
-
-potentialEnergy2 = 2*q2*g*cos(gslope) + (khip*((-q5 - hipl)*(-q5 - hipl)))/2. ...
-+ (kswing*((q6 - swingl)*(q6 - swingl)))/2. + q4*g*sin(q3 - gslope) + ...
-q6*g*sin(q5 - gslope) - 2*q1*g*sin(gslope);
-
-PEgrav2 = 2*q2*g*cos(gslope) + q4*g*sin(q3 - gslope) + q6*g*sin(q5 - gslope) ...
-- 2*q1*g*sin(gslope);
+PEgrav2 = q2*g*cos(gslope) + q6*g*sin(q5 - gslope) - q1*g*sin(gslope);
 
 PEspring2 = (khip*((-q5 - hipl)*(-q5 - hipl)))/2. + (kswing*((q6 - ...
 swingl)*(q6 - swingl)))/2.;
@@ -1141,73 +787,7 @@ stanceE = (kstance*((q4 - stancel)*(q4 - stancel)))/2.;
 swingE = (kswing*((q6 - swingl)*(q6 - swingl)))/2.;
 
 hipE = (khip*((-q5 - hipl)*(-q5 - hipl)))/2.;
-            end
-        else
-
-            if ~this.sephips
-kineticEnergy = (mpelvis*(u1*u1 + u2*u2))/2.;
-
-potentialEnergy = g*mpelvis*(q2*cos(gslope) - q1*sin(gslope));
-
-PEgrav = -(mpelvis*(-(q2*g*cos(gslope)) + q1*g*sin(gslope)));
-
-PEspring = 0;
-
-kineticEnergy2 = (mfoot*(-2*q4*s3*u1*u3 + 2*s3*u2*u4 + c3*(2*q4*u2*u3 + ...
-2*u1*u4) + u1*u1 + u2*u2 + q4*q4*(u3*u3) + u4*u4) + mfoot*(-2*q6*s5*u1*u5 + ...
-2*s5*u2*u6 + c5*(2*q6*u2*u5 + 2*u1*u6) + u1*u1 + u2*u2 + q6*q6*(u5*u5) + ...
-u6*u6))/2.;
-
-potentialEnergy2 = 2*q2*g*cos(gslope) + (khip*((q3 - q5 - hipl)*(q3 - q5 - ...
-hipl)))/2. + (kswing*((q4 - swingl)*(q4 - swingl)))/2. + (kswing*((q6 - ...
-swingl)*(q6 - swingl)))/2. + q4*g*sin(q3 - gslope) + q6*g*sin(q5 - gslope) - ...
-2*q1*g*sin(gslope);
-
-PEgrav2 = 2*q2*g*cos(gslope) + q4*g*sin(q3 - gslope) + q6*g*sin(q5 - gslope) ...
-- 2*q1*g*sin(gslope);
-
-PEspring2 = (khip*((q3 - q5 - hipl)*(q3 - q5 - hipl)))/2. + (kswing*((q4 - ...
-swingl)*(q4 - swingl)))/2. + (kswing*((q6 - swingl)*(q6 - swingl)))/2.;
-
-stanceE = (kswing*((q4 - swingl)*(q4 - swingl)))/2.;
-
-swingE = (kswing*((q6 - swingl)*(q6 - swingl)))/2.;
-
-hipE = (khip*((q3 - q5 - hipl)*(q3 - q5 - hipl)))/2.;
-            else
-               kineticEnergy = (mpelvis*(u1*u1 + u2*u2))/2.;
-
-potentialEnergy = g*mpelvis*(q2*cos(gslope) - q1*sin(gslope));
-
-PEgrav = -(mpelvis*(-(q2*g*cos(gslope)) + q1*g*sin(gslope)));
-
-PEspring = 0;
-
-kineticEnergy2 = (mfoot*(-2*q4*s3*u1*u3 + 2*s3*u2*u4 + c3*(2*q4*u2*u3 + ...
-2*u1*u4) + u1*u1 + u2*u2 + q4*q4*(u3*u3) + u4*u4) + mfoot*(-2*q6*s5*u1*u5 + ...
-2*s5*u2*u6 + c5*(2*q6*u2*u5 + 2*u1*u6) + u1*u1 + u2*u2 + q6*q6*(u5*u5) + ...
-u6*u6))/2.;
-
-potentialEnergy2 = 2*q2*g*cos(gslope) + (khip*((-q3 - hipl)*(-q3 - hipl)))/2. ...
-+ (khip*((-q5 - hipl)*(-q5 - hipl)))/2. + (kswing*((q4 - swingl)*(q4 - ...
-swingl)))/2. + (kswing*((q6 - swingl)*(q6 - swingl)))/2. + q4*g*sin(q3 - ...
-gslope) + q6*g*sin(q5 - gslope) - 2*q1*g*sin(gslope);
-
-PEgrav2 = 2*q2*g*cos(gslope) + q4*g*sin(q3 - gslope) + q6*g*sin(q5 - gslope) ...
-- 2*q1*g*sin(gslope);
-
-PEspring2 = (khip*((-q3 - hipl)*(-q3 - hipl)))/2. + (khip*((-q5 - hipl)*(-q5 ...
-- hipl)))/2. + (kswing*((q4 - swingl)*(q4 - swingl)))/2. + (kswing*((q6 - ...
-swingl)*(q6 - swingl)))/2.;
-
-stanceE = (kswing*((q4 - swingl)*(q4 - swingl)))/2.;
-
-swingE = (kswing*((q6 - swingl)*(q6 - swingl)))/2.;
-
-hipE = (khip*((-q3 - hipl)*(-q3 - hipl)))/2. + (khip*((-q5 - hipl)*(-q5 - ...
-hipl)))/2.; 
-            end
-        end
+        
         
         E.stanceE = stanceE;
         E.swingE = swingE;
@@ -1231,10 +811,10 @@ hipl)))/2.;
             
             this.getParams();
             this.getQandUdefs(state);
-            c3 = cos(q3); c5 = cos(q5); s3 = sin(q3); s5 = sin(q5);
+            c5 = cos(q5);s5 = sin(q5);
             
-points.stancefoot(1) = q1 + c3*q4; 
-points.stancefoot(2) = q2 + q4*s3; 
+points.stancefoot(1) = q1 + q4*cos(q3); 
+points.stancefoot(2) = q2 + q4*sin(q3); 
 
 
 points.swingfoot(1) = q1 + c5*q6; 
@@ -1246,18 +826,18 @@ points.pelvis(2) = q2;
 
 
 points.COM(1) = q1; 
-points.COM(2) = q2; 
-            
+points.COM(2) = q2;
+
         end
         
         function [vels] = getVels(this, state)
             
             this.getParams();
             this.getQandUdefs(state);
-            c3 = cos(q3); c5 = cos(q5); s3 = sin(q3); s5 = sin(q5);
+            c5 = cos(q5);s5 = sin(q5);
             
-            vels.stancefoot(1) = u1 - q4*s3*u3 + c3*u4; 
-vels.stancefoot(2) = u2 + c3*q4*u3 + s3*u4; 
+vels.stancefoot(1) = u1 + u4*cos(q3) - q4*u3*sin(q3); 
+vels.stancefoot(2) = u2 + q4*u3*cos(q3) + u4*sin(q3); 
 
 
 vels.swingfoot(1) = u1 - q6*s5*u5 + c5*u6; 
@@ -1275,10 +855,6 @@ vels.COM(2) = u2;
         
         
         function [comWR] = getcomWR(this,state,phase)
-            this.getParams();
-            this.getQandUdefs(state);
-            c3 = cos(q3); c5 = cos(q5); s3 = sin(q3); s5 = sin(q5);
-            
             GRF = this.getGRF(0,state,phase);
             vels = this.getVels(state);
             comWR = dot(GRF,vels.COM);
@@ -1347,6 +923,7 @@ vels.COM(2) = u2;
             
             if ~strcmp('Aerial',phase)
                 [~,GRF] = this.XDoubleDot(t,x,phase);
+                GRF = GRF(1:2);
             else
                 GRF=[0;0];
             end
@@ -1358,22 +935,14 @@ vels.COM(2) = u2;
             stancePower = force.*velocity;
         end
         
-        function stanceforce = getStanceForce(this,x,phase)
-            if strcmp(phase,'Aerial') || strcmp(phase,'Toe')
-                kstance = this.kswing;
-                cstance = this.cswing;
-                stancel = this.swingl;
-            else
-                kstance = this.kstance;
-                cstance = this.cstance;
-                stancel = this.stancel;
-            end
+        function stanceforce = getStanceForce(this,x)
+            this.getParams();
             stanceforce = -kstance*(x(4)-this.stancel)-cstance*(x(10));
         end
   
         function swingPower = getSwingPower(this,x)
             force = this.getSwingForce(x);
-            velocity = x(10);
+            velocity = x(12);
             swingPower = force.*velocity;
         end
         
@@ -1382,16 +951,16 @@ vels.COM(2) = u2;
         end
         
         function hippower= getHipPower(this,x)
-            sz = RetractSLIPState(x);
+            sz = SwingSLIPState(x);
             force = this.getHipForce(x);
-            velocity = sz.stancefoot.AngleDot - sz.swingfoot.AngleDot;
+            velocity = sz.swingfoot.AngleDot;
             hippower = force.*velocity;
         end
         
         function hipforce = getHipForce(this,x)
-            sz = RetractSLIPState(x);
-            hipforce = -this.khip*(sz.stancefoot.Angle - sz.swingfoot.Angle - this.hipl) ...
-                       -this.chip*(sz.stancefoot.AngleDot - sz.swingfoot.AngleDot);
+            sz = SwingSLIPState(x);
+            hipforce = -this.khip*(sz.swingfoot.Angle - this.hipl) ...
+                       -this.chip*(sz.swingfoot.AngleDot);
         end
         
         %% Other Gait Information
@@ -1400,13 +969,13 @@ vels.COM(2) = u2;
                this.printStepCharacteristics(x0,varargin{:}); 
             end
         
-        function x0 = getYankImpulse(this,x0,tstart)
-            x0(10) = x0(10) - this.impulsecoeff*x0(10);
+        function x0 = getTOImpulse(this,x0)
+            ss = SwingSLIPState(x0);
+            ss.swingfoot.AngleDot = ss.swingfoot.AngleDot*(1 - this.tanimpulsecoeff);
+            ss.swingfoot.LengthDot = ss.swingfoot.LengthDot*(1 - this.impulsecoeff);
+            x0 = ss.getVector;
         end
         
-        function x0 = getTanImpulse(this,x0,tstart)
-            x0(9) = x0(9) - this.tanimpulsecoeff*x0(9);
-        end
         
         function [speed] = getSpeed(this, x0, xf, tf)
             if isempty(xf)
@@ -1414,8 +983,8 @@ vels.COM(2) = u2;
             end
             
             %Convert state vectors to descriptive class
-            x0struc = RetractSLIPState(x0);
-            xfstruc = RetractSLIPState(xf);
+            x0struc = SwingSLIPState(x0);
+            xfstruc = SwingSLIPState(xf);
             
             speed = (xfstruc.pelvis.x - x0struc.pelvis.x) / tf;
         end
@@ -1426,8 +995,8 @@ vels.COM(2) = u2;
             end
             
             %Convert state vectors to descriptive class
-            x0struc = RetractSLIPState(x0);
-            xfstruc = RetractSLIPState(xf);
+            x0struc = SwingSLIPState(x0);
+            xfstruc = SwingSLIPState(xf);
             
             steplength = (xfstruc.pelvis.x - x0struc.pelvis.x);
         end

@@ -711,12 +711,14 @@ if any(cellstouse==10) %RetractSLIP Runner
 %     runner.anim(x0);
     
 %     parmstovary=[{'kstance'} {'kswing'} {'khip'} {'swingl'} {'hipl'} {'gslope'} {'cswing'} {'chip'} {'cstance'}];
-parmstovary=[{'kstance'} {'kswing'} {'khip'} {'hipl'} {'impulsecoeff'}];
+parmstovary=[{'khip'} {'hipl'}];
 %       addedconstraints = @(r,x0) r.additionalConstraints(x0);
 %     addedconstraints=[];
       addedconstraints = @(r,varargin) r.PositiveImpulse(varargin);
-      runner.statestomeasure = [3 4 5 6 7 8 11 12];
-      runner.statestovary = [3 5 6 7 8 11 12];
+%       runner.statestomeasure = [5 6 11 12];
+%       runner.statestovary = [5 6 11 12];
+      runner.statestomeasure = [3 4];
+      runner.statestovary = [5 6 11 12];
       Algorithm = 'interior-point';
       MaxEvals = 1800;
       
@@ -738,7 +740,7 @@ parmstovary=[{'kstance'} {'kswing'} {'khip'} {'hipl'} {'impulsecoeff'}];
     x0 = xstar;
     r.printStepCharacteristics(x0,xf,tf,tair);
     if savegait
-        save([savepath 'RetractSLIP/' 'LockSepHips.mat'],'r','xstar','parmstovary','limitCycleError',...
+        save([savepath 'RetractSLIP/' 'OnlyMeasureSLIP.mat'],'r','xstar','parmstovary','limitCycleError',...
                                    'c','ceq','eflag','optimoutput','lambda',...
                                    'xf','tf','allx','allt','tair','phasevec');
     end 
