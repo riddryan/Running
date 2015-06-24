@@ -21,7 +21,7 @@ fonttype='Times New Roman';
 loadfolder = './SavedGaits/Swing/';
 exportfolder = './Figures/';
 
-cellstouse = [20];
+cellstouse = [8];
 %% 1: kswing study
 
 if sum(cellstouse==1)
@@ -680,19 +680,21 @@ if sum(cellstouse==8) && 0
         r.rigidlegimpulse = 1;
         r.impulsecoeff = 0;
         PNAME = 'swingl';
-        parmrange = sort(linspace(0,1,30));
+        parmrange = sort(linspace(0,1.5,40));
         %
         
         
         parmstovary=[{'kswing'} {'khip'} {'hipl'} {'impulsecoeff'}];
         r.usefloorconstraint = 0;
+        Algorithm = 'interior-point';
+        plotiter = 1;
         
         extraconstraint = [];
         
         %     Run the parameter study
         [runners,xstar,cnvrg,prange] = parmstudy1d(r,xstar,parmrange,PNAME,...
             'runcharic',runcharic,'parmstovary',parmstovary,'extraconstraint',extraconstraint,'TolCon',constrainttolerance,...
-            'MaxEvals',1000);
+            'MaxEvals',1000,'Algo',Algorithm,'plotiter',1);
        
         
         numparams = length(parmstovary);
