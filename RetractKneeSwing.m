@@ -32,6 +32,8 @@ classdef RetractKneeSwing < Runner
         sephips = 1;
         kneelock = 0;
         
+        bentknee = 1;
+        
         phases = {'Aerial'};
     end
     
@@ -63,6 +65,31 @@ classdef RetractKneeSwing < Runner
             
             IC = RetractKneeSwingState;
             switch test
+                case 'bentknee'
+                    runner.phases = {'Aerial' 'KneeLock'};
+                    runner.bentknee = 1;
+                    runner.lthigh = 0.65;
+                    runner.lshank = 0.45;
+                    runner.kneelock = 1;
+                    runner.sephips = 0;
+                    runner.mfoot = 0.5;
+                    
+                    runner.kknee = 3; %0.01
+                    runner.khip = 7; %0.01
+%                     runner.kknee = 0; %0.01
+%                     runner.khip = 0; %0.01
+                    
+                    runner.gslope = 0;
+                    runner.kneel = 1;
+                    runner.hipl = -0.5;
+                    
+                    IC.foot.Angle = runner.SLIPx0(1);
+                    IC.knee.Angle = runner.SLIPx0(1);
+                    
+                    IC.foot.AngleDot = 0;
+                    IC.knee.AngleDot = 0;
+                    
+                    x0 = IC.getVector();
                                 case 'nokneeunder'
                     runner.phases = {'Aerial' 'KneeLock'};
                     runner.kneelock = 1;
