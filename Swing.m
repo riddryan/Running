@@ -44,7 +44,7 @@ classdef Swing < Runner
             aviname = [savepath 'Swing1.avi'];
             onephasesim = 0;
             manystep = 0;
-            test = 'nosprings';
+            test = 'experiment';
             
             LineWidth=3;
             LineSize=3;
@@ -79,12 +79,12 @@ switch test
             
         runner.rigidlegimpulse = 0;
         
-                    runner.kswing = 5; %0.01
+                    runner.kswing = 1; %0.01
                     runner.khip = 5; %0.01
 
                     runner.gslope = 0;
-                    runner.swingl = -1;
-                    runner.hipl = -1.4;
+                    runner.swingl = 1;
+                    runner.hipl = -1.6;
         
         IC.swingfoot.Angle = runner.SLIPx0(1);
         IC.swingfoot.Length = runner.SLIPx0(2);
