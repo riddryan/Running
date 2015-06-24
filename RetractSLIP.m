@@ -16,6 +16,8 @@ classdef RetractSLIP < Runner
         impulsecoeff = 2;
         rigidlegimpulse = 0;
         tanimpulsecoeff = 0;
+        lockable = 0;
+        lockstate = 0;
         
         %Springs
         kstance = 12; kswing = 0.01; khip = 0.01;
@@ -27,7 +29,7 @@ classdef RetractSLIP < Runner
         useHSevent = 0;
         sephips = 0;
         
-        phases = {'Stance' 'Toe' 'Aerial'};
+        phases = {'Stance' 'Aerial'};
     end
     
     
@@ -41,7 +43,7 @@ classdef RetractSLIP < Runner
             aviname = [savepath 'RetractSLIP2.avi'];
             onephasesim = 0;
             manystep = 0;
-            test = 'tanimpulse';
+            test = 'locksephips';
             
             LineWidth=3;
             LineSize=3;
@@ -55,6 +57,77 @@ classdef RetractSLIP < Runner
             
             IC = RetractSLIPState;
             switch test
+                                                case 'locksephips'
+                    runner.lockable = 1;
+                    runner.tanimpulsecoeff = 0;
+                    runner.sephips=1;
+                    runner.rigidlegimpulse = 1;
+                    runner.impulsecoeff = 2;
+                    runner.useHSevent = 1;
+                    runner.kstance = 12.8734; %12
+                    runner.kswing = 0; %0.01
+                    runner.khip = 5; %0.01
+                    runner.cstance = 0;
+                    runner.cswing = 0;
+                    runner.chip = 0;
+                    runner.gslope = 0;
+                    runner.swingl = 1;
+                    runner.hipl = 1.3;
+                    IC.stancefoot.Angle = -1.1287;
+                    IC.stancefoot.Length = runner.stancel;
+                    runner.statestomeasure = [3 4 5 6 7:8 11:12];
+                    
+                    
+                    %
+                    IC.pelvis.x = -0.4279;
+                    IC.pelvis.y = 0.9038;
+                    IC.pelvis.xDot = 1;
+                    IC.pelvis.yDot = -0.3;
+                   
+                    IC.stancefoot.AngleDot = -0.7;
+                    IC.stancefoot.LengthDot = -0.5830;
+                    
+                    IC.swingfoot.Angle = -2.0;
+                    IC.swingfoot.Length = 0.8;
+                    IC.swingfoot.AngleDot = 0.2;
+                    IC.swingfoot.LengthDot = -1.3;
+                    x0 = IC.getVector();
+                    
+                                case 'tanimpulse_hipstogether'
+                    runner.tanimpulsecoeff = 1;
+                    runner.sephips=0;
+                    runner.rigidlegimpulse = 1;
+                    runner.impulsecoeff = 3;
+                    runner.useHSevent = 1;
+                    runner.kstance = 12.8734; %12
+                    runner.kswing = 0; %0.01
+                    runner.khip = 2.5; %0.01
+                    runner.cstance = 0;
+                    runner.cswing = 0;
+                    runner.chip = 0;
+                    runner.gslope = 0;
+                    runner.swingl = 1;
+                    runner.hipl = 0.1;
+                    IC.stancefoot.Angle = -1.1287;
+                    IC.stancefoot.Length = runner.stancel;
+                    runner.statestomeasure = [3 4 5 6 7:8 11:12];
+                    
+                    
+                    %
+                    IC.pelvis.x = -0.4279;
+                    IC.pelvis.y = 0.9038;
+                    IC.pelvis.xDot = 1;
+                    IC.pelvis.yDot = -0.3;
+                   
+                    IC.stancefoot.AngleDot = -0.7;
+                    IC.stancefoot.LengthDot = -0.5830;
+                    
+                    IC.swingfoot.Angle = -2.0;
+                    IC.swingfoot.Length = 0.93;
+                    IC.swingfoot.AngleDot = 0.2;
+                    IC.swingfoot.LengthDot = -1.34;
+                    x0 = IC.getVector();
+                    
                 case 'tanimpulse'
                     runner.tanimpulsecoeff = 1;
                                         runner.sephips=1;
@@ -385,27 +458,17 @@ classdef RetractSLIP < Runner
             allt = [];
             allx = [];
             phasevec = [];
-            %             phaseevents = { @(t,x) this.HeelToeEvents(t,x), @(t,x) this.BottomedEvents(t,x),...
-            %                 @(t,x) this.ToeEvents(t,x)  , @(t,x) this.AerialEvents(t,x) };
-            if length(this.phases)==3
-                phaseevents = { @(t,x) this.StanceEvents(t,x), @(t,x) this.ToeEvents(t,x), @(t,x) this.AerialEvents(t,x)};
-            else
-                phaseevents = { @(t,x) this.StanceEvents(t,x), @(t,x) this.AerialEvents(t,x)};
-            end
+            phaseevents = { @(t,x) this.StanceEvents(t,x), @(t,x) this.AerialEvents(t,x)};
             %
             
             while sim
                 %% Phase transition & Integration
                 phase =  this.phases{phasenum}; %Get name of phase corresponding to phasenum
-                if strcmp(phase,'Toe') && this.rigidlegimpulse
+                if strcmp(phase,'Aerial') && this.rigidlegimpulse && phasevec(end) == 1
                     x0 = getYankImpulse(this,x0,tstart);
-                    x0(9) = x0(9) - this.tanimpulsecoeff*x0(9);
-                    phasenum = phasenum+1;
-                    phase = this.phases{phasenum};
-                elseif strcmp('Toe',phase)
-                    phasenum = phasenum+1;
-                    phase = this.phases{phasenum};
+                    x0 = getTanImpulse(this,x0,tstart);
                 end
+                
                 odex0 = x0;
                 opts = odeset('Events', phaseevents{phasenum},'RelTol',RelTol','AbsTol',AbsTol); %Set integration options
                 [t,x,~,~,ie] = ode45(@(t,x) this.XDoubleDot(t,x,phase),tstart:dt:tstart+tmax,odex0,opts); %Integrate dynamics
@@ -426,19 +489,21 @@ classdef RetractSLIP < Runner
                     sim = 0;
                     break;
                 end
-                if phasenum == length(this.phases) %Fallen or reached last phase
+                if ie == 1 && phasenum == 1
+                   phasenum = phasenum+1; 
+                elseif ie == 1 && phasenum ==2
                     sim = 0;
-                else
-                    phasenum = phasenum + 1;
+                elseif ie == 2 %Lock the leg
+                    phasenum = phasenum;
+                    this.lockstate = 1;
+                    phaseevents = { @(t,x) this.StanceEvents(t,x), @(t,x) this.AerialEvents(t,x)};
+                    x0 = this.phaseTransition(allt(end),allx(end,:),phase);
                 end
                 
             end
+            this.lockstate = 0;
             xf = allx(end,:); tf = allt(end);
-            if length(this.phases)==3
-                tair = allt(find(phasevec==3,1));
-            else
-                tair = allt(find(phasevec==2,1));
-            end
+            tair = allt(find(phasevec==2,1));
             if isempty(tair)
                 tair = tf;
             end
@@ -525,13 +590,13 @@ classdef RetractSLIP < Runner
             else
                 isTerminal = 0;
             end
-        end
-        
-        function [value, isTerminal, direction]  = ToeEvents(this,t,state)
-            [GRF] = this.getGRF(t,state,'Toe');
-            value = GRF(end);
-            direction = 0;
-            isTerminal = 1;
+            
+            %Event at full extension if not already locked, and locking is enabled
+            if this.lockable && ~this.lockstate
+                value(2) = ss.swingfoot.Length - this.stancel;
+                isTerminal(2) = 1;
+                direction(2) = 0;
+            end
         end
 
         function [value, isTerminal, direction]  = AerialEvents(this,t,state)
@@ -544,6 +609,13 @@ classdef RetractSLIP < Runner
                 value(1) = pts.swingfoot(2);
                 direction(1) = 0;
                     isTerminal(1) = 1;
+            end
+            
+            %Event at full extension if not already locked, and locking is enabled
+            if this.lockable && ~this.lockstate
+                value(2) = ss.swingfoot.Length - this.stancel;
+                isTerminal(2) = 1;
+                direction(2) = 0;
             end
         end
         
@@ -646,15 +718,40 @@ classdef RetractSLIP < Runner
                 plotter.plotLine(points.pelvis,points.swingfoot,'LineStyle','--');
             end
             
+            if this.sephips
+                lpelvis = 0.3;
+                torso = points.pelvis + [0 lpelvis];
+                plotter.plotLine(points.pelvis,torso)
+            end
             
             if this.khip>0
-            stancedir = (points.stancefoot - points.pelvis)/norm(points.stancefoot - points.pelvis);
-            swingdir = (points.swingfoot - points.pelvis)/norm(points.swingfoot - points.pelvis);
-            stancepoint = points.pelvis + .2 * this.stancel * stancedir;
-            swingpoint = points.pelvis + .2 * this.stancel * swingdir;
-            
-            plotter.plotAngSpring(stancepoint,swingpoint,points.pelvis,2,.05,...
-                'Color',[232 40 76]/255) %achilles spring
+                if this.sephips
+                    torsodir = [0 1];
+                    torsopoint = points.pelvis + 0.7 * lpelvis * torsodir;
+                    stancedir = (points.stancefoot - points.pelvis)/norm(points.stancefoot - points.pelvis);
+                    swingdir = (points.swingfoot - points.pelvis)/norm(points.swingfoot - points.pelvis);
+                    stancepoint = points.pelvis + .2 * this.stancel * stancedir;
+                    swingpoint = points.pelvis + .2 * this.stancel * swingdir;
+                    
+%                     if points.swingfoot(2)>1e-4
+                    plotter.plotCircSpring(torsopoint,swingpoint,.05,1,2,.05,...
+                        (state(5)-this.hipl),'Color',[101 156 255]/255)
+%                     end
+                    
+%                     if points.stancefoot(2)>1e-4
+                    plotter.plotCircSpring(torsopoint,stancepoint,0.05,1,2,.05,...
+                        (state(3)-this.hipl),'Color',[0 0 0]/255)
+%                     end
+                    
+                else
+                    stancedir = (points.stancefoot - points.pelvis)/norm(points.stancefoot - points.pelvis);
+                    swingdir = (points.swingfoot - points.pelvis)/norm(points.swingfoot - points.pelvis);
+                    stancepoint = points.pelvis + .2 * this.stancel * stancedir;
+                    swingpoint = points.pelvis + .2 * this.stancel * swingdir;
+                    
+                    plotter.plotAngSpring(stancepoint,swingpoint,points.pelvis,2,.05,...
+                        'Color',[232 40 76]/255) %achilles spring
+                end
             end
             
             %Draw Masses
@@ -665,10 +762,10 @@ classdef RetractSLIP < Runner
             axis equal;
             
             %Set Axis Limits
-            xLims = [points.pelvis(1)]+ [-1 1];
+            xLims = [points.pelvis(1)]+ [-1 3];
             xlim(xLims);
             
-            yLims = [points.pelvis(2)] + [-1.5 .5];
+            yLims = [points.pelvis(2)] + [-2.5 .5];
             ylim(yLims);
             
             
@@ -753,6 +850,7 @@ classdef RetractSLIP < Runner
         end
         this.getQandUdefs(x);
         
+        if strcmp(phaseToSwitchTo,'Stance') && ~this.lockstate
         unew = x(7:12);
         unew(3) = (sin(q3)*u1-cos(q3)*u2)/q4;
         unew(4) = -cos(q3)*(u1+tan(q3)*u2);
@@ -760,6 +858,26 @@ classdef RetractSLIP < Runner
         xNew = x;
         xNew(7:12) = unew;
         Impulse = [];
+        else
+            phase = phaseToSwitchTo;
+            [MM,rhs] = this.getMMandRHS(time,x,phase);
+            [Jc,Jcdot] = this.getConstraints(x,phase);
+            
+            [d1,d2] = size(Jc);
+            u = x(this.N/2+1:end);
+            
+            
+            
+            MMbig = [MM Jc'; Jc zeros(d1)];
+            RHSbig = [MM*u;zeros(d1,1)];
+            
+            VelsAndImpulses = MMbig \ RHSbig;
+            xNew = [x(1:this.N/2);VelsAndImpulses(1:this.N/2)];
+            
+            xNew = this.positionSwitches(xNew);
+            
+            Impulse = -VelsAndImpulses(this.N/2+1:end);
+        end
         
         if (sum(isnan(xNew)))
             xNew
@@ -879,6 +997,9 @@ gslope);
             RHSbig = rhs;
         end
         
+%         if cond(MMbig)<1e-10
+%            blah = 1; 
+%         end
 
         AccsAndConstraints = MMbig \ RHSbig;
         
@@ -906,7 +1027,7 @@ gslope);
         c3 = cos(q3); c5 = cos(q5); s3 = sin(q3); s5 = sin(q5);
         
         switch phase
-            case {'Stance', 'Toe'}
+            case {'Stance'}
                 constraintJacobianStance(1,1) = 1; constraintJacobianStance(1,2) = 0; ...
                     constraintJacobianStance(1,3) = -(q4*s3); constraintJacobianStance(1,4) = c3; ...
                     constraintJacobianStance(1,5) = 0; constraintJacobianStance(1,6) = 0;
@@ -937,6 +1058,11 @@ gslope);
                 error('Unknown phase for running model: %s', phase);
                 
                 
+        end
+        
+        if this.lockstate
+           C = [C;[0 0 0 0 0 1]];
+           CDot = [CDot;[0 0 0 0 0 0]];
         end
         
     end
@@ -1167,6 +1293,13 @@ vels.COM(2) = u2;
                     Ceq = 1 - this.swingl;
                 end
                 
+                function [C,Ceq] = VertImpulse(this,x0,xf,tf,allx,allt,tair,phasevec)
+                   Ceq = [];
+                   TOdex = find(phasevec==3,1); 
+                   vels = this.getVels(allx(TOdex,:));
+                   C = -vels.stancefoot(2);
+                end
+                
                 function [C,Ceq] = PositiveImpulse(this,varargin)
                     C=-this.impulsecoeff;
                     Ceq = [];
@@ -1190,6 +1323,12 @@ vels.COM(2) = u2;
                     if isempty(ceq)
                         ceq = 0;
                     end
+                end
+                
+                function cost = impulsecost(this,x0,xf,tf,allx,allt,tair,phasevec)
+                   TOdex = find(phasevec==3,1); 
+                   vels = this.getVels(allx(TOdex,:));
+                   cost = dot(vels.stancefoot,vels.stancefoot);
                 end
         
         %% Additional Dynamics Calculations
@@ -1256,6 +1395,10 @@ vels.COM(2) = u2;
         
         function x0 = getYankImpulse(this,x0,tstart)
             x0(10) = x0(10) - this.impulsecoeff*x0(10);
+        end
+        
+        function x0 = getTanImpulse(this,x0,tstart)
+            x0(9) = x0(9) - this.tanimpulsecoeff*x0(9);
         end
         
         function [speed] = getSpeed(this, x0, xf, tf)
