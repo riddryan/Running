@@ -32,7 +32,7 @@ savepath = [dir '\SavedGaits\'];
 % 2. Soft Stomach Series
 % 3. Soft Stomach Series Parallel
 
-cellstouse=[12];
+cellstouse=[10];
 
 %Optimizer Constraint Tolerance
 constrainttolerance = 1e-5;
@@ -654,45 +654,43 @@ if any(cellstouse==10) %RetractSLIP Runner
             runner = RetractSLIP;
             IC = RetractSLIPState;
             
-                    runner.tanimpulsecoeff = 1;
-                                        runner.sephips=1;
+                                       runner.lockable = 1;
+                    runner.tanimpulsecoeff = 0;
+                    runner.sephips=1;
                     runner.rigidlegimpulse = 1;
-                    runner.impulsecoeff = 3;
+                    runner.impulsecoeff = 2;
                     runner.useHSevent = 1;
-                    runner.kstance = 15; %12
+                    runner.kstance = 12.8734; %12
                     runner.kswing = 0; %0.01
-                    runner.khip = 3; %0.01
+                    runner.khip = 5; %0.01
                     runner.cstance = 0;
                     runner.cswing = 0;
                     runner.chip = 0;
                     runner.gslope = 0;
                     runner.swingl = 1;
-                    runner.hipl = pi/2;
+                    runner.hipl = 1.3;
                     IC.stancefoot.Angle = -1.1287;
                     IC.stancefoot.Length = runner.stancel;
-                    runner.statestomeasure = [3 5 6 7:8 11:12];
+                    runner.statestomeasure = [3 4 5 6 7:8 11:12];
                     
                     
                     %
+                    IC.pelvis.x = -0.4279;
+                    IC.pelvis.y = 0.9038;
                     IC.pelvis.xDot = 1;
                     IC.pelvis.yDot = -0.3;
-                    
+                   
                     IC.stancefoot.AngleDot = -0.7;
                     IC.stancefoot.LengthDot = -0.5830;
                     
-                    IC.swingfoot.Angle = -2.15;
-                    IC.swingfoot.Length = 0.88;
-                    IC.swingfoot.AngleDot = -0.85;
-                    IC.swingfoot.LengthDot = -1.2;
-                    
-                    
-                    addedconstraints = @(r,varargin) r.PositiveImpulse(varargin);
-                    
-%                     runcharic.airfrac = 0;
-%                     runcharic.steplength = 0.870939;
-%                     runcharic.speed = 0.974541;
-                    
+                    IC.swingfoot.Angle = -2.0;
+                    IC.swingfoot.Length = 0.8;
+                    IC.swingfoot.AngleDot = 0.2;
+                    IC.swingfoot.LengthDot = -1.3;
                     x0 = IC.getVector();
+                    
+                    
+                    
             [x0,runner] = runner.GoodInitialConditions(x0);
             
 %             addedconstraints = [];
@@ -713,9 +711,13 @@ if any(cellstouse==10) %RetractSLIP Runner
 %     runner.anim(x0);
     
 %     parmstovary=[{'kstance'} {'kswing'} {'khip'} {'swingl'} {'hipl'} {'gslope'} {'cswing'} {'chip'} {'cstance'}];
-parmstovary=[{'kstance'} {'kswing'} {'khip'} {'hipl'} {'impulsecoeff'} {'tanimpulsecoeff'}];
+parmstovary=[{'kswing'} {'khip'} {'hipl'} {'impulsecoeff'}];
 %       addedconstraints = @(r,x0) r.additionalConstraints(x0);
 %     addedconstraints=[];
+      addedconstraints = @(r,varargin) r.PositiveImpulse(varargin);
+      
+      Algorithm = 'interior-point';
+      MaxEvals = 1800;
       
     % Find Limit cycle
     [finalStates, finalParameters, limitCycleError, c, ceq, eflag, optimoutput, lambda] = ...
@@ -735,7 +737,7 @@ parmstovary=[{'kstance'} {'kswing'} {'khip'} {'hipl'} {'impulsecoeff'} {'tanimpu
     x0 = xstar;
     r.printStepCharacteristics(x0,xf,tf,tair);
     if savegait
-        save([savepath 'RetractSLIP/' 'TanImpulse.mat'],'r','xstar','parmstovary','limitCycleError',...
+        save([savepath 'RetractSLIP/' 'LockSepHips.mat'],'r','xstar','parmstovary','limitCycleError',...
                                    'c','ceq','eflag','optimoutput','lambda',...
                                    'xf','tf','allx','allt','tair','phasevec');
     end 
