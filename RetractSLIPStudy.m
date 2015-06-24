@@ -25,12 +25,12 @@ fonttype='Times New Roman';
 loadfolder = './SavedGaits/RetractSLIP/';
 exportfolder = './Figures/';
 
-cellstouse = [3];
+cellstouse = [2];
 %% 1: Tan Impulse to No Tan Impulse, extended set point
 %
 if sum(cellstouse==1)
     PNAME = 'tanimpulsecoeff';
-    savename = [PNAME '2.mat'];
+    savename = [PNAME '.mat'];
     rootdir = cd;
     pfolder = '\ParameterStudies';
     classfolder = ['\RetractSLIP\'];
@@ -39,7 +39,7 @@ if sum(cellstouse==1)
         loadname = 'TanImpulse.mat';
         load([loadfolder loadname]);
         
-        Algorithm = 'interior-point';
+        Algorithm = 'sqp';
         
         parmrange = sort([linspace(0,0.1,20) linspace(r.tanimpulsecoeff,0.1,20)]);
         parmstovary=[{'kswing'} {'khip'} {'hipl'} {'impulsecoeff'}];
@@ -115,7 +115,7 @@ end
 %
 if sum(cellstouse==2)
     PNAME = 'tanimpulsecoeff';
-    savename = [PNAME '3.mat'];
+    savename = [PNAME '2.mat'];
     rootdir = cd;
     pfolder = '\ParameterStudies';
     classfolder = ['\RetractSLIP\'];
@@ -142,6 +142,95 @@ if sum(cellstouse==2)
         [runners,xstar,cnvrg,prange] = parmstudy1d(r,xstar,parmrange,PNAME,...
             'runcharic',runcharic,'parmstovary',parmstovary,'extraconstraint',extraconstraint,'TolCon',constrainttolerance,...
             'MaxEvals',MaxEvals,'Algo',Algorithm,'LB',LB,'FinDiffType',FinDiffType);
+        
+        
+        numparams = length(parmstovary);
+        numIC = length(r.statestovary);
+        numvars = numparams;
+        numstudies = length(cnvrg);
+        
+        pvar = zeros(numstudies,1);
+        resparms = zeros(numstudies,numvars);
+        floornegs = zeros(size(cnvrg));
+        abovepelvis = zeros(size(cnvrg));
+        for i = find(cnvrg==1)
+            pvar(i) = runners(i).(PNAME);
+            for j = 1:numparams
+                resparms(i,j) = runners(i).(parmstovary{j});
+            end
+            [~, ~, allx, allt, tair,this,phasevec] = runners(i).onestep(xstar(:,i));
+            for k = 1:size(allx(:,1))
+                pts = runners(i).getPoints(allx(k,:));
+                swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
+            end
+            abovepelvis(i) = sum(swingfootrel(swingfootrel>0));
+            [~,floornegs(i)] = runners(i).floorconstraint(1,1,1,allx,allt);
+        end
+        
+        triptol = -1e-4;
+        tripdex = floornegs<triptol & cnvrg==1;
+        tripswitch = find(diff(tripdex)==1)+1;
+        
+        abovedex = abovepelvis>0 & cnvrg==1;
+        
+    else
+        load([rootdir pfolder classfolder savename],'-regexp', '^(?!cellstouse)\w')
+        
+        
+        h=figure;
+        for j = 1:numparams
+            subplot(numparams,1,j)
+            plot(prange(cnvrg==1),resparms(cnvrg==1,j),'LineWidth',2)
+            hold on
+            plot(prange(tripdex),resparms(tripdex,j),'rx','LineWidth',2)
+            plot(prange(abovedex),resparms(abovedex,j),'gx','LineWidth',2)
+            plot(prange(abovedex & tripdex), resparms(abovedex & tripdex,j),'mx','LineWidth',2)
+            ylabel(parmstovary{j})
+            %             set(gca,'XLim',[0.6 2])
+        end
+        legend('Good','No Floor','Foot Above Pelvis')
+        xlabel(PNAME)
+        
+        
+        set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
+        hgexport(h,[exportfolder savename '.bmp'])
+        saveresults = 0;
+    end
+    
+end
+%% 2b: Tan Impulse: Different Optimization Parameters, don't vary kswing
+%
+if sum(cellstouse==2)
+    PNAME = 'tanimpulsecoeff';
+    savename = [PNAME '3.mat'];
+    rootdir = cd;
+    pfolder = '\ParameterStudies';
+    classfolder = ['\RetractSLIP\'];
+    
+    if ~exist([rootdir pfolder classfolder savename],'file')
+        loadname = 'TanImpulse.mat';
+        load([loadfolder loadname]);
+        
+        Algorithm = 'interior-point';
+        
+        parmrange = sort([linspace(0,0.58,20)]);
+        parmstovary=[{'kstance'} {'kswing'} {'khip'} {'hipl'} {'impulsecoeff'}];
+        
+        %Extra changes to the loaded gait
+        %         extraconstraint = @(r,varargin) r.PositiveImpulse(varargin);
+        extraconstraint = [];
+        r.statestovary = [3 5 6 7:8 11 12];
+        r.statestomeasure = [3 4 5 6 7 8 11 12];
+        LB = [-Inf -Inf -Inf -Inf -Inf -Inf -Inf 0 0 0 -Inf 0];
+        runcharic.steplength = 1;
+        runcharic.airfrac = 0.2;
+        %         r.rigidlegimpulse = 1;
+        %         r.impulsecoeff = 0;
+        
+        %     Run the parameter study
+        [runners,xstar,cnvrg,prange] = parmstudy1d(r,xstar,parmrange,PNAME,...
+            'runcharic',runcharic,'parmstovary',parmstovary,'extraconstraint',extraconstraint,'TolCon',constrainttolerance,...
+            'MaxEvals',MaxEvals,'Algo',Algorithm,'LB',LB,'FinDiffType',FinDiffType,'plotiter',1);
         
         
         numparams = length(parmstovary);
@@ -263,6 +352,72 @@ if sum(cellstouse==3)
         tripswitch = find(diff(tripdex)==1)+1;
         
         abovedex = abovepelvis>0 & cnvrg==1;
+        
+    else
+        load([rootdir pfolder classfolder savename],'-regexp', '^(?!cellstouse)\w')
+        
+        
+        h=figure;
+        for j = 1:numparams
+            subplot(numparams,1,j)
+            plot(prange(cnvrg==1),resparms(cnvrg==1,j),'LineWidth',2)
+            hold on
+            plot(prange(tripdex),resparms(tripdex,j),'rx','LineWidth',2)
+            plot(prange(abovedex),resparms(abovedex,j),'gx','LineWidth',2)
+            plot(prange(abovedex & tripdex), resparms(abovedex & tripdex,j),'mx','LineWidth',2)
+            ylabel(parmstovary{j})
+            %             set(gca,'XLim',[0.6 2])
+        end
+        legend('Good','No Floor','Foot Above Pelvis')
+        xlabel(PNAME)
+        
+        
+        set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
+        hgexport(h,[exportfolder savename '.bmp'])
+        saveresults = 0;
+    end
+    
+end
+%% 4: Min Impulse with Fulley Extended Swing Set Point
+%
+if sum(cellstouse==4)
+    savename = ['MinTanImpulse.mat'];
+    rootdir = cd;
+    pfolder = '\SavedGaits';
+    classfolder = ['\RetractSLIP\'];
+   
+    
+    if ~exist([rootdir pfolder classfolder savename],'file')
+        loadname = 'TanImpulse.mat';
+        load([loadfolder loadname]);
+        
+        plotiter = 1;
+        Algorithm = 'interior-point';
+        
+        parmstovary=[{'khip'} {'hipl'} {'impulsecoeff'} {'tanimpulsecoeff'}];
+        
+        %Extra changes to the loaded gait
+        extraconstraint = @(r,x0,xf,tf,allx,allt,tair,phasevec) r.VertImpulse(x0,xf,tf,allx,allt,tair,phasevec);
+        extracost = @(r,x0,xf,tf,allx,allt,tair,phasevec) r.impulsecost(x0,xf,tf,allx,allt,tair,phasevec);
+        r.statestovary = [5 6 11 12];
+        r.statestomeasure = [5 6 11 12];
+        LB = [-Inf -Inf -Inf -Inf 0 -Inf -Inf -Inf];
+        
+        %     Run the Minimization
+        [finalStates, finalParameters, limitCycleError, ...
+        c, ceq, exitflag, optimoutput, lambda] = r.findLimitCycle(xstar,'runcharic',runcharic,'parametersToAlter',parmstovary,...
+            'additionalConstraintFunction',extraconstraint,'TolCon',constrainttolerance,...
+            'MaxEvals',MaxEvals,'Algo',Algorithm,'LB',LB,'FinDiffType',FinDiffType,'plotiter',plotiter,...
+             'Objective',extracost);
+        
+        
+     r = r.setParametersFromList(parmstovary,finalParameters);
+     xstar = finalStates;
+     figure
+    [xf,tf,allx,allt,tair,newr,phasevec] = r.onestep(xstar,'interleaveAnimation',1);
+     xstar = allx(1,:);
+     r.print(x0,xf,tf,tair);
+     
         
     else
         load([rootdir pfolder classfolder savename],'-regexp', '^(?!cellstouse)\w')
