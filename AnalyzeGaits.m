@@ -1103,8 +1103,8 @@ if any(cellstouse==11) %SLIP Runner
            ylabel('Force')
            title('GRF')
            
-                   set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
-        hgexport(h,[exportfolder 'SLIPModelvsData.jpg'])
+        set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
+        hgexport(h,[exportfolder 'SLIPModelvsData'])
 
     
 end
