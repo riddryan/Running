@@ -19,7 +19,7 @@
 
 
 %% Initialization & Options
-useguess=1; %set to 1 to attempt to find limit cycle using user-set initial conditions (within each cell).  
+useguess=0; %set to 1 to attempt to find limit cycle using user-set initial conditions (within each cell).  
 %Otherwise, try to load an existing limit cycle to start from
 usenominal = 1; %Use subject 7 trial 2.  If 0, will use average running characteristics from all trials
 savegait=1; %1 for saving the limit cycles.  Make sure you set the name of the save files
@@ -654,11 +654,11 @@ if any(cellstouse==10) %RetractSLIP Runner
             runner = RetractSLIP;
             IC = RetractSLIPState;
             
-                                       runner.lockable = 1;
+                    runner.lockable = 1;
                     runner.tanimpulsecoeff = 0;
                     runner.sephips=1;
                     runner.rigidlegimpulse = 1;
-                    runner.impulsecoeff = 2;
+                    runner.impulsecoeff = 3;
                     runner.useHSevent = 1;
                     runner.kstance = 12.8734; %12
                     runner.kswing = 0; %0.01
@@ -675,18 +675,18 @@ if any(cellstouse==10) %RetractSLIP Runner
                     
                     
                     %
-                    IC.pelvis.x = -0.4279;
-                    IC.pelvis.y = 0.9038;
-                    IC.pelvis.xDot = 1;
-                    IC.pelvis.yDot = -0.3;
+                    IC.pelvis.x = -0.4278;
+                    IC.pelvis.y = 0.9039;
+                    IC.pelvis.xDot = 1.0138;
+                    IC.pelvis.yDot = -0.1651;
                    
-                    IC.stancefoot.AngleDot = -0.7;
+                    IC.stancefoot.AngleDot = -0.8457;
                     IC.stancefoot.LengthDot = -0.5830;
                     
                     IC.swingfoot.Angle = -2.0;
-                    IC.swingfoot.Length = 0.8;
-                    IC.swingfoot.AngleDot = 0.2;
-                    IC.swingfoot.LengthDot = -1.3;
+                    IC.swingfoot.Length = 0.75;
+                    IC.swingfoot.AngleDot = 0.35;
+                    IC.swingfoot.LengthDot = -1.2;
                     x0 = IC.getVector();
                     
                     
@@ -695,7 +695,7 @@ if any(cellstouse==10) %RetractSLIP Runner
             
 %             addedconstraints = [];
     else
-                load([savepath 'RetractSLIP/' 'TanImpulse.mat'],'r','xstar')
+                load([savepath 'RetractSLIP/' 'LockSepHips.mat'],'r','xstar')
                 runner=r;
                 x0 = xstar;
                 
@@ -711,11 +711,12 @@ if any(cellstouse==10) %RetractSLIP Runner
 %     runner.anim(x0);
     
 %     parmstovary=[{'kstance'} {'kswing'} {'khip'} {'swingl'} {'hipl'} {'gslope'} {'cswing'} {'chip'} {'cstance'}];
-parmstovary=[{'kswing'} {'khip'} {'hipl'} {'impulsecoeff'}];
+parmstovary=[{'kstance'} {'kswing'} {'khip'} {'hipl'} {'impulsecoeff'}];
 %       addedconstraints = @(r,x0) r.additionalConstraints(x0);
 %     addedconstraints=[];
       addedconstraints = @(r,varargin) r.PositiveImpulse(varargin);
-      
+      runner.statestomeasure = [3 4 5 6 7 8 11 12];
+      runner.statestovary = [3 5 6 7 8 11 12];
       Algorithm = 'interior-point';
       MaxEvals = 1800;
       
@@ -724,7 +725,7 @@ parmstovary=[{'kswing'} {'khip'} {'hipl'} {'impulsecoeff'}];
          runner.findLimitCycle(x0,'runcharic',runcharic,...
         'parametersToAlter',parmstovary,...
         'TolCon',constrainttolerance,...
-        'additionalConstraintFunction',addedconstraints);
+        'additionalConstraintFunction',addedconstraints,'Algo',Algorithm,'MaxEvals',MaxEvals);
     
     newr = runner.setParametersFromList(parmstovary,finalParameters);
     newx0 = finalStates;

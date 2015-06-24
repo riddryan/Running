@@ -62,7 +62,7 @@ classdef RetractSLIP < Runner
                     runner.tanimpulsecoeff = 0;
                     runner.sephips=1;
                     runner.rigidlegimpulse = 1;
-                    runner.impulsecoeff = 2;
+                    runner.impulsecoeff = 3;
                     runner.useHSevent = 1;
                     runner.kstance = 12.8734; %12
                     runner.kswing = 0; %0.01
@@ -79,18 +79,18 @@ classdef RetractSLIP < Runner
                     
                     
                     %
-                    IC.pelvis.x = -0.4279;
-                    IC.pelvis.y = 0.9038;
-                    IC.pelvis.xDot = 1;
-                    IC.pelvis.yDot = -0.3;
+                    IC.pelvis.x = -0.4278;
+                    IC.pelvis.y = 0.9039;
+                    IC.pelvis.xDot = 1.0138;
+                    IC.pelvis.yDot = -0.1651;
                    
-                    IC.stancefoot.AngleDot = -0.7;
+                    IC.stancefoot.AngleDot = -0.8457;
                     IC.stancefoot.LengthDot = -0.5830;
                     
                     IC.swingfoot.Angle = -2.0;
-                    IC.swingfoot.Length = 0.8;
-                    IC.swingfoot.AngleDot = 0.2;
-                    IC.swingfoot.LengthDot = -1.3;
+                    IC.swingfoot.Length = 0.75;
+                    IC.swingfoot.AngleDot = 0.35;
+                    IC.swingfoot.LengthDot = -1.2;
                     x0 = IC.getVector();
                     
                                 case 'tanimpulse_hipstogether'
@@ -613,6 +613,7 @@ classdef RetractSLIP < Runner
             
             %Event at full extension if not already locked, and locking is enabled
             if this.lockable && ~this.lockstate
+                ss = RetractSLIPState(state);
                 value(2) = ss.swingfoot.Length - this.stancel;
                 isTerminal(2) = 1;
                 direction(2) = 0;
@@ -762,10 +763,10 @@ classdef RetractSLIP < Runner
             axis equal;
             
             %Set Axis Limits
-            xLims = [points.pelvis(1)]+ [-1 3];
+            xLims = [points.pelvis(1)]+ [-1 1];
             xlim(xLims);
             
-            yLims = [points.pelvis(2)] + [-2.5 .5];
+            yLims = [points.pelvis(2)] + [-1.5 .5];
             ylim(yLims);
             
             
