@@ -54,8 +54,8 @@ for i = 1 : 2 : length(varargin)
             LB = value;
         case 'FinDiffType'
             FinDiffType = value;
-        case 'plotier'
-            plotiter = val;
+        case 'plotiter'
+            plotiter = value;
     end
 end
 
