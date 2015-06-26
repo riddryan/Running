@@ -139,11 +139,18 @@ plotter.plotMass(points.pelvis,'scaling',this.mstomach/this.mpelvis);
 ### Test the Matlab Class ###
 Since we are building off of the SLIP model, we will use the initial conditions of that model to make it easier to find a limit cycle.  A limit cycle just means dynamic behavior that repeats itself over a period of time.  In locomotion, the limit cycle we are most interested is that of a step.
 
-* To take applicable initial conditions and parameters of the SLIP model and use them as a starting point for your model, in the static method `Test` add the line:
+- - -
+
+* Firstly, delete all code in the section **Set Model IC & Parameters** within the static method `Test`
+
+* To take applicable initial conditions and parameters of the SLIP model and use them as a starting point for your model.  To do this, add the lines:
 ```matlab
-[r,IC]=Inherit(SLIP);
+r = MyStomach;
+[r,IC] = r.Inherit(SLIP);
 ```
 The MyStomach model r has inherited all applicable parameters from the default SLIP model.  IC is of the class MyStomachState, and the properties for the pelvis and stance leg have also been set.
+
+You may wonder why we don't make `MyStomach` a subclass of SLIP.  You could do that and it might make things a little easier in this case.  However, most models you make will not need all of the class properties and methods of the class that you built the model from.  In this case, you would have a bunch of unused properties and methods taking up space.  Having most of the property and method declarations within one file can also make things easier.
 
 * Now we must choose initial conditions for the stomach states.  We will assume for now the stomach has no velocity at heel-strike, and the spring is unstretched:
 ```matlab
