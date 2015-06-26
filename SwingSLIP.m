@@ -26,13 +26,18 @@ classdef SwingSLIP < Runner
         %Dampers
         cstance = 0; cswing = 0; chip = 0;
         
-        runcharic = struct('speed',0.9745,'steplength',1.1905,'airfrac',0.2703);
+        speed = 0.9745;
+        steplength = 1.1905;
+        airfrac = 0.2703;
         
         useHSevent = 0;
         
         phases = {'Aerial' 'Stance' 'Aerial'};
     end
     
+    properties (Dependent = true)
+        runcharic;
+    end
     
     methods (Static)
         
@@ -1463,7 +1468,11 @@ vels.COM(2) = u2;
         end
         
        
-        
+        function runcharic = get.runcharic(this)
+           runcharic.speed = this.speed;
+           runcharic.steplength = this.steplength;
+           runcharic.airfrac = this.airfrac;
+        end
         
     end
     
