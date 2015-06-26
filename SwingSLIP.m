@@ -44,7 +44,7 @@ classdef SwingSLIP < Runner
             aviname = [savepath 'SwingSLIP2.avi'];
             onephasesim = 0;
             manystep = 0;
-            test = 'experiment';
+            test = 'NoSprings';
             
             LineWidth=3;
             LineSize=3;
@@ -59,7 +59,79 @@ classdef SwingSLIP < Runner
             IC = SwingSLIPState;
             switch test
                 
-                case 'experiment'
+                case 'NoSprings'
+                    
+                    runner.lockable = 0;
+                    runner.tanimpulsecoeff = 1.3;
+                    runner.impulsecoeff = 2.5;
+                    %                     runner.useHSevent = 1;
+                    runner.kstance = 13.786169998104491; %12
+                    runner.kswing = 0; %0.01
+                    runner.khip = 0; %0.01
+                    runner.gslope = 0;
+                    runner.swingl = 1;
+                    runner.hipl = 0.7;
+                    
+                    IC.pelvis.xDot = 1.003510012689240;
+                    IC.pelvis.yDot = 0.137917306814717;
+                    
+                    IC.stancefoot.Angle = -1.146316858313909;
+                    IC.stancefoot.Length = runner.stancel;
+                    
+                    IC.swingfoot.Angle = -1.977468566646678;
+                    IC.swingfoot.Length = runner.stancel;
+                    
+                    x0 = IC.getVector();
+                
+                case 'NoSwingSpring'
+                    
+                    runner.lockable = 0;
+                    runner.tanimpulsecoeff = 0;
+                    runner.impulsecoeff = 4;
+                    %                     runner.useHSevent = 1;
+                    runner.kstance = 13.786169998104491; %12
+                    runner.kswing = 7.5; %0.01
+                    runner.khip = 18; %0.01
+                    runner.gslope = 0;
+                    runner.swingl = 1;
+                    runner.hipl = 0.7;
+                    
+                    IC.pelvis.xDot = 1.003510012689240;
+                    IC.pelvis.yDot = 0.137917306814717;
+                    
+                    IC.stancefoot.Angle = -1.146316858313909;
+                    IC.stancefoot.Length = runner.stancel;
+                    
+                    IC.swingfoot.Angle = -1.977468566646678;
+                    IC.swingfoot.Length = runner.stancel;
+                    
+                    x0 = IC.getVector();
+                    
+                case 'NoSwingSpringLock'
+                    
+                    runner.lockable = 1;
+                    runner.tanimpulsecoeff = 0;
+                    runner.impulsecoeff = 2.5;
+                    %                     runner.useHSevent = 1;
+                    runner.kstance = 13.786169998104491; %12
+                    runner.kswing = 0; %0.01
+                    runner.khip = 6; %0.01
+                    runner.gslope = 0;
+                    runner.swingl = 1;
+                    runner.hipl = 1.3;
+                    
+                    IC.pelvis.xDot = 1.003510012689240;
+                    IC.pelvis.yDot = 0.137917306814717;
+                    
+                    IC.stancefoot.Angle = -1.146316858313909;
+                    IC.stancefoot.Length = runner.stancel;
+                    
+                    IC.swingfoot.Angle = -1.977468566646678;
+                    IC.swingfoot.Length = runner.stancel;
+                    
+                    x0 = IC.getVector();
+                
+                case 'LockNoImpulse'
 
                     runner.lockable = 1;
                     runner.tanimpulsecoeff = 0;
@@ -67,7 +139,7 @@ classdef SwingSLIP < Runner
 %                     runner.useHSevent = 1;
                     runner.kstance = 12.8734; %12
                     runner.kswing = 15; %0.01
-                    runner.khip = 10; %0.01
+                    runner.khip = 4.5; %0.01
                     runner.gslope = 0;
                     runner.swingl = 0.7;
                     runner.hipl = 1.5;
@@ -288,10 +360,10 @@ classdef SwingSLIP < Runner
             while sim
                 %% Phase transition & Integration
                 phase =  this.phases{phasenum}; %Get name of phase corresponding to phasenum
+                x0 = this.phaseTransition(tstart,x0,phase);
                 if phasenum == 1
                     x0 = this.getTOImpulse(x0);
                 end
-                x0 = this.phaseTransition(tstart,x0,phase);
                 odex0 = x0;
                 opts = odeset('Events', phaseevents{phasenum},'RelTol',RelTol','AbsTol',AbsTol); %Set integration options
                 [t,x,~,~,ie] = ode45(@(t,x) this.XDoubleDot(t,x,phase),tstart:dt:tstart+tmax,odex0,opts); %Integrate dynamics
@@ -596,7 +668,7 @@ classdef SwingSLIP < Runner
             axis equal;
             
             %Set Axis Limits
-            xLims = [points.pelvis(1)]+ [-1 1];
+            xLims = [points.pelvis(1)]+ [-1 2.5];
             xlim(xLims);
             
             yLims = [points.pelvis(2)] + [-1.5 .5];
@@ -914,10 +986,25 @@ vels.COM(2) = u2;
                         pts = this.getPoints(allx(i,:));
                         fty(i) = pts.swingfoot(2);
                     end
-                    c= [];
-                    ceq = sum(fty(fty<0));
-                    if isempty(ceq)
-                        ceq = 0;
+                    ceq = [];
+                    c  = -sum(fty(fty<0));
+                    if isempty(c)
+                        c = -1e-10;
+                    end
+                end
+                
+                function [c,ceq] = floorandswinglconstraint(this,~,~,~,allx,allt,varargin)
+                    
+                    fty = zeros(size(allx,1),1);
+                 fty = zeros(size(allx,1),1);
+                    for i = 1:size(allx,1)
+                        pts = this.getPoints(allx(i,:));
+                        fty(i) = pts.swingfoot(2);
+                    end
+                    ceq = 1 - this.swingl;
+                    c  = -sum(fty(fty<0));
+                    if isempty(c)
+                        c = -1e-10;
                     end
                 end
                 
@@ -1004,10 +1091,9 @@ vels.COM(2) = u2;
             UB = Inf*ones(size(optimizerGuess));
             %If parameter is a mass, length, spring, or damping, don't let it be
             %negative.
-            if isempty(LB)
                 for i = 1:length(parametersToAlter)
                     if strcmp(parametersToAlter{i}(1),'c') ||  strcmp(parametersToAlter{i}(1),'l') || strcmp(parametersToAlter{i}(1),'k')
-                        LB(length(this.statestovary)+i) = 0;
+                        LB(length(this.statestovary)+i) = -1e-10;
                         
                     elseif  strcmp(parametersToAlter{i}(1),'m')
                         LB(length(this.statestovary)+i) = minmass;
@@ -1019,7 +1105,6 @@ vels.COM(2) = u2;
                         %              LB(length(this.statestovary)+i) = 0;
                     end
                 end
-            end
             
             if plotiter
                 plotfcns = {@optimplotx,@optimplotfval,@optimplotconstrviolation,@optimplotstepsize};

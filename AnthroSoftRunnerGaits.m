@@ -890,7 +890,7 @@ if any(cellstouse==13) %RetractKneeSwing Runner
 
         SLIPfname = './SavedGaits/SLIP/SLIP_NoAerial_unmatchedSL.mat';
         [ runner.SLIPdata, runner.SLIPx0, runner.SLIPxf ] = getSLIPdata( SLIPfname );
-        
+                    
                     runner.phases = {'Aerial' 'KneeLock'};
                     runner.kneelock = 1;
                     runner.sephips = 0;
@@ -958,30 +958,32 @@ parmstovary=[{'kknee'} {'khip'} {'hipl'} {'kneel'}];
 end
 %% SwingSLIP
 if any(cellstouse==14) 
+    
+    useguess = 0;
+    
     runner = SwingSLIP;
     IC = SwingSLIPState;
     if useguess
-
-                    runner.lockable = 1;
-                    runner.tanimpulsecoeff = 0;
-                    runner.impulsecoeff = 0;
-%                     runner.useHSevent = 1;
-                    runner.kstance = 12.8734; %12
-                    runner.kswing = 15; %0.01
-                    runner.khip = 10; %0.01
+                    runner.lockable = 0;
+                    runner.tanimpulsecoeff = 1.3;
+                    runner.impulsecoeff = 2.5;
+                    %                     runner.useHSevent = 1;
+                    runner.kstance = 13.786169998104491; %12
+                    runner.kswing = 0; %0.01
+                    runner.khip = 0; %0.01
                     runner.gslope = 0;
-                    runner.swingl = 0.7;
-                    runner.hipl = 1.5;
+                    runner.swingl = 1;
+                    runner.hipl = 0.7;
                     
-                    IC.pelvis.xDot = 1.0138;
-                    IC.pelvis.yDot = 0.1651;
+                    IC.pelvis.xDot = 1.003510012689240;
+                    IC.pelvis.yDot = 0.137917306814717;
                     
-                    IC.stancefoot.Angle = -1.1287;
+                    IC.stancefoot.Angle = -1.146316858313909;
                     IC.stancefoot.Length = runner.stancel;
                     
-                    IC.swingfoot.Angle = -2;
+                    IC.swingfoot.Angle = -1.977468566646678;
                     IC.swingfoot.Length = runner.stancel;
-
+                    
                     x0 = IC.getVector();
         
         
@@ -989,38 +991,48 @@ if any(cellstouse==14)
         
        [x0,runner] = runner.GoodInitialConditions(x0);
     else
-                load([savepath 'RetractKneeSwing/' 'SLIP_NoAerial_unmatchedSL.mat'],'r','xstar')
+                load([savepath 'SwingSLIP/' 'NoSwingSpringLock.mat'],'r','xstar')
                 runner=r;
                 x0 = xstar;
     end
     
     
-parmstovary=[{'kswing'} {'kstance'} {'hipl'} {'khip'} {'swingl'}];
+parmstovary=[{'kswing'} {'khip'} {'hipl'} {'impulsecoeff'}];
 %       addedconstraints = @(r,x0) r.additionalConstraints(x0);
-    addedconstraints=[];
+%     addedconstraints= @(r,varargin) r.floorandswinglconstraint(varargin{:});
+   addedconstraints= @(r,varargin) r.floorconstraint(varargin{:});
+    runner.runcharic = runcharic;
+%     Objective = @(r,varargin) r.kswing^2;
+Objective = @(r,varargin) r.impulsecoeff^2;
+%     runner.lockable = 0;
+    
+    %Use these if you already have a limit cycle on SLIP states
+    runner.statestovary = [];
+    runner.statestomeasure = [3 4];
+    
     
     constrainttolerance = 1e-4;
       
     % Find Limit cycle
     [finalStates, finalParameters, limitCycleError, c, ceq, eflag, optimoutput, lambda] = ...
-         runner.findLimitCycle(x0,'runcharic',runcharic,...
+         runner.findLimitCycle(x0,...
         'parametersToAlter',parmstovary,...
         'TolCon',constrainttolerance,...
         'additionalConstraintFunction',addedconstraints,'MaxEvals',1000,'TolX',1e-10,...
-        'Algo','interior-point');
+        'Algo','interior-point','Objective',Objective);
     
     newr = runner.setParametersFromList(parmstovary,finalParameters);
     newx0 = finalStates;
     
     figure
-    [xf,tf,allx,allt,tair,newr,phasevec] = newr.onestep(newx0,'interleaveAnimation',1);
+    [xf,tf,allx,allt,tair,newr,phasevec,tstance] = newr.onestep(newx0,'interleaveAnimation',1);
     
     r=newr;
     xstar = allx(1,:);
     x0 = xstar;
-    r.printStepCharacteristics(x0,xf,tf,tair);
+    r.print(x0,xf,tf,tair,tstance,allt,allx);
     if savegait
-        save([savepath 'SwingSLIP/' 'NoImpulse.mat'],'r','xstar','parmstovary','limitCycleError',...
+        save([savepath 'SwingSLIP/' 'MinImpulseLock.mat'],'r','xstar','parmstovary','limitCycleError',...
                                    'c','ceq','eflag','optimoutput','lambda',...
                                    'xf','tf','allx','allt','tair','phasevec');
     end 
