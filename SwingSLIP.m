@@ -8,11 +8,13 @@ classdef SwingSLIP < Runner
         g = 1;
         N = 12;
         statestovary = [3 5 7:8]; 
-        statestomeasure = [3 4 5 6 7:8];   
+        statestomeasure = [3 4 7:8];   
         %rest lengths
         stancel=1; swingl = .8;
         %rest angles
         hipl = 0;
+        
+        mfoot = 1;
         
         impulsecoeff = 0;
         tanimpulsecoeff = 0;
@@ -124,8 +126,8 @@ classdef SwingSLIP < Runner
             figure
             tic
             if ~manystep
-                [xf,tf,allx,allt,tair,runner,phasevec] = runner.onestep(x0,'interleaveAnimation',1);
-                runner.printStepCharacteristics(x0,xf,tf,tair);
+                [xf,tf,allx,allt,tair,runner,phasevec,tstance] = runner.onestep(x0,'interleaveAnimation',1);
+                runner.printStepCharacteristics(x0,xf,tf,tair,tstance,allt,allx);
             else
                 [xf,tf,allx,allt,phasevec]= runner.manystep(x0);
                 runner.anim(allx);
@@ -239,7 +241,7 @@ classdef SwingSLIP < Runner
         
         %% Simulation Functions
 
-        function [xf,tf,allx,allt,tair,this,phasevec]= onestep(this, x0,varargin)
+        function [xf,tf,allx,allt,tair,this,phasevec,tstance]= onestep(this, x0,varargin)
             %%
             RelTol = 1e-6; %10; %
             AbsTol = 1e-6; %10; %
@@ -286,7 +288,7 @@ classdef SwingSLIP < Runner
             while sim
                 %% Phase transition & Integration
                 phase =  this.phases{phasenum}; %Get name of phase corresponding to phasenum
-                if phasenum == 1 || (strcmp(phase,'Aerial') && phasevec(end) == 2)
+                if phasenum == 1
                     x0 = this.getTOImpulse(x0);
                 end
                 x0 = this.phaseTransition(tstart,x0,phase);
@@ -296,6 +298,10 @@ classdef SwingSLIP < Runner
                 
                 if ~isempty(ie) || t(end) == tmax;
                     ie = ie(end);
+                end
+                
+                if sum(sum(isnan(x)))
+                   blah = 1; 
                 end
                 
                 %%  Recording & Concatenating Integration Results
@@ -328,6 +334,7 @@ classdef SwingSLIP < Runner
             this.lockstate = 0;
             xf = allx(end,:); tf = allt(end);
             tair = allt(find(phasevec==3,1));
+            tstance = allt(find(phasevec==2,1));
             if isempty(tair)
                 tair = tf;
             end
@@ -335,6 +342,11 @@ classdef SwingSLIP < Runner
             %Switch legs
             xf([3:6 9:12]) = xf([5 6 3 4 11 12 9 10]); 
            [xf,~] = this.phaseTransition(tf,xf,'Stance');
+           
+           %Remap swing leg to stance leg during Aerial Phase 1
+%            airdex1 = 1:find(phasevec==2,1);
+%            airdex2 = find(phasevec==2,1,'last'):length(phasevec);
+%            allx(airdex1,[3 4 9 10]) = allx(airdex2,[5 6 11 2]);
             
             if (interleaveAnimation)
                 
@@ -442,7 +454,7 @@ classdef SwingSLIP < Runner
             end
             
             if ~this.useHSevent
-                value(3) = this.runcharic.steplength/this.runcharic.speed - t;
+                value(3) = (this.runcharic.steplength/this.runcharic.speed*(1+this.runcharic.airfrac) - t);
                 direction(3) = 0;
                 isTerminal(3) = 1;
             end
@@ -450,7 +462,7 @@ classdef SwingSLIP < Runner
 
         function [value, isTerminal, direction]  = AerialEvents2(this,t,state)
             if ~this.useHSevent
-                value(1) = (this.runcharic.steplength/this.runcharic.speed - t)*(1+this.runcharic.airfrac);
+                value(1) = (this.runcharic.steplength/this.runcharic.speed*(1+this.runcharic.airfrac) - t);
                 direction(1) = 0;
                 isTerminal(1) = 1;
             else
@@ -490,6 +502,10 @@ classdef SwingSLIP < Runner
                 ss.swingfoot.LengthDot = -cos(ang)*(vpelx + tan(ang)*vpely);
 %                 
                 newstate = ss.getVector;
+                
+                if sum(isnan(newstate))
+                   blah = 1; 
+                end
         end
         
 
@@ -635,8 +651,8 @@ classdef SwingSLIP < Runner
             end
             [h,w]=size(x0);
             if h==1 || w==1
-                [xf, tf, allx, allt, tair]= onestep(this, x0,'aviname',aviname,'interleaveAnimation',1,'interLeaveAnimationFrameSkip',interleaveAnimationFrameskip,'tmax',tmax);
-                [speed,steplength,stepfreq,airfrac] = this.getGaitChar(x0,tf,xf,tair);
+                [xf, tf, allx, allt, tair,~,~,tstance]= onestep(this, x0,'aviname',aviname,'interleaveAnimation',1,'interLeaveAnimationFrameSkip',interleaveAnimationFrameskip,'tmax',tmax);
+                [speed,steplength,stepfreq,airfrac] = this.getGaitChar(x0,tf,xf,tair,tstance,allt, allx);
             else %Already given states
                 allx = x0;
                 for i = 1 : interleaveAnimationFrameskip : size(allx, 1)
@@ -652,8 +668,6 @@ classdef SwingSLIP < Runner
         
         
         %% Mathematica Output
-        
-    
             function [MM,rhs] = getMMandRHS(this,time,x)
                 %%
                 %Phase specifies what equations to use, EG 'aerial' or 'stance'
@@ -759,7 +773,6 @@ constraintJacobianAerialDot(2,5) = 0; constraintJacobianAerialDot(2,6) = 0;
         this.getQandUdefs(state);
          c5 = cos(q5); s5 = sin(q5);
          
-        mfoot = 1;
         
         kineticEnergy = (mpelvis*(u1*u1 + u2*u2))/2.;
 
@@ -916,6 +929,254 @@ vels.COM(2) = u2;
         
         %% Additional Dynamics Calculations
         
+         function [finalStates, finalParameters, limitCycleError, ...
+                c, ceq, exitflag, optimoutput, lambda] = ...
+                findLimitCycle(this, initialConditionGuess, varargin)
+            %%
+            %Find a limit cycle for the model.  That is find parameter values of
+            %parametersToAlter and initial conditions of the model such that the
+            %state of the model at the next step is the same as at the start of
+            %the simulation.  Must give an initial guess initialConditionGuess for the initial
+            %conditions for the model.  Must specify if you want to let the
+            %optimizer change parameters in parametersToAlter.  Can specify a
+            %function to minimize while finding a limit cycle, as well as
+            %additional constraints
+            
+            
+            %Default options
+            additionalConstraintFunction = []; %Needs to be of the form [c,ceq] = additionalConstraintFunction(x), where c is a column vector of
+            %the violation of the additional inequality constraints, and ceq is a
+            %column vector of the violation of additiona equality constraints
+            parametersToAlter = {}; %Should be a cell list of strings
+            TolCon=[];             %Constraint tolerance for fmincon
+            addedCostFcn = [];
+            plotiter = 1;
+            minmass = 1e-3;
+            dbrun = 0;
+            TolX = [];
+            MaxEvals = [];
+            algorithm = 'sqp';
+            LB = [];
+            FinDiffType = [];
+            
+            for i = 1 : 2 : length(varargin)
+                option = varargin{i};
+                value = varargin{i + 1};
+                switch option
+                    case 'additionalConstraintFunction'
+                        additionalConstraintFunction = value;
+                    case 'parametersToAlter'
+                        parametersToAlter = value;
+                    case 'TolCon'
+                        TolCon = value;
+                    case 'Objective'
+                        addedCostFcn = value;
+                    case 'plotiter'
+                        plotiter = value;
+                    case 'TolX'
+                        TolX = value;
+                    case 'MaxEvals'
+                        MaxEvals = value;
+                    case 'Algo'
+                        algorithm = value;
+                    case 'LB'
+                        LB = value;
+                    case 'FinDiffType'
+                        FinDiffType= value;
+                end
+            end
+            if isempty(algorithm)
+                algorithm = 'sqp';
+            end
+            
+            constraintFunction = @(x) this.ConstFcn(x,parametersToAlter,additionalConstraintFunction,initialConditionGuess,addedCostFcn);
+            objectiveFunction = @(x) this.CostFcn(x,parametersToAlter,additionalConstraintFunction,initialConditionGuess,addedCostFcn);
+            
+            
+            optimizerGuess = initialConditionGuess(this.statestovary); %Give optimizer only the states of the model that are allowed to be varied
+            if (~isempty(parametersToAlter))
+                optimizerGuess = [optimizerGuess this.getParametersFromList(parametersToAlter)'];
+            end
+            
+            if isempty(LB)
+                LB = -Inf*ones(size(optimizerGuess));
+            end
+            UB = Inf*ones(size(optimizerGuess));
+            %If parameter is a mass, length, spring, or damping, don't let it be
+            %negative.
+            if isempty(LB)
+                for i = 1:length(parametersToAlter)
+                    if strcmp(parametersToAlter{i}(1),'c') ||  strcmp(parametersToAlter{i}(1),'l') || strcmp(parametersToAlter{i}(1),'k')
+                        LB(length(this.statestovary)+i) = 0;
+                        
+                    elseif  strcmp(parametersToAlter{i}(1),'m')
+                        LB(length(this.statestovary)+i) = minmass;
+                        
+                    elseif regexpi(parametersToAlter{i},'transition')
+                        LB(length(this.statestovary)+i) = .8;
+                        UB(length(this.statestovary)+i) = 1;
+                        %          elseif regexpi(parametersToAlter{i},'impulsecoeff')
+                        %              LB(length(this.statestovary)+i) = 0;
+                    end
+                end
+            end
+            
+            if plotiter
+                plotfcns = {@optimplotx,@optimplotfval,@optimplotconstrviolation,@optimplotstepsize};
+            else
+                plotfcns =[];
+            end
+            
+            opt= optimset;
+            opt.Algorithm = algorithm;
+            %       opt.Algorithm = 'active-set';
+            opt.Display = 'iter-detailed';
+            %       opt.DiffMinChange = 1e-4;
+            opt.TolCon = TolCon;
+            opt.TolConSQP = TolCon;
+            opt.PlotFcns = plotfcns;
+            opt.TolX = TolX;
+            opt.MaxFunEvals = MaxEvals;
+            opt.FinDiffType = FinDiffType;
+            if strcmp(opt.Algorithm,'active-set') && isempty(addedCostFcn)
+                opt.TolFun = 0;
+            end
+            
+            if ~dbrun
+                [finalOptimizerState,~,exitflag,optimoutput,lambda] = fmincon(objectiveFunction, optimizerGuess, ...
+                    [], [], [], [], LB, UB, constraintFunction, opt);
+            else
+                finalOptimizerState =  optimizerGuess;
+                exitflag = [];
+                optimoutput = [];
+                lambda = [];
+            end
+            
+            
+            [finalVariedStates, finalParameters] = this.separateStatesAndParameters(finalOptimizerState, parametersToAlter);
+            this = this.setParametersFromList(parametersToAlter,finalParameters);
+            
+            constraintFunction = @(x) this.ConstFcn(x,parametersToAlter,additionalConstraintFunction,initialConditionGuess,addedCostFcn);
+            [c, ceq, limitCycleError] = constraintFunction(finalOptimizerState);
+            
+            
+            finalStates = initialConditionGuess;
+            finalStates(this.statestovary) = finalVariedStates;
+            finalStates = this.GoodInitialConditions(finalStates);
+            
+            newrunner = this;
+            newrunner.printStepCharacteristics(finalStates);
+        end
+        
+        function [c, ceq, limitCycleError, cExtra, ceqExtra, cost] = fixedPointConstraint(this,x,parametersToAlter,additionalConstraintFunction,initialConditionGuess,additionalCost)
+        %%
+        % x contains the model states available for the optimizer to change
+        % as well as parameter values for the parameters specified in
+        % parametersToAlter. runcharic is a structure with fields speed,
+        % steplength, and airfrac, you can set these fields to empty if you
+        % don't care about them.  
+        
+        %Call the initial guess for the fixed point
+        x0 = initialConditionGuess;
+        %Change the states available to the optimizer (this.statestovary) to what they
+        %are during the current iteration for the simulation
+        x0(this.statestovary) = x(1:length(this.statestovary));
+        
+
+        
+        if ~isempty(parametersToAlter)
+            parameterValues = x(length(this.statestovary)+1:end);
+            this = this.setParametersFromList(parametersToAlter, parameterValues);
+        end
+        
+            [xf, tf, allx, allt, tair,this,phasevec,tstance] = this.onestep(x0);
+        x0 = allx(1,:);
+        if isrow(xf)
+            xf = xf';
+        end
+        
+        limitCycleError = xf(this.statestomeasure) - allx(find(allt==tstance,1),this.statestomeasure)';
+        
+        c=[];
+        ceq=limitCycleError;
+        
+        runcharic = this.runcharic;
+        if ~isempty(runcharic.speed)
+            [speed] = getSpeed(this, x0, xf, tf);
+            ceq = [ceq; runcharic.speed - speed];
+        end
+        if ~isempty(runcharic.steplength)
+            [steplength] = getStepLength(this, x0, xf, tstance, allt);
+            ceq = [ceq; runcharic.steplength - steplength];
+        end
+        if ~isempty(runcharic.airfrac)
+            [airfrac] = getAerialFraction(this, x0, tf, tair,tstance);
+            ceq = [ceq; runcharic.airfrac - airfrac];
+        end
+        
+        if isempty(additionalConstraintFunction)
+            cExtra = [];
+            ceqExtra = [];
+        else
+            if ~isa(additionalConstraintFunction,'cell')
+                if nargin(additionalConstraintFunction)<8
+            [cExtra, ceqExtra] = additionalConstraintFunction(this,x0,xf,tf,allx,allt,tair);
+                else
+                 [cExtra, ceqExtra] = additionalConstraintFunction(this,x0,xf,tf,allx,allt,tair,phasevec);   
+                end
+            else
+                cExtra=[];ceqExtra=[];
+                for i = 1:length(additionalConstraintFunction)
+                   [ctemp, ceqtemp] = additionalConstraintFunction{i}(this,x0,xf,tf,allx,allt,tair);
+                   cExtra=[cExtra;ctemp];ceqExtra=[ceqExtra;ceqtemp];
+                end
+            end
+            c = [c; cExtra];
+            ceq = [ceq; ceqExtra];
+        end
+        
+        if isempty(additionalCost)
+            cost = 0;
+        else
+            if nargin(additionalCost)==6
+                cost = additionalCost(this,x0,xf,tf,allx,allt,tair);
+            else
+                cost = additionalCost(this,x0,xf,tf,allx,allt,tair,phasevec);
+            end
+            
+        end
+        
+        
+        
+        end
+    
+            function [cost] = CostFcn(this,x,parametersToAlter,additionalConstraintFunction,initialConditionGuess,additionalCost)
+       global xLast myf myc myceq myError
+       
+       if ~isequal(x,xLast)
+           [myc, myceq, myError, cExtra, ceqExtra, myf] = fixedPointConstraint(this,x,parametersToAlter,additionalConstraintFunction,initialConditionGuess,additionalCost);
+           xLast = x;
+       end
+       
+       cost = myf;
+    end
+    
+    function [c, ceq, limitCycleError, cExtra, ceqExtra, cost] = ConstFcn(this,x,parametersToAlter,additionalConstraintFunction,initialConditionGuess,additionalCost)
+        global xLast myf myc myceq myError
+        
+        if ~isequal(x,xLast)
+            [myc, myceq, myError, cExtra, ceqExtra, myf] = fixedPointConstraint(this,x,parametersToAlter,additionalConstraintFunction,initialConditionGuess,additionalCost);
+            xLast = x;
+        end
+        
+        c = myc;
+        ceq = myceq;
+        limitCycleError = myError;
+        
+    end
+    
+    %%
+        
         function [GRF] = getGRF(this,t,x,phase)
             if size(x,1)==1
                 x=x';
@@ -965,9 +1226,31 @@ vels.COM(2) = u2;
         
         %% Other Gait Information
         
-                    function [] = print(this,x0,varargin)
-               this.printStepCharacteristics(x0,varargin{:}); 
+        function [] = print(this,x0,varargin)
+            this.printStepCharacteristics(x0,varargin{:});
+        end
+        
+        function [] = printStepCharacteristics(this, x0, varargin)
+            %%
+            if nargin>2
+                xf=varargin{1};
+                tf=varargin{2};
+                tair=varargin{3};
+                tstance=varargin{4};
+                allt = varargin{5};
+                allx = varargin{6};
+            else
+                [xf, tf, allx, allt, tair,this,phasevec,tstance] = this.onestep(x0);
+                x0 = allx(1,:);
             end
+            
+            
+            limitCycleError = xf(this.statestomeasure) - allx(find(allt==tstance,1),this.statestomeasure)';
+            
+            [speed,steplength,stepfreq,airfrac] = this.getGaitChar(x0,tf,xf,tair,tstance,allt, allx);
+            
+            fprintf('step parameters: speed: %g, step length = %g, \n airfrac = %g, limitCycleError = %g\n', speed, steplength, airfrac, norm(limitCycleError));
+        end
         
         function x0 = getTOImpulse(this,x0)
             ss = SwingSLIPState(x0);
@@ -989,30 +1272,30 @@ vels.COM(2) = u2;
             speed = (xfstruc.pelvis.x - x0struc.pelvis.x) / tf;
         end
         
-        function [steplength] = getStepLength(this, x0, xf)
+        function [steplength] = getStepLength(this, x0, xf, tstance, allt, allx)
             if isempty(xf)
-                [xf] = this.onestep(x0);
+                [xf,tf,allx,allt,tair,this,phasevec,tstance] = this.onestep(x0);
             end
             
             %Convert state vectors to descriptive class
-            x0struc = SwingSLIPState(x0);
+            x0struc = SwingSLIPState(allx(find(allt==tstance,1),:));
             xfstruc = SwingSLIPState(xf);
             
             steplength = (xfstruc.pelvis.x - x0struc.pelvis.x);
         end
         
-        function [airfrac] = getAerialFraction(this, x0, tf, tair)
+        function [airfrac] = getAerialFraction(this, x0, tf, tair,tstance)
             if isempty(tair) || isempty(tair)
-                [xf,tf,allx,allt,tair] = this.onestep(x0);
+                [xf,tf,allx,allt,tair,phasevec,tstance] = this.onestep(x0);
             end
-            airfrac = (tf-tair)/tf;
+            airfrac = (tstance)/tair;
         end
         
-        function [speed,steplength,stepfreq,airfrac] = getGaitChar(this,x0,tf,xf,tair)
+        function [speed,steplength,stepfreq,airfrac] = getGaitChar(this,x0,tf,xf,tair,tstance,allt, allx)
             [speed] = this.getSpeed(x0, xf, tf);
-            [steplength] = this.getStepLength(x0, xf);
+            [steplength] = this.getStepLength(x0, xf, tstance, allt, allx);
             stepfreq = speed/steplength;
-            [airfrac] = this.getAerialFraction(x0, tf, tair);
+            [airfrac] = this.getAerialFraction(x0, tf, tair,tstance);
         end
        
         

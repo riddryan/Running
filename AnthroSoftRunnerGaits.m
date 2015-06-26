@@ -19,7 +19,7 @@
 
 
 %% Initialization & Options
-useguess=0; %set to 1 to attempt to find limit cycle using user-set initial conditions (within each cell).  
+useguess=1; %set to 1 to attempt to find limit cycle using user-set initial conditions (within each cell).  
 %Otherwise, try to load an existing limit cycle to start from
 usenominal = 1; %Use subject 7 trial 2.  If 0, will use average running characteristics from all trials
 savegait=1; %1 for saving the limit cycles.  Make sure you set the name of the save files
@@ -32,7 +32,7 @@ savepath = [dir '\SavedGaits\'];
 % 2. Soft Stomach Series
 % 3. Soft Stomach Series Parallel
 
-cellstouse=[10];
+cellstouse=[14];
 
 %Optimizer Constraint Tolerance
 constrainttolerance = 1e-5;
@@ -952,6 +952,75 @@ parmstovary=[{'kknee'} {'khip'} {'hipl'} {'kneel'}];
     r.printStepCharacteristics(x0,xf,tf,tair);
     if savegait
         save([savepath 'RetractKneeSwing/' 'KneeLockUnder.mat'],'r','xstar','parmstovary','limitCycleError',...
+                                   'c','ceq','eflag','optimoutput','lambda',...
+                                   'xf','tf','allx','allt','tair','phasevec');
+    end 
+end
+%% SwingSLIP
+if any(cellstouse==14) 
+    runner = SwingSLIP;
+    IC = SwingSLIPState;
+    if useguess
+
+                    runner.lockable = 1;
+                    runner.tanimpulsecoeff = 0;
+                    runner.impulsecoeff = 0;
+%                     runner.useHSevent = 1;
+                    runner.kstance = 12.8734; %12
+                    runner.kswing = 15; %0.01
+                    runner.khip = 10; %0.01
+                    runner.gslope = 0;
+                    runner.swingl = 0.7;
+                    runner.hipl = 1.5;
+                    
+                    IC.pelvis.xDot = 1.0138;
+                    IC.pelvis.yDot = 0.1651;
+                    
+                    IC.stancefoot.Angle = -1.1287;
+                    IC.stancefoot.Length = runner.stancel;
+                    
+                    IC.swingfoot.Angle = -2;
+                    IC.swingfoot.Length = runner.stancel;
+
+                    x0 = IC.getVector();
+        
+        
+%         runner.statestovary = [3 4];
+        
+       [x0,runner] = runner.GoodInitialConditions(x0);
+    else
+                load([savepath 'RetractKneeSwing/' 'SLIP_NoAerial_unmatchedSL.mat'],'r','xstar')
+                runner=r;
+                x0 = xstar;
+    end
+    
+    
+parmstovary=[{'kswing'} {'kstance'} {'hipl'} {'khip'} {'swingl'}];
+%       addedconstraints = @(r,x0) r.additionalConstraints(x0);
+    addedconstraints=[];
+    
+    constrainttolerance = 1e-4;
+      
+    % Find Limit cycle
+    [finalStates, finalParameters, limitCycleError, c, ceq, eflag, optimoutput, lambda] = ...
+         runner.findLimitCycle(x0,'runcharic',runcharic,...
+        'parametersToAlter',parmstovary,...
+        'TolCon',constrainttolerance,...
+        'additionalConstraintFunction',addedconstraints,'MaxEvals',1000,'TolX',1e-10,...
+        'Algo','interior-point');
+    
+    newr = runner.setParametersFromList(parmstovary,finalParameters);
+    newx0 = finalStates;
+    
+    figure
+    [xf,tf,allx,allt,tair,newr,phasevec] = newr.onestep(newx0,'interleaveAnimation',1);
+    
+    r=newr;
+    xstar = allx(1,:);
+    x0 = xstar;
+    r.printStepCharacteristics(x0,xf,tf,tair);
+    if savegait
+        save([savepath 'SwingSLIP/' 'NoImpulse.mat'],'r','xstar','parmstovary','limitCycleError',...
                                    'c','ceq','eflag','optimoutput','lambda',...
                                    'xf','tf','allx','allt','tair','phasevec');
     end 
