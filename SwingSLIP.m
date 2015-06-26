@@ -1106,7 +1106,7 @@ vels.COM(2) = u2;
             ceq = [ceq; runcharic.speed - speed];
         end
         if ~isempty(runcharic.steplength)
-            [steplength] = getStepLength(this, x0, xf, tstance, allt);
+            [steplength] = getStepLength(this, x0, xf, tstance, allt, allx);
             ceq = [ceq; runcharic.steplength - steplength];
         end
         if ~isempty(runcharic.airfrac)
