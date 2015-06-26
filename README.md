@@ -83,7 +83,7 @@ expressionsToExport = {{constraintJacobianStance, "constraintJacobianStance"}, {
 
 ### Construct the Class State Definition in Matlab ###
 
-First make a class that interprets the states of the model that you will build in Matlab into readable words.  This is most useful when you are working with a lot of models or degrees of freedom and don't remember which state is which.
+First make a class that interprets the states of the model that you will build in Matlab into readable words.  This is most useful when you are working with a lot of models or degrees of freedom and don't remember which state is which.  Furthermore, if you have many models but with common elements such as a "pelvis" body, then references within code to the states of that body do not need to be rewritten for the new model.
 
 * Make a copy of SLIPState.m in the folder State_Definitions and rename it MyStomachState.m
 
@@ -137,6 +137,25 @@ plotter.plotMass(points.pelvis,'scaling',this.mstomach/this.mpelvis);
 * Luckily, since we want `MyStomach` to have the same phases and event functions (detecting take off and heel strike) as `SLIP`, you do not need to change the `onestep` or any of the event methods.
 
 ### Test the Matlab Class ###
+Since we are building off of the SLIP model, we will use the initial conditions of that model to make it easier to find a limit cycle.  A limit cycle just means dynamic behavior that repeats itself over a period of time.  In locomotion, the limit cycle we are most interested is that of a step.
+
+* To take applicable initial conditions and parameters of the SLIP model and use them as a starting point for your model, in the static method `Test` add the line:
+```matlab
+[r,IC]=Inherit(SLIP);
+```
+The MyStomach model r has inherited all applicable parameters from the default SLIP model.  IC is of the class MyStomachState, and the properties for the pelvis and stance leg have also been set.
+
+* Now we must choose initial conditions for the stomach states.  We will assume for now the stomach has no velocity at heel-strike, and the spring is unstretched:
+```matlab
+IC.stomach.Length = r.stomachl;
+IC.stomach.LengthDot = 0;
+```
+
+* We are now ready to test the model by typing `MyStomach.test` into the Matlab console
+
+You should see an animation of the model running, figures of the energies of the model, and numbers such as speed and limit cycle error printed to the Matlab console.  At this stage it is common to have bugs that you need to track down.  Often at this stage you will realize that you need to change more of the methods from the model you started from (SLIP in this case).
+
+Since we have no dampers nor impulses in this model, the total energy should be constant across time.  If it isn't, there is something wrong.
 
 ## Matlab Class Structure and Methods ##
 * `Runner` is an abstract class that is a superclass to all the other classes (e.g. `SLIP`, `SoftParRunner`, `Swing`, etc.)
