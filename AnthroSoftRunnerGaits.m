@@ -32,7 +32,7 @@ savepath = [dir '\SavedGaits\'];
 % 2. Soft Stomach Series
 % 3. Soft Stomach Series Parallel
 
-cellstouse=[14];
+cellstouse=[15];
 
 %Optimizer Constraint Tolerance
 constrainttolerance = 1e-5;
@@ -956,7 +956,7 @@ parmstovary=[{'kknee'} {'khip'} {'hipl'} {'kneel'}];
                                    'xf','tf','allx','allt','tair','phasevec');
     end 
 end
-%% SwingSLIP
+%% SwingSLIP 14
 if any(cellstouse==14) 
     
     useguess = 0;
@@ -1033,6 +1033,91 @@ Objective = @(r,varargin) r.impulsecoeff^2;
     r.print(x0,xf,tf,tair,tstance,allt,allx);
     if savegait
         save([savepath 'SwingSLIP/' 'MinImpulseLock.mat'],'r','xstar','parmstovary','limitCycleError',...
+                                   'c','ceq','eflag','optimoutput','lambda',...
+                                   'xf','tf','allx','allt','tair','phasevec');
+    end 
+end
+%% SwingKneeSLIP 15
+if any(cellstouse==15) 
+    
+    useguess = 1;
+    
+    runner = SwingKneeSLIP;
+    IC = SwingKneeSLIPState;
+    if useguess
+                    runner.lockable = 1;
+                    runner.tanimpulsecoeff = 0;
+                    runner.impulsecoeff = 0;
+                    runner.useHSevent = 0;
+                    runner.kstance = 12.8734; %12
+                    runner.kknee = 2; %0.01
+                    runner.khip = 7; %0.01
+                    runner.gslope = 0;
+                    runner.kneel = 0.8;
+                    runner.hipl = -0.8;
+                    
+                    runner.lthigh = 0.56;
+                    runner.lshank = 0.45;
+                    
+                    IC.pelvis.xDot = 1.0138;
+                    IC.pelvis.yDot = 0.1651;
+                    
+                    IC.stancefoot.Angle = -1.1287;
+                    IC.stancefoot.Length = runner.stancel;
+                    
+                    IC.knee.Angle = -1.88;
+
+                    x0 = IC.getVector();
+                    
+        
+        
+%         runner.statestovary = [3 4];
+        
+       [x0,runner] = runner.GoodInitialConditions(x0);
+    else
+                load([savepath 'SwingSLIP/' 'NoSwingSpringLock.mat'],'r','xstar')
+                runner=r;
+                x0 = xstar;
+    end
+    
+    
+parmstovary=[{'kstance'} {'kknee'} {'kneel'} {'khip'} {'hipl'}];
+%       addedconstraints = @(r,x0) r.additionalConstraints(x0);
+%     addedconstraints= @(r,varargin) r.floorandswinglconstraint(varargin{:});
+   addedconstraints= @(r,varargin) r.floorconstraint(varargin{:});
+    runner.runcharic = runcharic;
+%     Objective = @(r,varargin) r.kswing^2;
+% Objective = @(r,varargin) r.impulsecoeff^2
+Objective = [];
+%     runner.lockable = 0;
+    
+    %Use these if you already have a limit cycle on SLIP states
+%     runner.statestovary = [];
+%     runner.statestomeasure = [3 4];
+    
+    
+    constrainttolerance = 1e-4;
+      
+    % Find Limit cycle
+    [finalStates, finalParameters, limitCycleError, c, ceq, eflag, optimoutput, lambda] = ...
+         runner.findLimitCycle(x0,...
+        'parametersToAlter',parmstovary,...
+        'TolCon',constrainttolerance,...
+        'additionalConstraintFunction',addedconstraints,'MaxEvals',1000,'TolX',1e-10,...
+        'Algo','interior-point','Objective',Objective);
+    
+    newr = runner.setParametersFromList(parmstovary,finalParameters);
+    newx0 = finalStates;
+    
+    figure
+    [xf,tf,allx,allt,tair,newr,phasevec,tstance] = newr.onestep(newx0,'interleaveAnimation',1);
+    
+    r=newr;
+    xstar = allx(1,:);
+    x0 = xstar;
+    r.print(x0,xf,tf,tair,tstance,allt,allx);
+    if savegait
+        save([savepath 'SwingSLIP/' 'LockNoImpulseWeakKnee.mat'],'r','xstar','parmstovary','limitCycleError',...
                                    'c','ceq','eflag','optimoutput','lambda',...
                                    'xf','tf','allx','allt','tair','phasevec');
     end 
