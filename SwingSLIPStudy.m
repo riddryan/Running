@@ -12,6 +12,7 @@ parmstovary = [];
 constrainttolerance = 1e-4;
 MaxEvals = 1000;
 forcerun = 0; %Run cells even if results exist
+saveflag = 1;
 
 LineSize=3;
 TextSize=12;
@@ -21,7 +22,7 @@ fonttype='Times New Roman';
 loadfolder = './SavedGaits/SwingSLIP/';
 exportfolder = './Figures/';
 
-cellstouse = [10];
+cellstouse = [6];
 %% 1: Swingl Study: Start from No Impulse gait: Locking
 % 
 if sum(cellstouse==1)
@@ -56,7 +57,7 @@ if sum(cellstouse==1)
         
         pvar = zeros(numstudies,1);
         resparms = zeros(numstudies,numvars);
-        for i = find(cnvrg==1)
+        for i = find(cnvrg>=0)
             pvar(i) = runners(i).(PNAME);
             for j = 1:numparams
                 resparms(i,j) = runners(i).(parmstovary{j});
@@ -85,7 +86,7 @@ if sum(cellstouse==1)
         h=figure;
         for j = 1:numparams
             subplot(numparams,1,j)
-            plot(prange(cnvrg==1),resparms(cnvrg==1,j),'LineWidth',2)
+            plot(prange(cnvrg>=0),resparms(cnvrg>=0,j),'LineWidth',2)
             hold on
             plot(prange(tripdex),resparms(tripdex,j),'rx','LineWidth',2)
             plot(prange(abovedex),resparms(abovedex,j),'gx','LineWidth',2)
@@ -97,7 +98,7 @@ if sum(cellstouse==1)
         xlabel(PNAME)
         
         set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
-        hgexport(h,[exportfolder 'hiplStudy.bmp'])
+        saveflag = 0;
     end
     
 end
@@ -136,7 +137,7 @@ if sum(cellstouse==2)
         
         pvar = zeros(numstudies,1);
         resparms = zeros(numstudies,numvars);
-        for i = find(cnvrg==1)
+        for i = find(cnvrg>=0)
             pvar(i) = runners(i).(PNAME);
             for j = 1:numparams
                 resparms(i,j) = runners(i).(parmstovary{j});
@@ -177,7 +178,7 @@ if sum(cellstouse==2)
         xlabel(PNAME)
         
         set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
-        hgexport(h,[exportfolder 'hiplStudy.bmp'])
+        saveflag = 0;
     end
     
 end
@@ -257,7 +258,7 @@ if sum(cellstouse==3)
         xlabel(PNAME)
         
         set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
-        hgexport(h,[exportfolder 'hiplStudy.bmp'])
+        saveflag = 0;
     end
     
 end
@@ -337,7 +338,7 @@ if sum(cellstouse==4)
         xlabel(PNAME)
         
         set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
-        hgexport(h,[exportfolder 'hiplStudy.bmp'])
+        saveflag = 0;
     end
     
 end
@@ -417,7 +418,7 @@ if sum(cellstouse==5)
         xlabel(PNAME)
         
         set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
-        hgexport(h,[exportfolder 'hiplStudy.bmp'])
+        saveflag = 0;
     end
     
 end
@@ -448,7 +449,7 @@ if sum(cellstouse==6)
         %     Run the parameter study
         [runners,xstar,cnvrg,prange] = parmstudy1d(r,xstar,parmrange,PNAME,...
             'runcharic',runcharic,'parmstovary',parmstovary,'extraconstraint',extraconstraint,'TolCon',constrainttolerance,...
-            'MaxEvals',1000,'plotiter',1);
+            'MaxEvals',300,'plotiter',1,'tryhard',1);
        
         
         numparams = length(parmstovary);
@@ -458,7 +459,7 @@ if sum(cellstouse==6)
         
         pvar = zeros(numstudies,1);
         resparms = zeros(numstudies,numvars);
-        for i = find(cnvrg==1)
+        for i = find(cnvrg>=0)
             pvar(i) = runners(i).(PNAME);
             for j = 1:numparams
                 resparms(i,j) = runners(i).(parmstovary{j});
@@ -487,7 +488,7 @@ if sum(cellstouse==6)
         h=figure;
         for j = 1:numparams
             subplot(numparams,1,j)
-            plot(prange(cnvrg==1),resparms(cnvrg==1,j),'LineWidth',2)
+            plot(prange(cnvrg>=0),resparms(cnvrg>=0,j),'LineWidth',2)
             hold on
             plot(prange(tripdex),resparms(tripdex,j),'rx','LineWidth',2)
             plot(prange(abovedex),resparms(abovedex,j),'gx','LineWidth',2)
@@ -499,7 +500,7 @@ if sum(cellstouse==6)
         xlabel(PNAME)
         
         set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
-        hgexport(h,[exportfolder 'hiplStudy.bmp'])
+        saveflag = 0;
     end
     
 end
@@ -515,7 +516,6 @@ if sum(cellstouse==7)
     if ~exist([rootdir pfolder classfolder savename],'file')
         loadname = 'NoImpulse.mat';
         load([loadfolder loadname]);
-
         
         PNAME = 'airfrac';
         parmrange = sort(linspace(0,0.5,25));
@@ -525,12 +525,14 @@ if sum(cellstouse==7)
 %         r.statestovary = [];
 %         r.statestomeasure = [3 4];
         r.statestovary = [3 5 7:8]; 
-        r.statestomeasure = [3 4 7:8];  
+        r.statestomeasure = [3 4 7:8]; 
+        MaxEvals = 300;
+        tryhard = 1;
         
         %     Run the parameter study
         [runners,xstar,cnvrg,prange] = parmstudy1d(r,xstar,parmrange,PNAME,...
             'runcharic',runcharic,'parmstovary',parmstovary,'extraconstraint',extraconstraint,'TolCon',constrainttolerance,...
-            'MaxEvals',1000,'plotiter',1);
+            'MaxEvals',MaxEvals,'plotiter',1,'tryhard',tryhard);
        
         
         numparams = length(parmstovary);
@@ -540,7 +542,7 @@ if sum(cellstouse==7)
         
         pvar = zeros(numstudies,1);
         resparms = zeros(numstudies,numvars);
-        for i = find(cnvrg==1)
+        for i = find(cnvrg>=0)
             pvar(i) = runners(i).(PNAME);
             for j = 1:numparams
                 resparms(i,j) = runners(i).(parmstovary{j});
@@ -565,11 +567,11 @@ if sum(cellstouse==7)
                     else
         load([rootdir pfolder classfolder savename],'-regexp', '^(?!cellstouse)\w')
         
-        
+%         cnvrg(cnvrg==0) =1;
         h=figure;
         for j = 1:numparams
             subplot(numparams,1,j)
-            plot(prange(cnvrg==1),resparms(cnvrg==1,j),'LineWidth',2)
+            plot(prange(cnvrg>=0),resparms(cnvrg>=0,j),'LineWidth',2)
             hold on
             plot(prange(tripdex),resparms(tripdex,j),'rx','LineWidth',2)
             plot(prange(abovedex),resparms(abovedex,j),'gx','LineWidth',2)
@@ -581,7 +583,7 @@ if sum(cellstouse==7)
         xlabel(PNAME)
         
         set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
-        hgexport(h,[exportfolder 'hiplStudy.bmp'])
+        saveflag = 0;
     end
     
 end
@@ -612,7 +614,7 @@ if sum(cellstouse==8)
         %     Run the parameter study
         [runners,xstar,cnvrg,prange] = parmstudy1d(r,xstar,parmrange,PNAME,...
             'runcharic',runcharic,'parmstovary',parmstovary,'extraconstraint',extraconstraint,'TolCon',constrainttolerance,...
-            'MaxEvals',1000,'plotiter',1);
+            'MaxEvals',300,'plotiter',1,'tryhard',1);
        
         
         numparams = length(parmstovary);
@@ -622,7 +624,7 @@ if sum(cellstouse==8)
         
         pvar = zeros(numstudies,1);
         resparms = zeros(numstudies,numvars);
-        for i = find(cnvrg==1)
+        for i = find(cnvrg>=0)
             pvar(i) = runners(i).(PNAME);
             for j = 1:numparams
                 resparms(i,j) = runners(i).(parmstovary{j});
@@ -651,7 +653,7 @@ if sum(cellstouse==8)
         h=figure;
         for j = 1:numparams
             subplot(numparams,1,j)
-            plot(prange(cnvrg==1),resparms(cnvrg==1,j),'LineWidth',2)
+            plot(prange(cnvrg>=0),resparms(cnvrg>=0,j),'LineWidth',2)
             hold on
             plot(prange(tripdex),resparms(tripdex,j),'rx','LineWidth',2)
             plot(prange(abovedex),resparms(abovedex,j),'gx','LineWidth',2)
@@ -663,7 +665,7 @@ if sum(cellstouse==8)
         xlabel(PNAME)
         
         set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
-        hgexport(h,[exportfolder 'hiplStudy.bmp'])
+        saveflag = 0;
     end
     
 end
@@ -704,7 +706,7 @@ if sum(cellstouse==9)
         
         pvar = zeros(numstudies,1);
         resparms = zeros(numstudies,numvars);
-        for i = find(cnvrg==1)
+        for i = find(cnvrg>=0)
             pvar(i) = runners(i).(PNAME);
             for j = 1:numparams
                 resparms(i,j) = runners(i).(parmstovary{j});
@@ -733,7 +735,7 @@ if sum(cellstouse==9)
         h=figure;
         for j = 1:numparams
             subplot(numparams,1,j)
-            plot(prange(cnvrg==1),resparms(cnvrg==1,j),'LineWidth',2)
+            plot(prange(cnvrg>=0),resparms(cnvrg>=0,j),'LineWidth',2)
             hold on
             plot(prange(tripdex),resparms(tripdex,j),'rx','LineWidth',2)
             plot(prange(abovedex),resparms(abovedex,j),'gx','LineWidth',2)
@@ -745,7 +747,7 @@ if sum(cellstouse==9)
         xlabel(PNAME)
         
         set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
-        hgexport(h,[exportfolder 'hiplStudy.bmp'])
+        saveflag = 0;
     end
     
 end
@@ -786,7 +788,7 @@ if sum(cellstouse==10)
         
         pvar = zeros(numstudies,1);
         resparms = zeros(numstudies,numvars);
-        for i = find(cnvrg==1)
+        for i = find(cnvrg>=0)
             pvar(i) = runners(i).(PNAME);
             for j = 1:numparams
                 resparms(i,j) = runners(i).(parmstovary{j});
@@ -815,7 +817,7 @@ if sum(cellstouse==10)
         h=figure;
         for j = 1:numparams
             subplot(numparams,1,j)
-            plot(prange(cnvrg==1),resparms(cnvrg==1,j),'LineWidth',2)
+            plot(prange(cnvrg>=0),resparms(cnvrg>=0,j),'LineWidth',2)
             hold on
             plot(prange(tripdex),resparms(tripdex,j),'rx','LineWidth',2)
             plot(prange(abovedex),resparms(abovedex,j),'gx','LineWidth',2)
@@ -827,7 +829,7 @@ if sum(cellstouse==10)
         xlabel(PNAME)
         
         set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
-        hgexport(h,[exportfolder 'hiplStudy.bmp'])
+        saveflag = 0;
     end
     
 end
@@ -868,7 +870,7 @@ if sum(cellstouse==11)
         
         pvar = zeros(numstudies,1);
         resparms = zeros(numstudies,numvars);
-        for i = find(cnvrg==1)
+        for i = find(cnvrg>=0)
             pvar(i) = runners(i).(PNAME);
             for j = 1:numparams
                 resparms(i,j) = runners(i).(parmstovary{j});
@@ -897,7 +899,7 @@ if sum(cellstouse==11)
         h=figure;
         for j = 1:numparams
             subplot(numparams,1,j)
-            plot(prange(cnvrg==1),resparms(cnvrg==1,j),'LineWidth',2)
+            plot(prange(cnvrg>=0),resparms(cnvrg>=0,j),'LineWidth',2)
             hold on
             plot(prange(tripdex),resparms(tripdex,j),'rx','LineWidth',2)
             plot(prange(abovedex),resparms(abovedex,j),'gx','LineWidth',2)
@@ -909,11 +911,12 @@ if sum(cellstouse==11)
         xlabel(PNAME)
         
         set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
-        hgexport(h,[exportfolder 'hiplStudy.bmp'])
+        saveflag = 0;
     end
     
 end
 %% Saving & Export
+if saveflag
 rootdir = cd;
 pfolder = '\ParameterStudies';
 classfolder = ['\' class(r) '\'];
@@ -938,7 +941,7 @@ else
     charnum = num2str(biggestnum+1);
     save([rootdir pfolder classfolder basename charnum '.mat']);
 end
-
+end
 
 
 
