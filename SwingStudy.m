@@ -659,9 +659,9 @@ if sum(cellstouse==8)
         xlabel(PNAME)
                 
         set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
-        hgexport(h,[exportfolder 'swinglStudy.bmp'])
-    end
+        print(h, '-dbmp', [exportfolder 'swinglStudy.bmp']);
     
+    end
 end
 
 %% 8b: Swing Rest Length Study: vary all parms
@@ -1511,7 +1511,7 @@ if sum(cellstouse==18)
         xlabel(PNAME)
         
         set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
-        hgexport(h,[exportfolder 'khipStudy.bmp'])
+        print(h, '-dbmp',[exportfolder 'khipStudy.bmp'])
     end
     
 end
@@ -1593,7 +1593,7 @@ if sum(cellstouse==19)
         xlabel(PNAME)
         
         set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
-        hgexport(h,[exportfolder 'kswingStudy.bmp'])
+        print(h, '-dbmp',[exportfolder 'kswingStudy.bmp'])
     end
     
 end
@@ -1675,7 +1675,7 @@ if sum(cellstouse==20)
         xlabel(PNAME)
         
         set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
-        hgexport(h,[exportfolder 'hiplStudy.bmp'])
+        print(h, '-dbmp',[exportfolder 'hiplStudy.bmp'])
     end
     
 end
