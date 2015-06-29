@@ -21,7 +21,7 @@ fonttype='Times New Roman';
 loadfolder = './SavedGaits/SwingSLIP/';
 exportfolder = './Figures/';
 
-cellstouse = [6:11];
+cellstouse = [10];
 %% 1: Swingl Study: Start from No Impulse gait: Locking
 % 
 if sum(cellstouse==1)
@@ -683,7 +683,7 @@ if sum(cellstouse==9)
         
         PNAME = 'speed';
         parmrange = sort(linspace(0.8,1.2,15));
-        parmstovary=[{'kstance'} {'swingl'} {'kswing'} {'khip'} {'hipl'}];
+        parmstovary=[{'kstance'}  {'khip'} {'hipl'} {'impulsecoeff'}];
         
         extraconstraint = @(r,varargin) r.floorconstraint(varargin{:});
 %         r.statestovary = [];
@@ -765,7 +765,7 @@ if sum(cellstouse==10)
         
         PNAME = 'airfrac';
         parmrange = sort(linspace(0,0.5,25));
-        parmstovary=[{'kstance'} {'swingl'} {'kswing'} {'khip'} {'hipl'}];
+        parmstovary=[{'kstance'} {'khip'} {'hipl'} {'impulsecoeff'}];
         
         extraconstraint = @(r,varargin) r.floorconstraint(varargin{:});
 %         r.statestovary = [];
@@ -847,7 +847,7 @@ if sum(cellstouse==11)
         
         PNAME = 'steplength';
         parmrange = sort(linspace(0.8,1.4,25));
-        parmstovary=[{'kstance'} {'swingl'} {'kswing'} {'khip'} {'hipl'}];
+        parmstovary=[{'kstance'} {'khip'} {'hipl'} {'impulsecoeff'}];
         
         extraconstraint = @(r,varargin) r.floorconstraint(varargin{:});
 %         r.statestovary = [];
