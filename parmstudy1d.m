@@ -33,11 +33,14 @@ MaxEvals = [];
 algorithm = [];
 LB = [];
 FinDiffType = [];
+tryhard = 0;
 
 for i = 1 : 2 : length(varargin)
     option = varargin{i};
     value = varargin{i + 1};
     switch option
+        case 'tryhard'
+            tryhard = value;
         case 'extraconstraint'
             extraconstraint = value;
         case 'runcharic'
@@ -95,11 +98,19 @@ for i = fliplr(lowindices)
     runners(i)=runner;
     x0 = xstars(:,i)';
     runner.anim(x0);
-    if cnvrg(i)<=0 
-       cnvrg(i+1:lowindices(1)) = NaN;
-       xstars(:,i+1:lowindices(1)) = NaN;
-        break; 
-    end;  % give up if we didn't converge
+    if ~tryhard
+        if cnvrg(i)<=0
+            cnvrg(i+1:lowindices(1)) = NaN;
+            xstars(:,i+1:lowindices(1)) = NaN;
+            break;
+        end;  % give up if we didn't converge
+    else
+        if cnvrg(i)<0
+            cnvrg(i+1:lowindices(1)) = NaN;
+            xstars(:,i+1:lowindices(1)) = NaN;
+            break;
+        end;  % give up if we didn't converge
+    end
 end
 
 % Ascending ladder
@@ -119,11 +130,19 @@ for i = highindices
     runners(i)=runner;
     x0 = xstars(:,i)';
     runner.anim(x0);
-    if cnvrg(i)<=0 
-               cnvrg(i+1:highindices(end)) = NaN;
-       xstars(:,i+1:highindices(end)) = NaN;
-        break; 
-    end;  % give up if we didn't converge
+    if ~tryhard
+        if cnvrg(i)<=0
+            cnvrg(i+1:highindices(end)) = NaN;
+            xstars(:,i+1:highindices(end)) = NaN;
+            break;
+        end;  % give up if we didn't converge
+    else
+        if cnvrg(i)<0
+            cnvrg(i+1:highindices(end)) = NaN;
+            xstars(:,i+1:highindices(end)) = NaN;
+            break;
+        end;  % give up if we didn't converge
+    end
 end
 
 myparmrange = parmrange;
