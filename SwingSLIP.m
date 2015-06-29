@@ -322,7 +322,7 @@ classdef SwingSLIP < Runner
             %%
             RelTol = 1e-6; %10; %
             AbsTol = 1e-6; %10; %
-            tmax = 1.5; %2; %6;
+            tmax = 2; %2; %6;
             dt = 1e-2;
             interleaveAnimation = 0; %1; %
             interleaveAnimationFrameskip = 2;
@@ -373,8 +373,12 @@ classdef SwingSLIP < Runner
                 opts = odeset('Events', phaseevents{phasenum},'RelTol',RelTol','AbsTol',AbsTol); %Set integration options
                 [t,x,~,~,ie] = ode45(@(t,x) this.XDoubleDot(t,x,phase),tstart:dt:tstart+tmax,odex0,opts); %Integrate dynamics
                 
-                if ~isempty(ie) || t(end) == tmax;
+                if ~isempty(ie);
                     ie = ie(end);
+                end
+                
+                if t == tmax
+                   ie = -1; 
                 end
                 
                 if sum(sum(isnan(x)))
@@ -414,6 +418,10 @@ classdef SwingSLIP < Runner
             tstance = allt(find(phasevec==2,1));
             if isempty(tair)
                 tair = tf;
+            end
+            
+            if isempty(tstance)
+               tstance = 0; 
             end
             
             %Switch legs
