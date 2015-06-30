@@ -600,6 +600,9 @@ classdef SwingSLIP < Runner
             
             aviWriter = [];
             shouldAntiAlias = 0;
+            xlims = [-1 1];
+            ylims = [-1.5 0.5];
+            stanceleg = 1;
             
             for i = 1 : 2 : length(varargin)
                 option = varargin{i};
@@ -609,7 +612,13 @@ classdef SwingSLIP < Runner
                         aviWriter = value;
                     case 'shouldAntiAlias'
                         shouldAntiAlias = value;
+                    case 'xlims'
+                        xlims = value;
+                    case 'ylims'
+                        ylims = value;
                         
+                    case 'stanceleg'
+                        stanceleg = value;
                 end
             end
             
@@ -638,11 +647,13 @@ classdef SwingSLIP < Runner
             
             
             %Draw Springs
+            if state(10)~=0 && stanceleg%state(3)>=-pi/2 || state(10)~=0
             numcoils=3;
             springwidth=.07;
             plotter.plotSpring(points.stancefoot(1),points.stancefoot(2),...
                 points.pelvis(1),points.pelvis(2),...
                 numcoils,this.stancel,springwidth) %stance spring
+            end
             
             if this.kswing>0
             plotter.plotSpring(points.swingfoot(1),points.swingfoot(2),...
@@ -660,31 +671,33 @@ classdef SwingSLIP < Runner
                 plotter.plotLine(points.pelvis,torso)
                 
                     torsodir = [0 1];
-                    torsopoint = points.pelvis + 0.7 * lpelvis * torsodir;
+                    torsopoint = points.pelvis + 0.5 * lpelvis * torsodir;
                     stancedir = (points.stancefoot - points.pelvis)/norm(points.stancefoot - points.pelvis);
                     swingdir = (points.swingfoot - points.pelvis)/norm(points.swingfoot - points.pelvis);
                     stancepoint = points.pelvis + .2 * this.stancel * stancedir;
-                    swingpoint = points.pelvis + .2 * this.stancel * swingdir;
+                    swingpoint = points.pelvis + .15 * this.stancel * swingdir;
                     
 %                     if points.swingfoot(2)>1e-4
-                    plotter.plotCircSpring(torsopoint,swingpoint,.05,1,2,.05,...
-                        (state(5)-this.hipl),'Color',[101 156 255]/255)
+                    plotter.plotCircSpring(torsopoint,swingpoint,.05,1,2,.02,...
+                        (state(5)-this.hipl),'Color',[150 0 50]/255)
 %                     end
                     
             end
             
             %Draw Masses
             plotter.plotMass(points.pelvis);
+            if state(10)~=0 && stanceleg
             plotter.plotMass(points.stancefoot,'scaling',0);
+            end
             plotter.plotMass(points.swingfoot,'scaling',0);
             
             axis equal;
             
             %Set Axis Limits
-            xLims = [points.pelvis(1)]+ [-1 2.5];
+            xLims = [points.pelvis(1)]+ xlims;
             xlim(xLims);
             
-            yLims = [points.pelvis(2)] + [-1.5 .5];
+            yLims = [points.pelvis(2)] + ylims;
             ylim(yLims);
             
             
