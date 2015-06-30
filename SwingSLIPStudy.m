@@ -22,7 +22,7 @@ fonttype='Times New Roman';
 loadfolder = './SavedGaits/SwingSLIP/';
 exportfolder = './Figures/';
 
-cellstouse = [6];
+cellstouse = [8];
 %% 1: Swingl Study: Start from No Impulse gait: Locking
 % 
 if sum(cellstouse==1)
@@ -423,13 +423,13 @@ if sum(cellstouse==5)
     
 end
 
-%% 6: Speed Study: Start from No Impulse Gait LOCKED
+%% 6: Speed Study: Start from No Impulse Gait UnLOCKED
 % 
 if sum(cellstouse==6)
     rootdir = cd;
     pfolder = '\ParameterStudies';
     classfolder = ['\SwingSLIP\'];
-    savename = ['Speed_NoImpulseLock.mat'];
+    savename = ['Speed_NoImpulse.mat'];
     
     if ~exist([rootdir pfolder classfolder savename],'file')
         loadname = 'NoImpulse.mat';
@@ -505,13 +505,13 @@ if sum(cellstouse==6)
     
 end
 
-%% 7: AirFrac: Start from No Impulse Gait LOCKED
+%% 7: AirFrac: Start from No Impulse Gait UnLOCKED
 % 
 if sum(cellstouse==7)
     rootdir = cd;
     pfolder = '\ParameterStudies';
     classfolder = ['\SwingSLIP\'];
-    savename = ['AirFrac_NoImpulseLock.mat'];
+    savename = ['AirFrac_NoImpulse.mat'];
     
     if ~exist([rootdir pfolder classfolder savename],'file')
         loadname = 'NoImpulse.mat';
@@ -588,13 +588,13 @@ if sum(cellstouse==7)
     
 end
 
-%% 8: Step Length: Start from No Impulse Gait LOCKED
+%% 8: Step Length: Start from No Impulse Gait UnLOCKED
 % 
 if sum(cellstouse==8)
     rootdir = cd;
     pfolder = '\ParameterStudies';
     classfolder = ['\SwingSLIP\'];
-    savename = ['StepLength_NoImpulseLock.mat'];
+    savename = ['StepLength_NoImpulse.mat'];
     
     if ~exist([rootdir pfolder classfolder savename],'file')
         loadname = 'NoImpulse.mat';
@@ -670,22 +670,22 @@ if sum(cellstouse==8)
     
 end
 
-%% 9: Speed Study: No Swing Spring LOCKED
+%% 9: Speed Study: Start from No Impulse Gait UnLOCKED
 % 
 if sum(cellstouse==9)
     rootdir = cd;
     pfolder = '\ParameterStudies';
     classfolder = ['\SwingSLIP\'];
-    savename = ['Speed_NoSwingSpring_Locked.mat'];
+    savename = ['Speed_NoImpulseLock.mat'];
     
     if ~exist([rootdir pfolder classfolder savename],'file')
-        loadname = 'NoSwingSpringLock.mat';
+        loadname = 'NoImpulseLock.mat';
         load([loadfolder loadname]);
 
         
         PNAME = 'speed';
         parmrange = sort(linspace(0.8,1.2,15));
-        parmstovary=[{'kstance'}  {'khip'} {'hipl'} {'impulsecoeff'}];
+        parmstovary=[{'kstance'} {'swingl'} {'kswing'} {'khip'} {'hipl'}];
         
         extraconstraint = @(r,varargin) r.floorconstraint(varargin{:});
 %         r.statestovary = [];
@@ -696,171 +696,7 @@ if sum(cellstouse==9)
         %     Run the parameter study
         [runners,xstar,cnvrg,prange] = parmstudy1d(r,xstar,parmrange,PNAME,...
             'runcharic',runcharic,'parmstovary',parmstovary,'extraconstraint',extraconstraint,'TolCon',constrainttolerance,...
-            'MaxEvals',1000,'plotiter',1);
-       
-        
-        numparams = length(parmstovary);
-        numIC = length(r.statestovary);
-        numvars = numparams+numIC;
-        numstudies = length(cnvrg);
-        
-        pvar = zeros(numstudies,1);
-        resparms = zeros(numstudies,numvars);
-        for i = find(cnvrg>=0)
-            pvar(i) = runners(i).(PNAME);
-            for j = 1:numparams
-                resparms(i,j) = runners(i).(parmstovary{j});
-            end
-            [~, ~, allx, allt, tair,this,phasevec] = runners(i).onestep(xstar(:,i));
-            for k = 1:size(allx(:,1))
-            pts = runners(i).getPoints(allx(k,:));
-            swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
-%             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
-%             hipacc(k) = accs(3);
-            end
-            abovepelvis(i) = sum(swingfootrel(swingfootrel>0));
-            [floornegs(i)] = runners(i).floorconstraint(1,1,1,allx,allt);
-        end
-        
-        triptol = -1e-4;
-        tripdex = floornegs<triptol;
-
-        
-        abovedex = abovepelvis>0;
-        
-                    else
-        load([rootdir pfolder classfolder savename],'-regexp', '^(?!cellstouse)\w')
-        
-        
-        h=figure;
-        for j = 1:numparams
-            subplot(numparams,1,j)
-            plot(prange(cnvrg>=0),resparms(cnvrg>=0,j),'LineWidth',2)
-            hold on
-            plot(prange(tripdex),resparms(tripdex,j),'rx','LineWidth',2)
-            plot(prange(abovedex),resparms(abovedex,j),'gx','LineWidth',2)
-            plot(prange(abovedex & tripdex), resparms(abovedex & tripdex,j),'mx','LineWidth',2)
-            ylabel(parmstovary{j})
-%             set(gca,'XLim',[0.6 2])
-        end
-        legend('Good','No Floor','Foot Above Pelvis')
-        xlabel(PNAME)
-        
-        set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
-        saveflag = 0;
-    end
-    
-end
-
-%% 10: AirFrac: No Swing Spring LOCKED
-% 
-if sum(cellstouse==10)
-    rootdir = cd;
-    pfolder = '\ParameterStudies';
-    classfolder = ['\SwingSLIP\'];
-    savename = ['AirFrac_NoSwingSpring_Locked.mat'];
-    
-    if ~exist([rootdir pfolder classfolder savename],'file')
-        loadname = 'NoSwingSpringLock.mat';
-        load([loadfolder loadname]);
-
-        
-        PNAME = 'airfrac';
-        parmrange = sort(linspace(0,0.5,25));
-        parmstovary=[{'kstance'} {'khip'} {'hipl'} {'impulsecoeff'}];
-        
-        extraconstraint = @(r,varargin) r.floorconstraint(varargin{:});
-%         r.statestovary = [];
-%         r.statestomeasure = [3 4];
-        r.statestovary = [3 5 7:8]; 
-        r.statestomeasure = [3 4 7:8];  
-        
-        %     Run the parameter study
-        [runners,xstar,cnvrg,prange] = parmstudy1d(r,xstar,parmrange,PNAME,...
-            'runcharic',runcharic,'parmstovary',parmstovary,'extraconstraint',extraconstraint,'TolCon',constrainttolerance,...
-            'MaxEvals',1000,'plotiter',1);
-       
-        
-        numparams = length(parmstovary);
-        numIC = length(r.statestovary);
-        numvars = numparams+numIC;
-        numstudies = length(cnvrg);
-        
-        pvar = zeros(numstudies,1);
-        resparms = zeros(numstudies,numvars);
-        for i = find(cnvrg>=0)
-            pvar(i) = runners(i).(PNAME);
-            for j = 1:numparams
-                resparms(i,j) = runners(i).(parmstovary{j});
-            end
-            [~, ~, allx, allt, tair,this,phasevec] = runners(i).onestep(xstar(:,i));
-            for k = 1:size(allx(:,1))
-            pts = runners(i).getPoints(allx(k,:));
-            swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
-%             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
-%             hipacc(k) = accs(3);
-            end
-            abovepelvis(i) = sum(swingfootrel(swingfootrel>0));
-            [floornegs(i)] = runners(i).floorconstraint(1,1,1,allx,allt);
-        end
-        
-        triptol = -1e-4;
-        tripdex = floornegs<triptol;
-
-        
-        abovedex = abovepelvis>0;
-        
-                    else
-        load([rootdir pfolder classfolder savename],'-regexp', '^(?!cellstouse)\w')
-        
-        
-        h=figure;
-        for j = 1:numparams
-            subplot(numparams,1,j)
-            plot(prange(cnvrg>=0),resparms(cnvrg>=0,j),'LineWidth',2)
-            hold on
-            plot(prange(tripdex),resparms(tripdex,j),'rx','LineWidth',2)
-            plot(prange(abovedex),resparms(abovedex,j),'gx','LineWidth',2)
-            plot(prange(abovedex & tripdex), resparms(abovedex & tripdex,j),'mx','LineWidth',2)
-            ylabel(parmstovary{j})
-%             set(gca,'XLim',[0.6 2])
-        end
-        legend('Good','No Floor','Foot Above Pelvis')
-        xlabel(PNAME)
-        
-        set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
-        saveflag = 0;
-    end
-    
-end
-
-%% 11: Step Length: No Swing Spring LOCKED
-% 
-if sum(cellstouse==11)
-    rootdir = cd;
-    pfolder = '\ParameterStudies';
-    classfolder = ['\SwingSLIP\'];
-    savename = ['StepLength_NoSwingSpring_Locked.mat'];
-    
-    if ~exist([rootdir pfolder classfolder savename],'file')
-        loadname = 'NoSwingSpringLock.mat';
-        load([loadfolder loadname]);
-
-        
-        PNAME = 'steplength';
-        parmrange = sort(linspace(0.8,1.4,25));
-        parmstovary=[{'kstance'} {'khip'} {'hipl'} {'impulsecoeff'}];
-        
-        extraconstraint = @(r,varargin) r.floorconstraint(varargin{:});
-%         r.statestovary = [];
-%         r.statestomeasure = [3 4];
-        r.statestovary = [3 5 7:8]; 
-        r.statestomeasure = [3 4 7:8];  
-        
-        %     Run the parameter study
-        [runners,xstar,cnvrg,prange] = parmstudy1d(r,xstar,parmrange,PNAME,...
-            'runcharic',runcharic,'parmstovary',parmstovary,'extraconstraint',extraconstraint,'TolCon',constrainttolerance,...
-            'MaxEvals',1000,'plotiter',1);
+            'MaxEvals',300,'plotiter',1,'tryhard',1);
        
         
         numparams = length(parmstovary);
