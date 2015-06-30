@@ -1104,7 +1104,7 @@ if any(cellstouse==11) %SLIP Runner
            title('GRF')
            
         set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
-        hgexport(h,[exportfolder 'SLIPModelvsData'])
+        print(h,'-dbmp',[exportfolder 'SLIPModelvsData'])
 
     
 end
