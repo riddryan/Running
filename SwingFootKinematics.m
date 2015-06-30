@@ -21,7 +21,14 @@ subject = 3;
 %% 1: NoImpulse SwingSLIP
 
 fname = 'NoImpulse';
+% fname = 'MinImpulseLock';
 load([SwingSlipFolder fname])
+
+% r.cswing = 2;
+% r.kswing = 0;
+% 
+% figure
+% [xf,tf,allx,allt,tair,runner,phasevec,tstance] = r.onestep(xstar,'interleaveAnimation',1);
 
 
 [uniquet,uniquedex] = unique(allt);
