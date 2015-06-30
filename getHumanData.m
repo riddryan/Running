@@ -1,4 +1,5 @@
-function [SoftPower,Speed,StepLength,AirFrac,StepFreq,grf_z,grf_y] = getHumanData( subject, trial)
+function [SoftPower,Speed,StepLength,AirFrac,StepFreq,grf_z,grf_y,...
+          swingfootvelx,swingfootvely,hippow,kneepow] = getHumanData( subject, trial)
 %getHumanData outputs soft tissue power & gait characterstics from human
 %running experiment on treadmill.
 
@@ -34,6 +35,23 @@ StepFreq = 1/steptime;
 StepLength = Speed/StepFreq;
 AirFrac = mean(fp.LHS{trial,subject}-fp.RTO{trial,subject})/mean(fp.LHS{trial,subject}-fp.RHS{trial,subject});
 
+speednorm = fp.velnorm{trial,subject};
+swingfootvelx = (meaneddata.rightfoot.velocity{trial,subject}(toeoff:end,2) + fp.Speeds{trial,subject})*speednorm;
+swingfootvely = (meaneddata.rightfoot.velocity{trial,subject}(toeoff:end,3))*speednorm;
+% swingfootvelx = (meaneddata.rightfoot.proxvel{trial,subject}(toeoff:end,2) + fp.Speeds{trial,subject})*speednorm;
+% swingfootvely = (meaneddata.rightfoot.proxvel{trial,subject}(toeoff:end,3))*speednorm;
+
+hippow = dot(meaneddata.righthip.moment{trial,subject}(toeoff:end,1),...
+              meaneddata.righthip.angvel{trial,subject}(toeoff:end,1),2)...
+              *fp.powernorm{trial,subject}*fp.m{trial,subject};
+          
+          kneepow = dot(meaneddata.rightknee.moment{trial,subject}(toeoff:end,1),...
+              meaneddata.rightknee.angvel{trial,subject}(toeoff:end,1),2)...
+              *fp.powernorm{trial,subject}*fp.m{trial,subject};
+          
+          ankpow = dot(meaneddata.rightankle.moment{trial,subject}(toeoff:end,1),...
+              meaneddata.rightankle.angvel{trial,subject}(toeoff:end,1),2)...
+              *fp.powernorm{trial,subject}*fp.m{trial,subject};
 
 end
 
