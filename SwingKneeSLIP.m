@@ -1314,15 +1314,15 @@ c6*lshank;
   
         function swingPower = getKneePower(this,x)
             force = this.getKneeForce(x);
-            ss = SwingKneeSLIP(x);
+            ss = SwingKneeSLIPState(x);
             velocity = ss.knee.AngleDot - ss.swingfoot.AngleDot;
             swingPower = force.*velocity;
         end
         
         function swingforce = getKneeForce(this,x)
-            ss = SwingKneeSLIP(x);
+            ss = SwingKneeSLIPState(x);
             swingforce = -this.kknee*(ss.knee.Angle - ss.swingfoot.Angle - this.kneel) + ...
-                         -this.cswing*(ss.knee.AngleDot - ss.swingfoot.AngleDot);
+                         -this.cknee*(ss.knee.AngleDot - ss.swingfoot.AngleDot);
         end
         
         function hippower= getHipPower(this,x)
