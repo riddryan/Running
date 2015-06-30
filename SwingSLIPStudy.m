@@ -22,7 +22,7 @@ fonttype='Times New Roman';
 loadfolder = './SavedGaits/SwingSLIP/';
 exportfolder = './Figures/';
 
-cellstouse = [8];
+cellstouse = [11];
 %% 1: Swingl Study: Start from No Impulse gait: Locking
 % 
 if sum(cellstouse==1)
@@ -748,6 +748,194 @@ if sum(cellstouse==9)
         
         set(findall(gcf, '-property', 'FontSize'), 'FontSize', TextSize, 'fontWeight', fontstyle,'FontName',fonttype)
         saveflag = 0;
+    end
+    
+end
+
+%% 10: Conserve Swing Energy by setting hip set point to vertical
+% 
+if sum(cellstouse==10)
+    rootdir = cd;
+    pfolder = '\SavedGaits';
+    classfolder = ['\SwingSLIP\'];
+    savename = ['Conservative.mat'];
+    
+    if ~exist([rootdir pfolder classfolder savename],'file')
+        loadname = 'NoImpulse.mat';
+        load([loadfolder loadname]);
+        pfolder = '\SavedGaits';
+        
+        runner = r; x0 = xstar;
+        
+        runner.hipl = pi/2;
+        
+        %         addedconstraints = @(r,varargin) r.conservativehipconstraint(varargin{:});
+        addedconstraints = @(r,varargin) r.floorconstraint(varargin{:});
+        %             addedconstraint = [];
+        constrainttolerance = 1e-4;
+        Objective = [];
+        parmstovary = {'kstance' 'kswing' 'swingl' 'khip' 'airfrac'};
+                runner.statestovary = [3 5 7:8]; 
+        runner.statestomeasure = [3 4 7:8]; 
+        
+        % Find Limit cycle
+        [finalStates, finalParameters, limitCycleError, c, ceq, eflag, optimoutput, lambda] = ...
+         runner.findLimitCycle(x0,...
+        'parametersToAlter',parmstovary,...
+        'TolCon',constrainttolerance,...
+        'additionalConstraintFunction',addedconstraints,'MaxEvals',1000,'TolX',1e-10,...
+        'Algo','interior-point','Objective',Objective);
+    
+    newr = runner.setParametersFromList(parmstovary,finalParameters);
+    newx0 = finalStates;
+    
+    figure
+    [xf,tf,allx,allt,tair,newr,phasevec,tstance] = newr.onestep(newx0,'interleaveAnimation',1);
+    
+    r=newr;
+    xstar = allx(1,:);
+    x0 = xstar;
+    r.print(x0,xf,tf,tair,tstance,allt,allx);
+    
+    for i = 1:size(allx,1)
+        phase = runner.phases{phasevec(i)};
+        energies = runner.getEnergies(allx(i,:),phase);
+        TOTE(i) = energies.Total;
+        TOTE2(i) = energies.Total2;
+        KE(i) = energies.KE;
+        PE(i) = energies.PE;
+        PEgrav(i) = energies.PEgrav;
+        PEspring(i) = energies.PEspring;
+        PEspring2(i) = energies.PEspring2;
+        PE2(i) = energies.PE2;
+        PEgrav2(i) = energies.PEgrav2;
+        PE2(i) = energies.PE2;
+        KE2(i) = energies.KE2;
+        pts = runner.getPoints(allx(i,:));
+        stancefootx(i) = pts.stancefoot(1);
+        stancefooty(i) = pts.stancefoot(2);
+        swingfootx(i) = pts.swingfoot(1);
+        swingfooty(i) = pts.swingfoot(2);
+        vels = runner.getVels(allx(i,:));
+        stancefootvelx(i) = vels.stancefoot(1);
+        stancefootvely(i) = vels.stancefoot(2);
+        swingfootvelx(i) = vels.swingfoot(1);
+        swingfootvely(i) = vels.swingfoot(2);
+        GRF(i,:) = runner.getGRF(allt(i),allx(i,:),phase);
+    end
+    
+    else
+        load([rootdir pfolder classfolder savename],'-regexp', '^(?!cellstouse)\w')
+        
+            figure
+            subplot(211)
+            plot(allt,TOTE)
+            hold on
+            plot(allt,KE)
+            plot(allt,PE)
+            plot(allt,PEgrav)
+            plot(allt,PEspring)
+            title('Inertial World')
+            legend('Tot','KE','PE','PEgrav','PEspring')
+            
+            subplot(212)
+            plot(allt,PEspring2)
+            hold on
+            plot(allt,PEgrav2)
+            plot(allt,KE2)
+            plot(allt,PE2)
+            plot(allt,TOTE2)
+            title('Massless World')
+            legend('springs','grav','KE','PE','Tot')
+            
+           figure
+           subplot(211)
+           plot(allt,GRF)
+           title('GRF')
+           subplot(212)
+           plot(allt,allx(:,2))
+    end
+    
+end
+
+%% 11: Velocity of COM peturbation study
+% 
+if sum(cellstouse==11)
+    rootdir = cd;
+    pfolder = '\ReturnMapStudies';
+    classfolder = ['\SwingSLIP\'];
+    savename = ['VelCOMPerts1.mat'];
+    
+    if ~exist([rootdir pfolder classfolder savename],'file')
+        loadname = 'NoImpulseLock.mat';
+        load([loadfolder loadname]);
+        pfolder = '\ReturnMapStudies';
+        
+       r0 = r;
+       x0 = xstar;
+       [xf,tf,allx,allt,tair,r0,phasevec,tstance] = r0.onestep(x0);
+       tstancedex0 = find(allt==tstance,1,'last');
+       xstance0 = allx(tstancedex0,:);
+       
+       limdex = [2 3 4 7 8];
+       
+       pertsize = -1e-2;
+       r.useHSevent = 1;
+       
+       %Pelvis Velocity x
+       x1 = xstar;
+       x1(7) = x1(7) + pertsize;
+       
+       [xf1,tf1,allx1,allt1,tair1,r,phasevec1,tstance1] = r.onestep(x1);
+       tstancedex1 = find(allt1==tstance1,1,'last');
+       tairdex1 = find(allt1==tair1,1,'last');
+       xstance1 = allx1(tstancedex1,:);
+       xair1 = allx1(tairdex1,:);
+       
+       x2 = xf1;
+       x2([5 6 7 8]) = xair1([3 4 7 8]);
+       
+       
+       [xf2,tf2,allx2,allt2,tair2,r,phasevec2,tstance2] = r.onestep(x2);
+       tstancedex2 = find(allt2==tstance2,1,'last');
+       xstance2 = allx2(tstancedex2,:);
+       
+       xf(limdex)'
+       xstance1(limdex)
+       xf1(limdex)'
+       
+       
+       r.print(x1);
+       
+        
+        
+    for i = 1:size(allx,1)
+        phase = r.phases{phasevec(i)};
+        energies = r.getEnergies(allx(i,:),phase);
+        TOTE(i) = energies.Total;
+        TOTE2(i) = energies.Total2;
+        KE(i) = energies.KE;
+        PE(i) = energies.PE;
+        PEgrav(i) = energies.PEgrav;
+        PEspring(i) = energies.PEspring;
+        PEspring2(i) = energies.PEspring2;
+        PE2(i) = energies.PE2;
+        PEgrav2(i) = energies.PEgrav2;
+        PE2(i) = energies.PE2;
+        KE2(i) = energies.KE2;
+        pts = r.getPoints(allx(i,:));
+        stancefootx(i) = pts.stancefoot(1);
+        stancefooty(i) = pts.stancefoot(2);
+        swingfootx(i) = pts.swingfoot(1);
+        swingfooty(i) = pts.swingfoot(2);
+        vels = r.getVels(allx(i,:));
+        stancefootvelx(i) = vels.stancefoot(1);
+        stancefootvely(i) = vels.stancefoot(2);
+        swingfootvelx(i) = vels.swingfoot(1);
+        swingfootvely(i) = vels.swingfoot(2);
+        GRF(i,:) = r.getGRF(allt(i),allx(i,:),phase);
+    end
+    
     end
     
 end
