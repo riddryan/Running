@@ -1039,6 +1039,11 @@ vels.COM(2) = u2;
                    vels = this.getVels(allx(TOdex,:));
                    cost = dot(vels.stancefoot,vels.stancefoot);
                 end
+                
+                function [c,ceq] = conservativehipconstraint(this,varargin)
+                   c = [];
+                   ceq = pi/2 - this.hipl;
+                end
         
         %% Additional Dynamics Calculations
         
