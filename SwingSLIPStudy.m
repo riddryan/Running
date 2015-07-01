@@ -24,7 +24,7 @@ exportfolder = './Figures/';
 
 cellstouse = [11];
 %% 1: Swingl Study: Start from No Impulse gait: Locking
-% 
+%
 if sum(cellstouse==1)
     rootdir = cd;
     pfolder = '\ParameterStudies';
@@ -34,7 +34,7 @@ if sum(cellstouse==1)
     if ~exist([rootdir pfolder classfolder savename],'file')
         loadname = 'NoImpulseLock.mat';
         load([loadfolder loadname]);
-
+        
         
         PNAME = 'swingl';
         parmrange = sort(linspace(0.5,1,15));
@@ -48,7 +48,7 @@ if sum(cellstouse==1)
         [runners,xstar,cnvrg,prange] = parmstudy1d(r,xstar,parmrange,PNAME,...
             'runcharic',runcharic,'parmstovary',parmstovary,'extraconstraint',extraconstraint,'TolCon',constrainttolerance,...
             'MaxEvals',1000,'plotiter',1);
-       
+        
         
         numparams = length(parmstovary);
         numIC = length(r.statestovary);
@@ -64,10 +64,10 @@ if sum(cellstouse==1)
             end
             [~, ~, allx, allt, tair,this,phasevec] = runners(i).onestep(xstar(:,i));
             for k = 1:size(allx(:,1))
-            pts = runners(i).getPoints(allx(k,:));
-            swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
-%             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
-%             hipacc(k) = accs(3);
+                pts = runners(i).getPoints(allx(k,:));
+                swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
+                %             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
+                %             hipacc(k) = accs(3);
             end
             abovepelvis(i) = sum(swingfootrel(swingfootrel>0));
             [floornegs(i)] = runners(i).floorconstraint(1,1,1,allx,allt);
@@ -75,11 +75,11 @@ if sum(cellstouse==1)
         
         triptol = -1e-4;
         tripdex = floornegs<triptol;
-
+        
         
         abovedex = abovepelvis>0;
         
-                    else
+    else
         load([rootdir pfolder classfolder savename],'-regexp', '^(?!cellstouse)\w')
         
         
@@ -92,7 +92,7 @@ if sum(cellstouse==1)
             plot(prange(abovedex),resparms(abovedex,j),'gx','LineWidth',2)
             plot(prange(abovedex & tripdex), resparms(abovedex & tripdex,j),'mx','LineWidth',2)
             ylabel(parmstovary{j})
-%             set(gca,'XLim',[0.6 2])
+            %             set(gca,'XLim',[0.6 2])
         end
         legend('Good','No Floor','Foot Above Pelvis')
         xlabel(PNAME)
@@ -104,7 +104,7 @@ if sum(cellstouse==1)
 end
 
 %% 2: kswing Study: Start from Fully Extended Gait: Locking
-% 
+%
 if sum(cellstouse==2)
     rootdir = cd;
     pfolder = '\ParameterStudies';
@@ -114,7 +114,7 @@ if sum(cellstouse==2)
     if ~exist([rootdir pfolder classfolder savename],'file')
         loadname = 'NoSwingSpringLock.mat';
         load([loadfolder loadname]);
-
+        
         
         PNAME = 'kswing';
         parmrange = sort(linspace(0,15,15));
@@ -128,7 +128,7 @@ if sum(cellstouse==2)
         [runners,xstar,cnvrg,prange] = parmstudy1d(r,xstar,parmrange,PNAME,...
             'runcharic',runcharic,'parmstovary',parmstovary,'extraconstraint',extraconstraint,'TolCon',constrainttolerance,...
             'MaxEvals',1000,'plotiter',1);
-       
+        
         
         numparams = length(parmstovary);
         numIC = length(r.statestovary);
@@ -144,10 +144,10 @@ if sum(cellstouse==2)
             end
             [~, ~, allx, allt, tair,this,phasevec] = runners(i).onestep(xstar(:,i));
             for k = 1:size(allx(:,1))
-            pts = runners(i).getPoints(allx(k,:));
-            swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
-%             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
-%             hipacc(k) = accs(3);
+                pts = runners(i).getPoints(allx(k,:));
+                swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
+                %             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
+                %             hipacc(k) = accs(3);
             end
             abovepelvis(i) = sum(swingfootrel(swingfootrel>0));
             [floornegs(i)] = runners(i).floorconstraint(1,1,1,allx,allt);
@@ -155,11 +155,11 @@ if sum(cellstouse==2)
         
         triptol = -1e-4;
         tripdex = floornegs<triptol;
-
+        
         
         abovedex = abovepelvis>0;
         
-                    else
+    else
         load([rootdir pfolder classfolder savename],'-regexp', '^(?!cellstouse)\w')
         
         
@@ -172,7 +172,7 @@ if sum(cellstouse==2)
             plot(prange(abovedex),resparms(abovedex,j),'gx','LineWidth',2)
             plot(prange(abovedex & tripdex), resparms(abovedex & tripdex,j),'mx','LineWidth',2)
             ylabel(parmstovary{j})
-%             set(gca,'XLim',[0.6 2])
+            %             set(gca,'XLim',[0.6 2])
         end
         legend('Good','No Floor','Foot Above Pelvis')
         xlabel(PNAME)
@@ -184,7 +184,7 @@ if sum(cellstouse==2)
 end
 
 %% 3: swingl Study: Start from Fully Extended Gait
-% 
+%
 if sum(cellstouse==3)
     rootdir = cd;
     pfolder = '\ParameterStudies';
@@ -194,7 +194,7 @@ if sum(cellstouse==3)
     if ~exist([rootdir pfolder classfolder savename],'file')
         loadname = 'ExtendedSwingSpringNoLock.mat';
         load([loadfolder loadname]);
-
+        
         
         PNAME = 'swingl';
         parmrange = sort(linspace(1,0.6,15));
@@ -208,7 +208,7 @@ if sum(cellstouse==3)
         [runners,xstar,cnvrg,prange] = parmstudy1d(r,xstar,parmrange,PNAME,...
             'runcharic',runcharic,'parmstovary',parmstovary,'extraconstraint',extraconstraint,'TolCon',constrainttolerance,...
             'MaxEvals',1000,'plotiter',1);
-       
+        
         
         numparams = length(parmstovary);
         numIC = length(r.statestovary);
@@ -224,10 +224,10 @@ if sum(cellstouse==3)
             end
             [~, ~, allx, allt, tair,this,phasevec] = runners(i).onestep(xstar(:,i));
             for k = 1:size(allx(:,1))
-            pts = runners(i).getPoints(allx(k,:));
-            swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
-%             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
-%             hipacc(k) = accs(3);
+                pts = runners(i).getPoints(allx(k,:));
+                swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
+                %             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
+                %             hipacc(k) = accs(3);
             end
             abovepelvis(i) = sum(swingfootrel(swingfootrel>0));
             [floornegs(i)] = runners(i).floorconstraint(1,1,1,allx,allt);
@@ -235,11 +235,11 @@ if sum(cellstouse==3)
         
         triptol = -1e-4;
         tripdex = floornegs<triptol;
-
+        
         
         abovedex = abovepelvis>0;
         
-                    else
+    else
         load([rootdir pfolder classfolder savename],'-regexp', '^(?!cellstouse)\w')
         
         
@@ -252,7 +252,7 @@ if sum(cellstouse==3)
             plot(prange(abovedex),resparms(abovedex,j),'gx','LineWidth',2)
             plot(prange(abovedex & tripdex), resparms(abovedex & tripdex,j),'mx','LineWidth',2)
             ylabel(parmstovary{j})
-%             set(gca,'XLim',[0.6 2])
+            %             set(gca,'XLim',[0.6 2])
         end
         legend('Good','No Floor','Foot Above Pelvis')
         xlabel(PNAME)
@@ -264,7 +264,7 @@ if sum(cellstouse==3)
 end
 
 %% 4: impulse study: start from Zero Impulse Gait: Locking
-% 
+%
 if sum(cellstouse==4)
     rootdir = cd;
     pfolder = '\ParameterStudies';
@@ -274,7 +274,7 @@ if sum(cellstouse==4)
     if ~exist([rootdir pfolder classfolder savename],'file')
         loadname = 'NoImpulseLock.mat';
         load([loadfolder loadname]);
-
+        
         
         PNAME = 'impulsecoeff';
         parmrange = sort(linspace(0,3,15));
@@ -288,7 +288,7 @@ if sum(cellstouse==4)
         [runners,xstar,cnvrg,prange] = parmstudy1d(r,xstar,parmrange,PNAME,...
             'runcharic',runcharic,'parmstovary',parmstovary,'extraconstraint',extraconstraint,'TolCon',constrainttolerance,...
             'MaxEvals',1000,'plotiter',1);
-       
+        
         
         numparams = length(parmstovary);
         numIC = length(r.statestovary);
@@ -304,10 +304,10 @@ if sum(cellstouse==4)
             end
             [~, ~, allx, allt, tair,this,phasevec] = runners(i).onestep(xstar(:,i));
             for k = 1:size(allx(:,1))
-            pts = runners(i).getPoints(allx(k,:));
-            swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
-%             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
-%             hipacc(k) = accs(3);
+                pts = runners(i).getPoints(allx(k,:));
+                swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
+                %             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
+                %             hipacc(k) = accs(3);
             end
             abovepelvis(i) = sum(swingfootrel(swingfootrel>0));
             [floornegs(i)] = runners(i).floorconstraint(1,1,1,allx,allt);
@@ -315,11 +315,11 @@ if sum(cellstouse==4)
         
         triptol = -1e-4;
         tripdex = floornegs<triptol;
-
+        
         
         abovedex = abovepelvis>0;
         
-                    else
+    else
         load([rootdir pfolder classfolder savename],'-regexp', '^(?!cellstouse)\w')
         
         
@@ -332,7 +332,7 @@ if sum(cellstouse==4)
             plot(prange(abovedex),resparms(abovedex,j),'gx','LineWidth',2)
             plot(prange(abovedex & tripdex), resparms(abovedex & tripdex,j),'mx','LineWidth',2)
             ylabel(parmstovary{j})
-%             set(gca,'XLim',[0.6 2])
+            %             set(gca,'XLim',[0.6 2])
         end
         legend('Good','No Floor','Foot Above Pelvis')
         xlabel(PNAME)
@@ -344,7 +344,7 @@ if sum(cellstouse==4)
 end
 
 %% 5: Swingl Study: Start from No Impulse gait
-% 
+%
 if sum(cellstouse==5)
     rootdir = cd;
     pfolder = '\ParameterStudies';
@@ -354,7 +354,7 @@ if sum(cellstouse==5)
     if ~exist([rootdir pfolder classfolder savename],'file')
         loadname = 'NoImpulse.mat';
         load([loadfolder loadname]);
-
+        
         
         PNAME = 'swingl';
         parmrange = sort(linspace(0.5,1,15));
@@ -368,7 +368,7 @@ if sum(cellstouse==5)
         [runners,xstar,cnvrg,prange] = parmstudy1d(r,xstar,parmrange,PNAME,...
             'runcharic',runcharic,'parmstovary',parmstovary,'extraconstraint',extraconstraint,'TolCon',constrainttolerance,...
             'MaxEvals',1000,'plotiter',1);
-       
+        
         
         numparams = length(parmstovary);
         numIC = length(r.statestovary);
@@ -384,10 +384,10 @@ if sum(cellstouse==5)
             end
             [~, ~, allx, allt, tair,this,phasevec] = runners(i).onestep(xstar(:,i));
             for k = 1:size(allx(:,1))
-            pts = runners(i).getPoints(allx(k,:));
-            swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
-%             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
-%             hipacc(k) = accs(3);
+                pts = runners(i).getPoints(allx(k,:));
+                swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
+                %             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
+                %             hipacc(k) = accs(3);
             end
             abovepelvis(i) = sum(swingfootrel(swingfootrel>0));
             [floornegs(i)] = runners(i).floorconstraint(1,1,1,allx,allt);
@@ -395,11 +395,11 @@ if sum(cellstouse==5)
         
         triptol = -1e-4;
         tripdex = floornegs<triptol;
-
+        
         
         abovedex = abovepelvis>0;
         
-                    else
+    else
         load([rootdir pfolder classfolder savename],'-regexp', '^(?!cellstouse)\w')
         
         
@@ -412,7 +412,7 @@ if sum(cellstouse==5)
             plot(prange(abovedex),resparms(abovedex,j),'gx','LineWidth',2)
             plot(prange(abovedex & tripdex), resparms(abovedex & tripdex,j),'mx','LineWidth',2)
             ylabel(parmstovary{j})
-%             set(gca,'XLim',[0.6 2])
+            %             set(gca,'XLim',[0.6 2])
         end
         legend('Good','No Floor','Foot Above Pelvis')
         xlabel(PNAME)
@@ -424,7 +424,7 @@ if sum(cellstouse==5)
 end
 
 %% 6: Speed Study: Start from No Impulse Gait UnLOCKED
-% 
+%
 if sum(cellstouse==6)
     rootdir = cd;
     pfolder = '\ParameterStudies';
@@ -434,23 +434,23 @@ if sum(cellstouse==6)
     if ~exist([rootdir pfolder classfolder savename],'file')
         loadname = 'NoImpulse.mat';
         load([loadfolder loadname]);
-
+        
         
         PNAME = 'speed';
         parmrange = sort(linspace(0.8,1.2,15));
         parmstovary=[{'kstance'} {'swingl'} {'kswing'} {'khip'} {'hipl'}];
         
         extraconstraint = @(r,varargin) r.floorconstraint(varargin{:});
-%         r.statestovary = [];
-%         r.statestomeasure = [3 4];
-        r.statestovary = [3 5 7:8]; 
-        r.statestomeasure = [3 4 7:8];  
+        %         r.statestovary = [];
+        %         r.statestomeasure = [3 4];
+        r.statestovary = [3 5 7:8];
+        r.statestomeasure = [3 4 7:8];
         
         %     Run the parameter study
         [runners,xstar,cnvrg,prange] = parmstudy1d(r,xstar,parmrange,PNAME,...
             'runcharic',runcharic,'parmstovary',parmstovary,'extraconstraint',extraconstraint,'TolCon',constrainttolerance,...
             'MaxEvals',300,'plotiter',1,'tryhard',1);
-       
+        
         
         numparams = length(parmstovary);
         numIC = length(r.statestovary);
@@ -466,10 +466,10 @@ if sum(cellstouse==6)
             end
             [~, ~, allx, allt, tair,this,phasevec] = runners(i).onestep(xstar(:,i));
             for k = 1:size(allx(:,1))
-            pts = runners(i).getPoints(allx(k,:));
-            swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
-%             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
-%             hipacc(k) = accs(3);
+                pts = runners(i).getPoints(allx(k,:));
+                swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
+                %             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
+                %             hipacc(k) = accs(3);
             end
             abovepelvis(i) = sum(swingfootrel(swingfootrel>0));
             [floornegs(i)] = runners(i).floorconstraint(1,1,1,allx,allt);
@@ -477,11 +477,11 @@ if sum(cellstouse==6)
         
         triptol = -1e-4;
         tripdex = floornegs<triptol;
-
+        
         
         abovedex = abovepelvis>0;
         
-                    else
+    else
         load([rootdir pfolder classfolder savename],'-regexp', '^(?!cellstouse)\w')
         
         
@@ -494,7 +494,7 @@ if sum(cellstouse==6)
             plot(prange(abovedex),resparms(abovedex,j),'gx','LineWidth',2)
             plot(prange(abovedex & tripdex), resparms(abovedex & tripdex,j),'mx','LineWidth',2)
             ylabel(parmstovary{j})
-%             set(gca,'XLim',[0.6 2])
+            %             set(gca,'XLim',[0.6 2])
         end
         legend('Good','No Floor','Foot Above Pelvis')
         xlabel(PNAME)
@@ -506,7 +506,7 @@ if sum(cellstouse==6)
 end
 
 %% 7: AirFrac: Start from No Impulse Gait UnLOCKED
-% 
+%
 if sum(cellstouse==7)
     rootdir = cd;
     pfolder = '\ParameterStudies';
@@ -522,10 +522,10 @@ if sum(cellstouse==7)
         parmstovary=[{'kstance'} {'swingl'} {'kswing'} {'khip'} {'hipl'}];
         
         extraconstraint = @(r,varargin) r.floorconstraint(varargin{:});
-%         r.statestovary = [];
-%         r.statestomeasure = [3 4];
-        r.statestovary = [3 5 7:8]; 
-        r.statestomeasure = [3 4 7:8]; 
+        %         r.statestovary = [];
+        %         r.statestomeasure = [3 4];
+        r.statestovary = [3 5 7:8];
+        r.statestomeasure = [3 4 7:8];
         MaxEvals = 300;
         tryhard = 1;
         
@@ -533,7 +533,7 @@ if sum(cellstouse==7)
         [runners,xstar,cnvrg,prange] = parmstudy1d(r,xstar,parmrange,PNAME,...
             'runcharic',runcharic,'parmstovary',parmstovary,'extraconstraint',extraconstraint,'TolCon',constrainttolerance,...
             'MaxEvals',MaxEvals,'plotiter',1,'tryhard',tryhard);
-       
+        
         
         numparams = length(parmstovary);
         numIC = length(r.statestovary);
@@ -549,10 +549,10 @@ if sum(cellstouse==7)
             end
             [~, ~, allx, allt, tair,this,phasevec] = runners(i).onestep(xstar(:,i));
             for k = 1:size(allx(:,1))
-            pts = runners(i).getPoints(allx(k,:));
-            swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
-%             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
-%             hipacc(k) = accs(3);
+                pts = runners(i).getPoints(allx(k,:));
+                swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
+                %             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
+                %             hipacc(k) = accs(3);
             end
             abovepelvis(i) = sum(swingfootrel(swingfootrel>0));
             [floornegs(i)] = runners(i).floorconstraint(1,1,1,allx,allt);
@@ -560,14 +560,14 @@ if sum(cellstouse==7)
         
         triptol = -1e-4;
         tripdex = floornegs<triptol;
-
+        
         
         abovedex = abovepelvis>0;
         
-                    else
+    else
         load([rootdir pfolder classfolder savename],'-regexp', '^(?!cellstouse)\w')
         
-%         cnvrg(cnvrg==0) =1;
+        %         cnvrg(cnvrg==0) =1;
         h=figure;
         for j = 1:numparams
             subplot(numparams,1,j)
@@ -577,7 +577,7 @@ if sum(cellstouse==7)
             plot(prange(abovedex),resparms(abovedex,j),'gx','LineWidth',2)
             plot(prange(abovedex & tripdex), resparms(abovedex & tripdex,j),'mx','LineWidth',2)
             ylabel(parmstovary{j})
-%             set(gca,'XLim',[0.6 2])
+            %             set(gca,'XLim',[0.6 2])
         end
         legend('Good','No Floor','Foot Above Pelvis')
         xlabel(PNAME)
@@ -589,7 +589,7 @@ if sum(cellstouse==7)
 end
 
 %% 8: Step Length: Start from No Impulse Gait UnLOCKED
-% 
+%
 if sum(cellstouse==8)
     rootdir = cd;
     pfolder = '\ParameterStudies';
@@ -599,23 +599,23 @@ if sum(cellstouse==8)
     if ~exist([rootdir pfolder classfolder savename],'file')
         loadname = 'NoImpulse.mat';
         load([loadfolder loadname]);
-
+        
         
         PNAME = 'steplength';
         parmrange = sort(linspace(0.8,1.4,25));
         parmstovary=[{'kstance'} {'swingl'} {'kswing'} {'khip'} {'hipl'}];
         
         extraconstraint = @(r,varargin) r.floorconstraint(varargin{:});
-%         r.statestovary = [];
-%         r.statestomeasure = [3 4];
-        r.statestovary = [3 5 7:8]; 
-        r.statestomeasure = [3 4 7:8];  
+        %         r.statestovary = [];
+        %         r.statestomeasure = [3 4];
+        r.statestovary = [3 5 7:8];
+        r.statestomeasure = [3 4 7:8];
         
         %     Run the parameter study
         [runners,xstar,cnvrg,prange] = parmstudy1d(r,xstar,parmrange,PNAME,...
             'runcharic',runcharic,'parmstovary',parmstovary,'extraconstraint',extraconstraint,'TolCon',constrainttolerance,...
             'MaxEvals',300,'plotiter',1,'tryhard',1);
-       
+        
         
         numparams = length(parmstovary);
         numIC = length(r.statestovary);
@@ -631,10 +631,10 @@ if sum(cellstouse==8)
             end
             [~, ~, allx, allt, tair,this,phasevec] = runners(i).onestep(xstar(:,i));
             for k = 1:size(allx(:,1))
-            pts = runners(i).getPoints(allx(k,:));
-            swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
-%             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
-%             hipacc(k) = accs(3);
+                pts = runners(i).getPoints(allx(k,:));
+                swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
+                %             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
+                %             hipacc(k) = accs(3);
             end
             abovepelvis(i) = sum(swingfootrel(swingfootrel>0));
             [floornegs(i)] = runners(i).floorconstraint(1,1,1,allx,allt);
@@ -642,11 +642,11 @@ if sum(cellstouse==8)
         
         triptol = -1e-4;
         tripdex = floornegs<triptol;
-
+        
         
         abovedex = abovepelvis>0;
         
-                    else
+    else
         load([rootdir pfolder classfolder savename],'-regexp', '^(?!cellstouse)\w')
         
         
@@ -659,7 +659,7 @@ if sum(cellstouse==8)
             plot(prange(abovedex),resparms(abovedex,j),'gx','LineWidth',2)
             plot(prange(abovedex & tripdex), resparms(abovedex & tripdex,j),'mx','LineWidth',2)
             ylabel(parmstovary{j})
-%             set(gca,'XLim',[0.6 2])
+            %             set(gca,'XLim',[0.6 2])
         end
         legend('Good','No Floor','Foot Above Pelvis')
         xlabel(PNAME)
@@ -671,7 +671,7 @@ if sum(cellstouse==8)
 end
 
 %% 9: Speed Study: Start from No Impulse Gait UnLOCKED
-% 
+%
 if sum(cellstouse==9)
     rootdir = cd;
     pfolder = '\ParameterStudies';
@@ -681,23 +681,23 @@ if sum(cellstouse==9)
     if ~exist([rootdir pfolder classfolder savename],'file')
         loadname = 'NoImpulseLock.mat';
         load([loadfolder loadname]);
-
+        
         
         PNAME = 'speed';
         parmrange = sort(linspace(0.8,1.2,15));
         parmstovary=[{'kstance'} {'swingl'} {'kswing'} {'khip'} {'hipl'}];
         
         extraconstraint = @(r,varargin) r.floorconstraint(varargin{:});
-%         r.statestovary = [];
-%         r.statestomeasure = [3 4];
-        r.statestovary = [3 5 7:8]; 
-        r.statestomeasure = [3 4 7:8];  
+        %         r.statestovary = [];
+        %         r.statestomeasure = [3 4];
+        r.statestovary = [3 5 7:8];
+        r.statestomeasure = [3 4 7:8];
         
         %     Run the parameter study
         [runners,xstar,cnvrg,prange] = parmstudy1d(r,xstar,parmrange,PNAME,...
             'runcharic',runcharic,'parmstovary',parmstovary,'extraconstraint',extraconstraint,'TolCon',constrainttolerance,...
             'MaxEvals',300,'plotiter',1,'tryhard',1);
-       
+        
         
         numparams = length(parmstovary);
         numIC = length(r.statestovary);
@@ -713,10 +713,10 @@ if sum(cellstouse==9)
             end
             [~, ~, allx, allt, tair,this,phasevec] = runners(i).onestep(xstar(:,i));
             for k = 1:size(allx(:,1))
-            pts = runners(i).getPoints(allx(k,:));
-            swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
-%             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
-%             hipacc(k) = accs(3);
+                pts = runners(i).getPoints(allx(k,:));
+                swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
+                %             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
+                %             hipacc(k) = accs(3);
             end
             abovepelvis(i) = sum(swingfootrel(swingfootrel>0));
             [floornegs(i)] = runners(i).floorconstraint(1,1,1,allx,allt);
@@ -724,11 +724,11 @@ if sum(cellstouse==9)
         
         triptol = -1e-4;
         tripdex = floornegs<triptol;
-
+        
         
         abovedex = abovepelvis>0;
         
-                    else
+    else
         load([rootdir pfolder classfolder savename],'-regexp', '^(?!cellstouse)\w')
         
         
@@ -741,7 +741,7 @@ if sum(cellstouse==9)
             plot(prange(abovedex),resparms(abovedex,j),'gx','LineWidth',2)
             plot(prange(abovedex & tripdex), resparms(abovedex & tripdex,j),'mx','LineWidth',2)
             ylabel(parmstovary{j})
-%             set(gca,'XLim',[0.6 2])
+            %             set(gca,'XLim',[0.6 2])
         end
         legend('Good','No Floor','Foot Above Pelvis')
         xlabel(PNAME)
@@ -752,9 +752,8 @@ if sum(cellstouse==9)
     
 end
 
-<<<<<<< HEAD
 %% 10: Speed Study: vary air time, step length, hipl
-% 
+%
 if sum(cellstouse==10)
     rootdir = cd;
     pfolder = '\ParameterStudies';
@@ -764,17 +763,17 @@ if sum(cellstouse==10)
     if ~exist([rootdir pfolder classfolder savename],'file')
         loadname = 'NoImpulseLock.mat';
         load([loadfolder loadname]);
-
+        
         
         PNAME = 'speed';
         parmrange = sort(linspace(0.8,1.5,15));
         parmstovary=[{'kstance'} {'hipl'}];
         
         extraconstraint = @(r,varargin) r.floorconstraint(varargin{:});
-%         r.statestovary = [];
-%         r.statestomeasure = [3 4];
-        r.statestovary = [3 5 7:8]; 
-        r.statestomeasure = [3 4 7:8]; 
+        %         r.statestovary = [];
+        %         r.statestomeasure = [3 4];
+        r.statestovary = [3 5 7:8];
+        r.statestomeasure = [3 4 7:8];
         r.useHSevent = 1;
         r.airfrac = [];
         r.steplength = [];
@@ -783,7 +782,7 @@ if sum(cellstouse==10)
         [runners,xstar,cnvrg,prange] = parmstudy1d(r,xstar,parmrange,PNAME,...
             'runcharic',runcharic,'parmstovary',parmstovary,'extraconstraint',extraconstraint,'TolCon',constrainttolerance,...
             'MaxEvals',300,'plotiter',1,'tryhard',1);
-       
+        
         
         numparams = length(parmstovary);
         numIC = length(r.statestovary);
@@ -799,27 +798,27 @@ if sum(cellstouse==10)
             end
             [xf, tf, allx, allt, tair,this,phasevec,tstance] = runners(i).onestep(xstar(:,i));
             for k = 1:size(allx(:,1))
-            pts = runners(i).getPoints(allx(k,:));
-            swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
-%             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
-%             hipacc(k) = accs(3);
+                pts = runners(i).getPoints(allx(k,:));
+                swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
+                %             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
+                %             hipacc(k) = accs(3);
             end
             abovepelvis(i) = sum(swingfootrel(swingfootrel>0));
             [floornegs(i)] = runners(i).floorconstraint(1,1,1,allx,allt);
             
-           resparms(i,3)= runners(i).getStepLength(xstar(:,i),xf,tstance,allt,allx);
-           resparms(i,4)=runners(i).getAerialFraction(xstar(:,i),tf,tair,tstance);
+            resparms(i,3)= runners(i).getStepLength(xstar(:,i),xf,tstance,allt,allx);
+            resparms(i,4)=runners(i).getAerialFraction(xstar(:,i),tf,tair,tstance);
         end
         parmstovary = [parmstovary 'steplength' 'airfrac'];
         numparams = length(parmstovary);
         
         triptol = -1e-4;
         tripdex = floornegs<triptol;
-
+        
         
         abovedex = abovepelvis>0;
         
-                    else
+    else
         load([rootdir pfolder classfolder savename],'-regexp', '^(?!cellstouse)\w')
         
         
@@ -833,7 +832,7 @@ if sum(cellstouse==10)
             plot(prange(abovedex),resparms(abovedex,j),'gx','LineWidth',2)
             plot(prange(abovedex & tripdex), resparms(abovedex & tripdex,j),'mx','LineWidth',2)
             ylabel(parmstovary{j})
-%             set(gca,'XLim',[0.6 2])
+            %             set(gca,'XLim',[0.6 2])
         end
         legend('Good','No Floor','Foot Above Pelvis')
         xlabel(PNAME)
@@ -844,7 +843,7 @@ if sum(cellstouse==10)
     
 end
 %% 11: Speed Study: vary air time, step length, hipl
-% 
+%
 if sum(cellstouse==11)
     rootdir = cd;
     pfolder = '\ParameterStudies';
@@ -854,17 +853,17 @@ if sum(cellstouse==11)
     if ~exist([rootdir pfolder classfolder savename],'file')
         loadname = 'NoImpulseLock.mat';
         load([loadfolder loadname]);
-
+        
         
         PNAME = 'speed';
         parmrange = sort(linspace(0.8,1.5,15));
         parmstovary=[{'kstance'} {'hipl'}];
         
         extraconstraint = @(r,varargin) r.floorconstraint(varargin{:});
-%         r.statestovary = [];
-%         r.statestomeasure = [3 4];
-        r.statestovary = [3 5 7:8]; 
-        r.statestomeasure = [3 4 7:8]; 
+        %         r.statestovary = [];
+        %         r.statestomeasure = [3 4];
+        r.statestovary = [3 5 7:8];
+        r.statestomeasure = [3 4 7:8];
         r.useHSevent = 1;
         r.steplength = [];
         
@@ -872,7 +871,7 @@ if sum(cellstouse==11)
         [runners,xstar,cnvrg,prange] = parmstudy1d(r,xstar,parmrange,PNAME,...
             'runcharic',runcharic,'parmstovary',parmstovary,'extraconstraint',extraconstraint,'TolCon',constrainttolerance,...
             'MaxEvals',300,'plotiter',1,'tryhard',1);
-       
+        
         
         numparams = length(parmstovary);
         numIC = length(r.statestovary);
@@ -888,26 +887,26 @@ if sum(cellstouse==11)
             end
             [xf, tf, allx, allt, tair,this,phasevec,tstance] = runners(i).onestep(xstar(:,i));
             for k = 1:size(allx(:,1))
-            pts = runners(i).getPoints(allx(k,:));
-            swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
-%             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
-%             hipacc(k) = accs(3);
+                pts = runners(i).getPoints(allx(k,:));
+                swingfootrel(k) = pts.swingfoot(2) - pts.pelvis(2);
+                %             accs = runners(i).XDoubleDot(allt(k),allx(k,:)',runners(i).phases{phasevec(k)});
+                %             hipacc(k) = accs(3);
             end
             abovepelvis(i) = sum(swingfootrel(swingfootrel>0));
             [floornegs(i)] = runners(i).floorconstraint(1,1,1,allx,allt);
             
-           resparms(i,3)= runners(i).getStepLength(xstar(:,i),xf,tstance,allt,allx);
+            resparms(i,3)= runners(i).getStepLength(xstar(:,i),xf,tstance,allt,allx);
         end
         parmstovary = [parmstovary 'steplength'];
         numparams = length(parmstovary);
         
         triptol = -1e-4;
         tripdex = floornegs<triptol;
-
+        
         
         abovedex = abovepelvis>0;
         
-                    else
+    else
         load([rootdir pfolder classfolder savename],'-regexp', '^(?!cellstouse)\w')
         
         
@@ -921,7 +920,7 @@ if sum(cellstouse==11)
             plot(prange(abovedex),resparms(abovedex,j),'gx','LineWidth',2)
             plot(prange(abovedex & tripdex), resparms(abovedex & tripdex,j),'mx','LineWidth',2)
             ylabel(parmstovary{j})
-%             set(gca,'XLim',[0.6 2])
+            %             set(gca,'XLim',[0.6 2])
         end
         legend('Good','No Floor','Foot Above Pelvis')
         xlabel(PNAME)
@@ -930,82 +929,83 @@ if sum(cellstouse==11)
         saveflag = 0;
     end
     
-=======
-%% 10: Conserve Swing Energy by setting hip set point to vertical
-% 
-if sum(cellstouse==10)
-    rootdir = cd;
-    pfolder = '\SavedGaits';
-    classfolder = ['\SwingSLIP\'];
-    savename = ['Conservative.mat'];
+end
     
-    if ~exist([rootdir pfolder classfolder savename],'file')
-        loadname = 'NoImpulse.mat';
-        load([loadfolder loadname]);
+    %% 12: Conserve Swing Energy by setting hip set point to vertical
+    %
+    if sum(cellstouse==12)
+        rootdir = cd;
         pfolder = '\SavedGaits';
+        classfolder = ['\SwingSLIP\'];
+        savename = ['Conservative.mat'];
         
-        runner = r; x0 = xstar;
-        
-        runner.hipl = pi/2;
-        
-        %         addedconstraints = @(r,varargin) r.conservativehipconstraint(varargin{:});
-        addedconstraints = @(r,varargin) r.floorconstraint(varargin{:});
-        %             addedconstraint = [];
-        constrainttolerance = 1e-4;
-        Objective = [];
-        parmstovary = {'kstance' 'kswing' 'swingl' 'khip' 'airfrac'};
-                runner.statestovary = [3 5 7:8]; 
-        runner.statestomeasure = [3 4 7:8]; 
-        
-        % Find Limit cycle
-        [finalStates, finalParameters, limitCycleError, c, ceq, eflag, optimoutput, lambda] = ...
-         runner.findLimitCycle(x0,...
-        'parametersToAlter',parmstovary,...
-        'TolCon',constrainttolerance,...
-        'additionalConstraintFunction',addedconstraints,'MaxEvals',1000,'TolX',1e-10,...
-        'Algo','interior-point','Objective',Objective);
-    
-    newr = runner.setParametersFromList(parmstovary,finalParameters);
-    newx0 = finalStates;
-    
-    figure
-    [xf,tf,allx,allt,tair,newr,phasevec,tstance] = newr.onestep(newx0,'interleaveAnimation',1);
-    
-    r=newr;
-    xstar = allx(1,:);
-    x0 = xstar;
-    r.print(x0,xf,tf,tair,tstance,allt,allx);
-    
-    for i = 1:size(allx,1)
-        phase = runner.phases{phasevec(i)};
-        energies = runner.getEnergies(allx(i,:),phase);
-        TOTE(i) = energies.Total;
-        TOTE2(i) = energies.Total2;
-        KE(i) = energies.KE;
-        PE(i) = energies.PE;
-        PEgrav(i) = energies.PEgrav;
-        PEspring(i) = energies.PEspring;
-        PEspring2(i) = energies.PEspring2;
-        PE2(i) = energies.PE2;
-        PEgrav2(i) = energies.PEgrav2;
-        PE2(i) = energies.PE2;
-        KE2(i) = energies.KE2;
-        pts = runner.getPoints(allx(i,:));
-        stancefootx(i) = pts.stancefoot(1);
-        stancefooty(i) = pts.stancefoot(2);
-        swingfootx(i) = pts.swingfoot(1);
-        swingfooty(i) = pts.swingfoot(2);
-        vels = runner.getVels(allx(i,:));
-        stancefootvelx(i) = vels.stancefoot(1);
-        stancefootvely(i) = vels.stancefoot(2);
-        swingfootvelx(i) = vels.swingfoot(1);
-        swingfootvely(i) = vels.swingfoot(2);
-        GRF(i,:) = runner.getGRF(allt(i),allx(i,:),phase);
-    end
-    
-    else
-        load([rootdir pfolder classfolder savename],'-regexp', '^(?!cellstouse)\w')
-        
+        if ~exist([rootdir pfolder classfolder savename],'file')
+            loadname = 'NoImpulse.mat';
+            load([loadfolder loadname]);
+            pfolder = '\SavedGaits';
+            
+            runner = r; x0 = xstar;
+            
+            runner.hipl = pi/2;
+            
+            %         addedconstraints = @(r,varargin) r.conservativehipconstraint(varargin{:});
+            addedconstraints = @(r,varargin) r.floorconstraint(varargin{:});
+            %             addedconstraint = [];
+            constrainttolerance = 1e-4;
+            Objective = [];
+            parmstovary = {'kstance' 'kswing' 'swingl' 'khip' 'airfrac'};
+            runner.statestovary = [3 5 7:8];
+            runner.statestomeasure = [3 4 7:8];
+            
+            % Find Limit cycle
+            [finalStates, finalParameters, limitCycleError, c, ceq, eflag, optimoutput, lambda] = ...
+                runner.findLimitCycle(x0,...
+                'parametersToAlter',parmstovary,...
+                'TolCon',constrainttolerance,...
+                'additionalConstraintFunction',addedconstraints,'MaxEvals',1000,'TolX',1e-10,...
+                'Algo','interior-point','Objective',Objective);
+            
+            newr = runner.setParametersFromList(parmstovary,finalParameters);
+            newx0 = finalStates;
+            
+            figure
+            [xf,tf,allx,allt,tair,newr,phasevec,tstance] = newr.onestep(newx0,'interleaveAnimation',1);
+            
+            r=newr;
+            xstar = allx(1,:);
+            x0 = xstar;
+            r.print(x0,xf,tf,tair,tstance,allt,allx);
+            
+            for i = 1:size(allx,1)
+                phase = runner.phases{phasevec(i)};
+                energies = runner.getEnergies(allx(i,:),phase);
+                TOTE(i) = energies.Total;
+                TOTE2(i) = energies.Total2;
+                KE(i) = energies.KE;
+                PE(i) = energies.PE;
+                PEgrav(i) = energies.PEgrav;
+                PEspring(i) = energies.PEspring;
+                PEspring2(i) = energies.PEspring2;
+                PE2(i) = energies.PE2;
+                PEgrav2(i) = energies.PEgrav2;
+                PE2(i) = energies.PE2;
+                KE2(i) = energies.KE2;
+                pts = runner.getPoints(allx(i,:));
+                stancefootx(i) = pts.stancefoot(1);
+                stancefooty(i) = pts.stancefoot(2);
+                swingfootx(i) = pts.swingfoot(1);
+                swingfooty(i) = pts.swingfoot(2);
+                vels = runner.getVels(allx(i,:));
+                stancefootvelx(i) = vels.stancefoot(1);
+                stancefootvely(i) = vels.stancefoot(2);
+                swingfootvelx(i) = vels.swingfoot(1);
+                swingfootvely(i) = vels.swingfoot(2);
+                GRF(i,:) = runner.getGRF(allt(i),allx(i,:),phase);
+            end
+            
+        else
+            load([rootdir pfolder classfolder savename],'-regexp', '^(?!cellstouse)\w')
+            
             figure
             subplot(211)
             plot(allt,TOTE)
@@ -1027,119 +1027,33 @@ if sum(cellstouse==10)
             title('Massless World')
             legend('springs','grav','KE','PE','Tot')
             
-           figure
-           subplot(211)
-           plot(allt,GRF)
-           title('GRF')
-           subplot(212)
-           plot(allt,allx(:,2))
+            figure
+            subplot(211)
+            plot(allt,GRF)
+            title('GRF')
+            subplot(212)
+            plot(allt,allx(:,2))
+        end
+        
     end
     
-end
-
-%% 11: Velocity of COM peturbation study
-% 
-if sum(cellstouse==11)
-    rootdir = cd;
-    pfolder = '\ReturnMapStudies';
-    classfolder = ['\SwingSLIP\'];
-    savename = ['VelCOMPerts1.mat'];
-    
-    if ~exist([rootdir pfolder classfolder savename],'file')
-        loadname = 'NoSwingSpringLock.mat';
-        load([loadfolder loadname]);
+    %% 13: Velocity of COM peturbation study
+    %
+    if sum(cellstouse==13)
+        rootdir = cd;
         pfolder = '\ReturnMapStudies';
+        classfolder = ['\SwingSLIP\'];
+        savename = ['VelCOMPerts1.mat'];
         
-        r.useHSevent = 1;
-        
-       r0 = r;
-       x0 = xstar;
-       [xf,tf,allx,allt,tair,r0,phasevec,tstance] = r0.onestep(x0);
-       tstancedex0 = find(allt==tstance,1,'last');
-       xstance0 = allx(tstancedex0,:);
-       pts = r0.getPoints(xf);
-       ft0 = pts.swingfoot(1);
-       
-       limdex = [2 3 4 7 8];
-       
-       pertsize = 1e-5;
-       
-       %Pelvis Velocity x
-       x1 = xstar;
-       x1(7) = x1(7) + pertsize;
-       
-       [xf1,tf1,allx1,allt1,tair1,r,phasevec1,tstance1] = r.onestep(x1);
-       tstancedex1 = find(allt1==tstance1,1,'last');
-       tairdex1 = find(allt1==tair1,1,'last');
-       xstance1 = allx1(tstancedex1,:);
-       xair1 = allx1(tairdex1,:);
-       pts = r.getPoints(xf1);
-       ft1 = pts.swingfoot(1);
-       
-       
-       xf(limdex)'
-       xstance1(limdex)
-       xf1(limdex)'
-       
-       ft0
-       ft1
-       
-       
-       r.print(x1);
-       
-        
-        
-    for i = 1:size(allx,1)
-        phase = r.phases{phasevec(i)};
-        energies = r.getEnergies(allx(i,:),phase);
-        TOTE(i) = energies.Total;
-        TOTE2(i) = energies.Total2;
-        KE(i) = energies.KE;
-        PE(i) = energies.PE;
-        PEgrav(i) = energies.PEgrav;
-        PEspring(i) = energies.PEspring;
-        PEspring2(i) = energies.PEspring2;
-        PE2(i) = energies.PE2;
-        PEgrav2(i) = energies.PEgrav2;
-        PE2(i) = energies.PE2;
-        KE2(i) = energies.KE2;
-        pts = r.getPoints(allx(i,:));
-        stancefootx(i) = pts.stancefoot(1);
-        stancefooty(i) = pts.stancefoot(2);
-        swingfootx(i) = pts.swingfoot(1);
-        swingfooty(i) = pts.swingfoot(2);
-        vels = r.getVels(allx(i,:));
-        stancefootvelx(i) = vels.stancefoot(1);
-        stancefootvely(i) = vels.stancefoot(2);
-        swingfootvelx(i) = vels.swingfoot(1);
-        swingfootvely(i) = vels.swingfoot(2);
-        GRF(i,:) = r.getGRF(allt(i),allx(i,:),phase);
-    end
-    
-    end
-    
-end
-
-%% 12: Velocity of COM peturbation study: across parameterspace
-% 
-if sum(cellstouse==12)
-    rootdir = cd;
-    pfolder = '\ReturnMapStudies';
-    classfolder = ['\SwingSLIP\'];
-    savename = ['VelCOMPerts2.mat'];
-    loadfolder='./ParameterStudies/SwingSLIP/';
-    
-    if ~exist([rootdir pfolder classfolder savename],'file')
-        loadname = 'AirFrac_NoImpulse.mat';
-        load([loadfolder loadname]);
-        pfolder = '\ReturnMapStudies';
-        
-        for i = 1:length(runners)
-            r = runners(i);
-            r.useHSevent = 1;
-            r0 =r;
-            x0 = xstar;
+        if ~exist([rootdir pfolder classfolder savename],'file')
+            loadname = 'NoSwingSpringLock.mat';
+            load([loadfolder loadname]);
+            pfolder = '\ReturnMapStudies';
             
+            r.useHSevent = 1;
+            
+            r0 = r;
+            x0 = xstar;
             [xf,tf,allx,allt,tair,r0,phasevec,tstance] = r0.onestep(x0);
             tstancedex0 = find(allt==tstance,1,'last');
             xstance0 = allx(tstancedex0,:);
@@ -1162,63 +1076,147 @@ if sum(cellstouse==12)
             pts = r.getPoints(xf1);
             ft1 = pts.swingfoot(1);
             
-            %        xf(limdex)'
-            %        xstance1(limdex)
-            %        xf1(limdex)'
-            footdiff(i) = ft1 - ft0
-        end
-        
-    end
-        
-        
-        
->>>>>>> 4205948bacf6deb63341cc6942e6426d7e67c85e
-end
-%% Saving & Export
-if saveflag
-rootdir = cd;
-pfolder = '\ParameterStudies';
-classfolder = ['\' class(r) '\'];
-if ~isempty(savename)
-    save([rootdir pfolder classfolder savename])
-else
-    basename = 'Pstudy';
-    fnames = dir([rootdir pfolder classfolder '*mat']);
-    fnames = struct2cell(fnames);
-    number = zeros(size(fnames,2),1);
-    for i = 1:size(fnames,2)
-        name = regexp(fnames{1,i},[basename '[0-9]+\.mat'],'match');
-        if ~isempty(name)
-            if isa(name,'cell')
-                name = name{1};
+            
+            xf(limdex)'
+            xstance1(limdex)
+            xf1(limdex)'
+            
+            ft0
+            ft1
+            
+            
+            r.print(x1);
+            
+            
+            
+            for i = 1:size(allx,1)
+                phase = r.phases{phasevec(i)};
+                energies = r.getEnergies(allx(i,:),phase);
+                TOTE(i) = energies.Total;
+                TOTE2(i) = energies.Total2;
+                KE(i) = energies.KE;
+                PE(i) = energies.PE;
+                PEgrav(i) = energies.PEgrav;
+                PEspring(i) = energies.PEspring;
+                PEspring2(i) = energies.PEspring2;
+                PE2(i) = energies.PE2;
+                PEgrav2(i) = energies.PEgrav2;
+                PE2(i) = energies.PE2;
+                KE2(i) = energies.KE2;
+                pts = r.getPoints(allx(i,:));
+                stancefootx(i) = pts.stancefoot(1);
+                stancefooty(i) = pts.stancefoot(2);
+                swingfootx(i) = pts.swingfoot(1);
+                swingfooty(i) = pts.swingfoot(2);
+                vels = r.getVels(allx(i,:));
+                stancefootvelx(i) = vels.stancefoot(1);
+                stancefootvely(i) = vels.stancefoot(2);
+                swingfootvelx(i) = vels.swingfoot(1);
+                swingfootvely(i) = vels.swingfoot(2);
+                GRF(i,:) = r.getGRF(allt(i),allx(i,:),phase);
             end
-            numberdexes = regexp(name,'[0-9]');
-            number(i) = str2double(name(numberdexes));
+            
+        end
+        
+    end
+    
+    %% 13: Velocity of COM peturbation study: across parameterspace
+    %
+    if sum(cellstouse==13)
+        rootdir = cd;
+        pfolder = '\ReturnMapStudies';
+        classfolder = ['\SwingSLIP\'];
+        savename = ['VelCOMPerts2.mat'];
+        loadfolder='./ParameterStudies/SwingSLIP/';
+        
+        if ~exist([rootdir pfolder classfolder savename],'file')
+            loadname = 'AirFrac_NoImpulse.mat';
+            load([loadfolder loadname]);
+            pfolder = '\ReturnMapStudies';
+            
+            for i = 1:length(runners)
+                r = runners(i);
+                r.useHSevent = 1;
+                r0 =r;
+                x0 = xstar;
+                
+                [xf,tf,allx,allt,tair,r0,phasevec,tstance] = r0.onestep(x0);
+                tstancedex0 = find(allt==tstance,1,'last');
+                xstance0 = allx(tstancedex0,:);
+                pts = r0.getPoints(xf);
+                ft0 = pts.swingfoot(1);
+                
+                limdex = [2 3 4 7 8];
+                
+                pertsize = 1e-5;
+                
+                %Pelvis Velocity x
+                x1 = xstar;
+                x1(7) = x1(7) + pertsize;
+                
+                [xf1,tf1,allx1,allt1,tair1,r,phasevec1,tstance1] = r.onestep(x1);
+                tstancedex1 = find(allt1==tstance1,1,'last');
+                tairdex1 = find(allt1==tair1,1,'last');
+                xstance1 = allx1(tstancedex1,:);
+                xair1 = allx1(tairdex1,:);
+                pts = r.getPoints(xf1);
+                ft1 = pts.swingfoot(1);
+                
+                %        xf(limdex)'
+                %        xstance1(limdex)
+                %        xf1(limdex)'
+                footdiff(i) = ft1 - ft0
+            end
+            
+        end
+        
+        
+    end
+    %% Saving & Export
+    if saveflag
+        rootdir = cd;
+        pfolder = '\ParameterStudies';
+        classfolder = ['\' class(r) '\'];
+        if ~isempty(savename)
+            save([rootdir pfolder classfolder savename])
+        else
+            basename = 'Pstudy';
+            fnames = dir([rootdir pfolder classfolder '*mat']);
+            fnames = struct2cell(fnames);
+            number = zeros(size(fnames,2),1);
+            for i = 1:size(fnames,2)
+                name = regexp(fnames{1,i},[basename '[0-9]+\.mat'],'match');
+                if ~isempty(name)
+                    if isa(name,'cell')
+                        name = name{1};
+                    end
+                    numberdexes = regexp(name,'[0-9]');
+                    number(i) = str2double(name(numberdexes));
+                end
+            end
+            biggestnum = max(number);
+            charnum = num2str(biggestnum+1);
+            save([rootdir pfolder classfolder basename charnum '.mat']);
         end
     end
-    biggestnum = max(number);
-    charnum = num2str(biggestnum+1);
-    save([rootdir pfolder classfolder basename charnum '.mat']);
-end
-end
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
