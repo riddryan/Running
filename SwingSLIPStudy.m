@@ -22,7 +22,7 @@ fonttype='Times New Roman';
 loadfolder = './SavedGaits/SwingSLIP/';
 exportfolder = './Figures/';
 
-cellstouse = [11];
+cellstouse = [13];
 %% 1: Swingl Study: Start from No Impulse gait: Locking
 %
 if sum(cellstouse==1)
@@ -1050,6 +1050,8 @@ end
             load([loadfolder loadname]);
             pfolder = '\ReturnMapStudies';
             
+
+            
             r.useHSevent = 1;
             
             r0 = r;
@@ -1059,6 +1061,12 @@ end
             xstance0 = allx(tstancedex0,:);
             pts = r0.getPoints(xf);
             ft0 = pts.swingfoot(1);
+            
+            
+            slip = SLIP;
+            slip.kstance = r.kstance;
+            slipx0([1 2]) = x0([1 2]);
+            slipx0([3:8]) = xf([3 4 7:10]);
             
             limdex = [2 3 4 7 8];
             
@@ -1120,9 +1128,9 @@ end
         
     end
     
-    %% 13: Velocity of COM peturbation study: across parameterspace
+    %% 14: Velocity of COM peturbation study: across parameterspace
     %
-    if sum(cellstouse==13)
+    if sum(cellstouse==14)
         rootdir = cd;
         pfolder = '\ReturnMapStudies';
         classfolder = ['\SwingSLIP\'];

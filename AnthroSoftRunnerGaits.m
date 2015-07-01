@@ -959,29 +959,29 @@ end
 %% SwingSLIP 14
 if any(cellstouse==14) 
     
-    useguess = 0;
+    useguess = 1;
     
     runner = SwingSLIP;
     IC = SwingSLIPState;
     if useguess
                     runner.lockable = 0;
-                    runner.tanimpulsecoeff = 1.3;
-                    runner.impulsecoeff = 2.5;
+                    runner.tanimpulsecoeff = 1.25;
+                    runner.impulsecoeff = 2.32;
                     %                     runner.useHSevent = 1;
-                    runner.kstance = 13.786169998104491; %12
+                    runner.kstance = 12.8734; %12
                     runner.kswing = 0; %0.01
                     runner.khip = 0; %0.01
                     runner.gslope = 0;
                     runner.swingl = 1;
                     runner.hipl = 0.7;
                     
-                    IC.pelvis.xDot = 1.003510012689240;
-                    IC.pelvis.yDot = 0.137917306814717;
+                    IC.pelvis.xDot = 1.013809789981797;
+                    IC.pelvis.yDot = 0.165114140645987;
                     
-                    IC.stancefoot.Angle = -1.146316858313909;
+                    IC.stancefoot.Angle = -1.128700000000000;
                     IC.stancefoot.Length = runner.stancel;
                     
-                    IC.swingfoot.Angle = -1.977468566646678;
+                    IC.swingfoot.Angle = -2.012892653589793;
                     IC.swingfoot.Length = runner.stancel;
                     
                     x0 = IC.getVector();
@@ -991,13 +991,13 @@ if any(cellstouse==14)
         
        [x0,runner] = runner.GoodInitialConditions(x0);
     else
-                load([savepath 'SwingSLIP/' 'NoImpulseLock.mat'],'r','xstar')
+                load([savepath 'SwingSLIP/' 'NoSwingSpringLock.mat'],'r','xstar')
                 runner=r;
                 x0 = xstar;
     end
     
-    
-parmstovary=[{'kstance'} {'kswing'} {'khip'} {'hipl'} {'swingl'}];
+ parmstovary=[{'kstance'} {'tanimpulsecoeff'} {'impulsecoeff'}];   
+% parmstovary=[{'kstance'} {'khip'} {'hipl'} {'impulsecoeff'}];
 %       addedconstraints = @(r,x0) r.additionalConstraints(x0);
 %     addedconstraints= @(r,varargin) r.floorandswinglconstraint(varargin{:});
    addedconstraints= @(r,varargin) r.floorconstraint(varargin{:});
@@ -1010,7 +1010,9 @@ Objective = [];
     %Use these if you already have a limit cycle on SLIP states
 %     runner.statestovary = [];
 %     runner.statestomeasure = [3 4];
-    
+    runner.statestovary = [3 5 7:8]; 
+    runner.statestomeasure = [3 4 7:8];    
+%     runner.useHSevent = 1;
     
     constrainttolerance = 1e-4;
       
@@ -1033,7 +1035,7 @@ Objective = [];
     x0 = xstar;
     r.print(x0,xf,tf,tair,tstance,allt,allx);
     if savegait
-        save([savepath 'SwingSLIP/' 'NoImpulseLock.mat'],'r','xstar','parmstovary','limitCycleError',...
+        save([savepath 'SwingSLIP2/' 'NoSprings.mat'],'r','xstar','parmstovary','limitCycleError',...
                                    'c','ceq','eflag','optimoutput','lambda',...
                                    'xf','tf','allx','allt','tair','phasevec');
     end 
