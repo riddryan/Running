@@ -534,7 +534,7 @@ classdef SwingSLIP < Runner
             %Event at full extension if not already locked, and locking is enabled
             if this.lockable && ~this.lockstate
                 value(2) = ss.swingfoot.Length - this.stancel;
-                isTerminal(2) = 0;
+                isTerminal(2) = 1;
                 direction(2) = 1;
             end
             
