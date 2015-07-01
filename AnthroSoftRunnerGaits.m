@@ -32,7 +32,7 @@ savepath = [dir '\SavedGaits\'];
 % 2. Soft Stomach Series
 % 3. Soft Stomach Series Parallel
 
-cellstouse=[15];
+cellstouse=[14];
 
 %Optimizer Constraint Tolerance
 constrainttolerance = 1e-5;
@@ -991,24 +991,25 @@ if any(cellstouse==14)
         
        [x0,runner] = runner.GoodInitialConditions(x0);
     else
-                load([savepath 'SwingSLIP/' 'NoSwingSpringLock.mat'],'r','xstar')
+                load([savepath 'SwingSLIP/' 'NoImpulseLock.mat'],'r','xstar')
                 runner=r;
                 x0 = xstar;
     end
     
     
-parmstovary=[{'kswing'} {'khip'} {'hipl'} {'impulsecoeff'}];
+parmstovary=[{'kstance'} {'kswing'} {'khip'} {'hipl'} {'swingl'}];
 %       addedconstraints = @(r,x0) r.additionalConstraints(x0);
 %     addedconstraints= @(r,varargin) r.floorandswinglconstraint(varargin{:});
    addedconstraints= @(r,varargin) r.floorconstraint(varargin{:});
-    runner.runcharic = runcharic;
+%     runner.runcharic = runcharic;
 %     Objective = @(r,varargin) r.kswing^2;
-Objective = @(r,varargin) r.impulsecoeff^2;
+% Objective = @(r,varargin) r.impulsecoeff^2;
+Objective = [];
 %     runner.lockable = 0;
     
     %Use these if you already have a limit cycle on SLIP states
-    runner.statestovary = [];
-    runner.statestomeasure = [3 4];
+%     runner.statestovary = [];
+%     runner.statestomeasure = [3 4];
     
     
     constrainttolerance = 1e-4;
@@ -1032,7 +1033,7 @@ Objective = @(r,varargin) r.impulsecoeff^2;
     x0 = xstar;
     r.print(x0,xf,tf,tair,tstance,allt,allx);
     if savegait
-        save([savepath 'SwingSLIP/' 'MinImpulseLock.mat'],'r','xstar','parmstovary','limitCycleError',...
+        save([savepath 'SwingSLIP/' 'NoImpulseLock.mat'],'r','xstar','parmstovary','limitCycleError',...
                                    'c','ceq','eflag','optimoutput','lambda',...
                                    'xf','tf','allx','allt','tair','phasevec');
     end 
