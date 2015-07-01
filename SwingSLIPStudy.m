@@ -867,20 +867,23 @@ if sum(cellstouse==11)
     savename = ['VelCOMPerts1.mat'];
     
     if ~exist([rootdir pfolder classfolder savename],'file')
-        loadname = 'NoImpulseLock.mat';
+        loadname = 'NoSwingSpringLock.mat';
         load([loadfolder loadname]);
         pfolder = '\ReturnMapStudies';
+        
+        r.useHSevent = 1;
         
        r0 = r;
        x0 = xstar;
        [xf,tf,allx,allt,tair,r0,phasevec,tstance] = r0.onestep(x0);
        tstancedex0 = find(allt==tstance,1,'last');
        xstance0 = allx(tstancedex0,:);
+       pts = r0.getPoints(xf);
+       ft0 = pts.swingfoot(1);
        
        limdex = [2 3 4 7 8];
        
-       pertsize = -1e-2;
-       r.useHSevent = 1;
+       pertsize = 1e-5;
        
        %Pelvis Velocity x
        x1 = xstar;
@@ -891,18 +894,16 @@ if sum(cellstouse==11)
        tairdex1 = find(allt1==tair1,1,'last');
        xstance1 = allx1(tstancedex1,:);
        xair1 = allx1(tairdex1,:);
+       pts = r.getPoints(xf1);
+       ft1 = pts.swingfoot(1);
        
-       x2 = xf1;
-       x2([5 6 7 8]) = xair1([3 4 7 8]);
-       
-       
-       [xf2,tf2,allx2,allt2,tair2,r,phasevec2,tstance2] = r.onestep(x2);
-       tstancedex2 = find(allt2==tstance2,1,'last');
-       xstance2 = allx2(tstancedex2,:);
        
        xf(limdex)'
        xstance1(limdex)
        xf1(limdex)'
+       
+       ft0
+       ft1
        
        
        r.print(x1);
@@ -938,6 +939,60 @@ if sum(cellstouse==11)
     
     end
     
+end
+
+%% 12: Velocity of COM peturbation study: across parameterspace
+% 
+if sum(cellstouse==12)
+    rootdir = cd;
+    pfolder = '\ReturnMapStudies';
+    classfolder = ['\SwingSLIP\'];
+    savename = ['VelCOMPerts2.mat'];
+    loadfolder='./ParameterStudies/SwingSLIP/';
+    
+    if ~exist([rootdir pfolder classfolder savename],'file')
+        loadname = 'AirFrac_NoImpulse.mat';
+        load([loadfolder loadname]);
+        pfolder = '\ReturnMapStudies';
+        
+        for i = 1:length(runners)
+            r = runners(i);
+            r.useHSevent = 1;
+            r0 =r;
+            x0 = xstar;
+            
+            [xf,tf,allx,allt,tair,r0,phasevec,tstance] = r0.onestep(x0);
+            tstancedex0 = find(allt==tstance,1,'last');
+            xstance0 = allx(tstancedex0,:);
+            pts = r0.getPoints(xf);
+            ft0 = pts.swingfoot(1);
+            
+            limdex = [2 3 4 7 8];
+            
+            pertsize = 1e-5;
+            
+            %Pelvis Velocity x
+            x1 = xstar;
+            x1(7) = x1(7) + pertsize;
+            
+            [xf1,tf1,allx1,allt1,tair1,r,phasevec1,tstance1] = r.onestep(x1);
+            tstancedex1 = find(allt1==tstance1,1,'last');
+            tairdex1 = find(allt1==tair1,1,'last');
+            xstance1 = allx1(tstancedex1,:);
+            xair1 = allx1(tairdex1,:);
+            pts = r.getPoints(xf1);
+            ft1 = pts.swingfoot(1);
+            
+            %        xf(limdex)'
+            %        xstance1(limdex)
+            %        xf1(limdex)'
+            footdiff(i) = ft1 - ft0
+        end
+        
+    end
+        
+        
+        
 end
 %% Saving & Export
 if saveflag

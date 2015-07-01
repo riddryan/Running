@@ -359,7 +359,7 @@ classdef SwingSLIP < Runner
             allt = [];
             allx = [];
             phasevec = [];
-            phaseevents = {@(t,x) this.AerialEvents1(t,x), @(t,x) this.StanceEvents(t,x), @(t,x) this.AerialEvents2(t,x)};;
+            phaseevents = {@(t,x) this.AerialEvents1(t,x), @(t,x) this.StanceEvents(t,x), @(t,x) this.AerialEvents2(t,x)};
             %
             
             while sim
@@ -534,10 +534,10 @@ classdef SwingSLIP < Runner
             %Event at full extension if not already locked, and locking is enabled
             if this.lockable && ~this.lockstate
                 value(2) = ss.swingfoot.Length - this.stancel;
-                isTerminal(2) = 0;
+                isTerminal(2) = 1;
                 direction(2) = 1;
             end
-            
+            df
             if ~this.useHSevent
                 value(3) = (this.runcharic.steplength/this.runcharic.speed*(1+this.runcharic.airfrac) - t);
                 direction(3) = 0;
