@@ -19,7 +19,7 @@
 
 
 %% Initialization & Options
-useguess=1; %set to 1 to attempt to find limit cycle using user-set initial conditions (within each cell).  
+useguess=0; %set to 1 to attempt to find limit cycle using user-set initial conditions (within each cell).  
 %Otherwise, try to load an existing limit cycle to start from
 usenominal = 1; %Use subject 7 trial 2.  If 0, will use average running characteristics from all trials
 savegait=1; %1 for saving the limit cycles.  Make sure you set the name of the save files
@@ -32,7 +32,7 @@ savepath = [dir '\SavedGaits\'];
 % 2. Soft Stomach Series
 % 3. Soft Stomach Series Parallel
 
-cellstouse=[14];
+cellstouse=[11];
 
 %Optimizer Constraint Tolerance
 constrainttolerance = 1e-5;
@@ -762,14 +762,14 @@ if any(cellstouse==11) %SLIP Runner
         IC.stancefoot.LengthDot = -0.5830;
         x0 = IC.getVector();
     else
-                load([savepath '/SLIP' 'SLIP_NoAerial_unmatchedSL.mat'],'r','xstar')
+                load([savepath '/SLIP/' 'SLIPNominal.mat'],'r','xstar')
                 runner=r;
                 x0 = xstar;
     end
     
     %%%%%%%%%%%%%%%%%%%%%%%
-    runcharic.airfrac = 0;
-    runcharic.steplength = [];
+%     runcharic.airfrac = 0;
+%     runcharic.steplength = [];
     %%%%%%%%%%%%%%%%%%%%%%%
     
 parmstovary=[{'kstance'}];
@@ -794,7 +794,7 @@ parmstovary=[{'kstance'}];
     x0 = xstar;
     r.printStepCharacteristics(x0,xf,tf,tair);
     if savegait
-        save([savepath '/SLIP' 'SLIP_NoAerial_unmatchedSL2.mat'],'r','xstar','parmstovary','limitCycleError',...
+        save([savepath '/SLIP' 'SLIPNominal.mat'],'r','xstar','parmstovary','limitCycleError',...
                                    'c','ceq','eflag','optimoutput','lambda',...
                                    'xf','tf','allx','allt','tair','phasevec');
     end 
@@ -996,7 +996,7 @@ if any(cellstouse==14)
                 x0 = xstar;
     end
     
- parmstovary=[{'kstance'} {'tanimpulsecoeff'} {'impulsecoeff'}];   
+ parmstovary=[{'tanimpulsecoeff'} {'impulsecoeff'}];   
 % parmstovary=[{'kstance'} {'khip'} {'hipl'} {'impulsecoeff'}];
 %       addedconstraints = @(r,x0) r.additionalConstraints(x0);
 %     addedconstraints= @(r,varargin) r.floorandswinglconstraint(varargin{:});
@@ -1008,10 +1008,10 @@ Objective = [];
 %     runner.lockable = 0;
     
     %Use these if you already have a limit cycle on SLIP states
-%     runner.statestovary = [];
-%     runner.statestomeasure = [3 4];
-    runner.statestovary = [3 5 7:8]; 
-    runner.statestomeasure = [3 4 7:8];    
+    runner.statestovary = [];
+    runner.statestomeasure = [3 4];
+%     runner.statestovary = [3 5 7:8]; 
+%     runner.statestomeasure = [3 4 7:8];    
 %     runner.useHSevent = 1;
     
     constrainttolerance = 1e-4;
@@ -1037,7 +1037,7 @@ Objective = [];
     if savegait
         save([savepath 'SwingSLIP2/' 'NoSprings.mat'],'r','xstar','parmstovary','limitCycleError',...
                                    'c','ceq','eflag','optimoutput','lambda',...
-                                   'xf','tf','allx','allt','tair','phasevec');
+                                   'xf','tf','allx','allt','tair','phasevec','tstance');
     end 
 end
 %% SwingKneeSLIP 15
