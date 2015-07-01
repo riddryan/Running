@@ -67,23 +67,23 @@ classdef SwingSLIP < Runner
                 case 'NoSprings'
                     
                     runner.lockable = 0;
-                    runner.tanimpulsecoeff = 1.3;
-                    runner.impulsecoeff = 2.5;
+                    runner.tanimpulsecoeff = 1.25;
+                    runner.impulsecoeff = 2.32;
                     %                     runner.useHSevent = 1;
-                    runner.kstance = 13.786169998104491; %12
+                    runner.kstance = 12.8734; %12
                     runner.kswing = 0; %0.01
                     runner.khip = 0; %0.01
                     runner.gslope = 0;
                     runner.swingl = 1;
                     runner.hipl = 0.7;
                     
-                    IC.pelvis.xDot = 1.003510012689240;
-                    IC.pelvis.yDot = 0.137917306814717;
+                    IC.pelvis.xDot = 1.013809789981797;
+                    IC.pelvis.yDot = 0.165114140645987;
                     
-                    IC.stancefoot.Angle = -1.146316858313909;
+                    IC.stancefoot.Angle = -1.128700000000000;
                     IC.stancefoot.Length = runner.stancel;
                     
-                    IC.swingfoot.Angle = -1.977468566646678;
+                    IC.swingfoot.Angle = -2.012892653589793;
                     IC.swingfoot.Length = runner.stancel;
                     
                     x0 = IC.getVector();
@@ -537,7 +537,7 @@ classdef SwingSLIP < Runner
                 isTerminal(2) = 1;
                 direction(2) = 1;
             end
-            df
+            
             if ~this.useHSevent
                 value(3) = (this.runcharic.steplength/this.runcharic.speed*(1+this.runcharic.airfrac) - t);
                 direction(3) = 0;
@@ -1218,7 +1218,7 @@ vels.COM(2) = u2;
         
         runcharic = this.runcharic;
         if ~isempty(runcharic.speed)
-            [speed] = getSpeed(this, x0, xf, tf);
+            [speed] = getSpeed(this, x0, xf, tf,tstance,allt,allx);
             ceq = [ceq; runcharic.speed - speed];
         end
         if ~isempty(runcharic.steplength)
@@ -1376,16 +1376,16 @@ vels.COM(2) = u2;
         end
         
         
-        function [speed] = getSpeed(this, x0, xf, tf)
+        function [speed] = getSpeed(this, x0, xf, tf,tstance,allt,allx)
             if isempty(xf)
                 [xf,tf] = this.onestep(x0);
             end
             
             %Convert state vectors to descriptive class
-            x0struc = SwingSLIPState(x0);
+            x0struc = SwingSLIPState(allx(find(allt==tstance,1,'last'),:));
             xfstruc = SwingSLIPState(xf);
             
-            speed = (xfstruc.pelvis.x - x0struc.pelvis.x) / tf;
+            speed = (xfstruc.pelvis.x - x0struc.pelvis.x) / (tf-tstance);
         end
         
         function [steplength] = getStepLength(this, x0, xf, tstance, allt, allx)
@@ -1404,11 +1404,11 @@ vels.COM(2) = u2;
             if isempty(tair) || isempty(tair)
                 [xf,tf,allx,allt,tair,phasevec,tstance] = this.onestep(x0);
             end
-            airfrac = (tstance)/tair;
+            airfrac = (tf-tair)/(tf-tstance);
         end
         
         function [speed,steplength,stepfreq,airfrac] = getGaitChar(this,x0,tf,xf,tair,tstance,allt, allx)
-            [speed] = this.getSpeed(x0, xf, tf);
+            [speed] = this.getSpeed(x0, xf, tf,tstance,allt,allx);
             [steplength] = this.getStepLength(x0, xf, tstance, allt, allx);
             stepfreq = speed/steplength;
             [airfrac] = this.getAerialFraction(x0, tf, tair,tstance);
