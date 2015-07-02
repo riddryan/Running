@@ -12,17 +12,19 @@ classdef SwingSLIP < Runner
         %rest lengths
         stancel=1; swingl = .8;
         %rest angles
-        hipl = 0;
+        hipl = 0.700000000000000;
         
         mfoot = 1;
         
-        impulsecoeff = 0;
-        tanimpulsecoeff = 0;
+        impulsecoeff = 2.328898544200733;
+        tanimpulsecoeff = 1.247346472201224;
         lockable = 0;
         lockstate = 0;
         
         %Springs
-        kstance = 12; kswing = 0.01; khip = 0.01;
+        kstance = 12.873400000000000; 
+        kswing = 0; 
+        khip = 0;
         %Dampers
         cstance = 0; cswing = 0; chip = 0;
         
@@ -31,7 +33,19 @@ classdef SwingSLIP < Runner
         airfrac = 0.270305487186912;
         
         slip = SLIP;
-        x0 = zeros(12,1);
+        x0 =    [0.427835182917697;...
+            0.903856767556553;...
+            -1.128700000000000;...
+            1.000000000000000;...
+            -2.012892653589793;...
+            1.000000000000000;...
+            1.013809789981797;...
+            0.165114140645987;...
+            0;...
+            0;...
+            0.209180219248609;...
+            -0.774725300369400];
+
         
         useHSevent = 0;
         
