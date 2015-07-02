@@ -1404,6 +1404,12 @@ vels.COM(2) = u2;
         
         %% Other Gait Information
         
+        function this = set.runcharic(this,runcharic)
+            this.speed = runcharic.speed;
+            this.steplength = runcharic.steplength;
+            this.airfrac = runcharic.airfrac;
+        end
+        
         function [] = print(this,x0,varargin)
             this.printStepCharacteristics(x0,varargin{:});
         end
