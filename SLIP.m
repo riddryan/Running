@@ -741,6 +741,24 @@ vels.COM(2) = u2;
            this.printStepCharacteristics(varargin{:}); 
         end
         
+        function error = limError(this,x0,runcharic)
+            xf = this.onestep(x0);
+            error = xf(this.statestomeasure) - x0(this.statestomeasure)';
+            
+            if ~isempty(runcharic.speed)
+                [speed] = getSpeed(this, x0, xf, tf);
+                error = [error; runcharic.speed - speed];
+            end
+            if ~isempty(runcharic.steplength)
+                [steplength] = getStepLength(this, x0, xf);
+                error = [error; runcharic.steplength - steplength];
+            end
+            if ~isempty(runcharic.airfrac)
+                [airfrac] = getAerialFraction(this, x0, tf, tair);
+                error = [error; runcharic.airfrac - airfrac];
+            end
+        end
+        
         function [speed] = getSpeed(this, x0, xf, tf)
             if isempty(xf)
                 [xf,tf] = this.onestep(x0);
