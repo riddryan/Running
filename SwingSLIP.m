@@ -1142,7 +1142,7 @@ vels.COM(2) = u2;
             
             slipTol = 1e-8;
             %If not, first run optimization to solve for SLIP limit cycle
-            if max(sliperror)>slipTol
+            if max(abs(sliperror))>slipTol
                 slipparms = {'kstance'};
                 [slipxstar, slipfinalP] = slip.findLimitCycle(slipx0','runcharic',this.runcharic,'parametersToAlter',slipparms);
                 slip = slip.setParametersFromList(slipparms,slipfinalP);
