@@ -31,6 +31,7 @@ classdef SwingSLIP < Runner
         airfrac = 0.270305487186912;
         
         slip = SLIP;
+        x0 = zeros(12,1);
         
         useHSevent = 0;
         
@@ -1061,7 +1062,7 @@ vels.COM(2) = u2;
         end
         
          function [finalStates, finalParameters, limitCycleError, ...
-                c, ceq, exitflag, optimoutput, lambda] = ...
+                c, ceq, exitflag, optimoutput, lambda, newrunner] = ...
                 findLimitCycle(this, initialConditionGuess, varargin)
             %%
             %Find a limit cycle for the model.  That is find parameter values of
@@ -1135,6 +1136,7 @@ vels.COM(2) = u2;
                 initialConditionGuess([5 7 8]) = slipallx(find(slipallt==sliptair,1),[3 5 6]);
                 initialConditionGuess([4 6]) = this.stancel;
                 this.kstance = slip.kstance;
+                this.slip = slip;
             end
             
             parametersToAlter = parametersToAlter(~strcmp(parametersToAlter,'kstance'));
@@ -1219,6 +1221,7 @@ vels.COM(2) = u2;
             
             newrunner = this;
             newrunner.printStepCharacteristics(finalStates);
+            newrunner.x0 = finalStates;
         end
         
         function [c, ceq, limitCycleError, cExtra, ceqExtra, cost] = fixedPointConstraint(this,x,parametersToAlter,additionalConstraintFunction,initialConditionGuess,additionalCost)
