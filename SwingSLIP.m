@@ -66,7 +66,7 @@ classdef SwingSLIP < Runner
             aviname = [savepath 'SwingSLIP2.avi'];
             onephasesim = 0;
             manystep = 0;
-            test = 'NoSprings';
+            test = 'NoSwingSpring';
             
             LineWidth=3;
             LineSize=3;
@@ -1136,23 +1136,30 @@ vels.COM(2) = u2;
             end
             
             %Check if SLIP states & params meet limit cycle conditions
-            sliperror = this.slip.limError(this.slip.x0',this.runcharic);
+            slip = this.slip;
+            slipx0 = this.slipx0;
+            sliperror = slip.limError(slip.x0',this.runcharic);
             
             %If not, first run optimization to solve for SLIP limit cycle
             if max(sliperror)>1e-4
-                slip = this.slip;
-                slipx0 = this.slip.x0;
                 slipparms = {'kstance'};
                 [slipxstar, slipfinalP] = slip.findLimitCycle(slipx0','runcharic',this.runcharic,'parametersToAlter',slipparms);
                 slip = slip.setParametersFromList(slipparms,slipfinalP);
-                [slipxf,sliptf,slipallx,slipallt,sliptair] = slip.onestep(slipxstar);
-                initialConditionGuess(3) = slipxstar(3);
-                initialConditionGuess([5 7 8]) = slipallx(find(slipallt==sliptair,1),[3 5 6]);
-                initialConditionGuess([4 6]) = this.stancel;
                 this.kstance = slip.kstance;
                 this.slip = slip;
+            else
+                slipxstar = slipx0;
             end
             
+            %Give the SwingSLIP model the appropiate IC from the SLIP model
+            %limit cycle
+            [~,~,slipallx,slipallt,sliptair] = slip.onestep(slipxstar);
+            initialConditionGuess(3) = slipxstar(3);
+            initialConditionGuess([5 7 8]) = slipallx(find(slipallt==sliptair,1),[3 5 6]);
+            initialConditionGuess([4 6]) = this.stancel;
+            
+            %Ensure that the optimizer does not try to change the stance
+            %spring stiffness and the IC associated with the SLIP model
             parametersToAlter = parametersToAlter(~strcmp(parametersToAlter,'kstance'));
             this.statestovary = [];
             this.statestomeasure = [3 4];
