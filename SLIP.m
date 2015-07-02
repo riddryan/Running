@@ -726,6 +726,10 @@ vels.COM(2) = u2;
   
         %% Other Gait Information
         
+        function [] = print(this,varargin)
+           this.printStepCharacteristics(varargin{:}); 
+        end
+        
         function [speed] = getSpeed(this, x0, xf, tf)
             if isempty(xf)
                 [xf,tf] = this.onestep(x0);
