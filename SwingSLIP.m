@@ -1278,19 +1278,19 @@ vels.COM(2) = u2;
         c=[];
         ceq=limitCycleError;
         
-        runcharic = this.runcharic;
-        if ~isempty(runcharic.speed)
-            [speed] = getSpeed(this, x0, xf, tf,tstance,allt,allx);
-            ceq = [ceq; runcharic.speed - speed];
-        end
-        if ~isempty(runcharic.steplength)
-            [steplength] = getStepLength(this, x0, xf, tstance, allt, allx);
-            ceq = [ceq; runcharic.steplength - steplength];
-        end
-        if ~isempty(runcharic.airfrac)
-            [airfrac] = getAerialFraction(this, x0, tf, tair,tstance);
-            ceq = [ceq; runcharic.airfrac - airfrac];
-        end
+%         runcharic = this.runcharic;
+%         if ~isempty(runcharic.speed)
+%             [speed] = getSpeed(this, x0, xf, tf,tstance,allt,allx);
+%             ceq = [ceq; runcharic.speed - speed];
+%         end
+%         if ~isempty(runcharic.steplength)
+%             [steplength] = getStepLength(this, x0, xf, tstance, allt, allx);
+%             ceq = [ceq; runcharic.steplength - steplength];
+%         end
+%         if ~isempty(runcharic.airfrac)
+%             [airfrac] = getAerialFraction(this, x0, tf, tair,tstance);
+%             ceq = [ceq; runcharic.airfrac - airfrac];
+%         end
         
         if isempty(additionalConstraintFunction)
             cExtra = [];
