@@ -66,7 +66,7 @@ classdef SwingSLIP < Runner
             aviname = [savepath 'SwingSLIP2.avi'];
             onephasesim = 0;
             manystep = 0;
-            test = 'NoSwingSpring';
+            test = 'LockNoImpulse';
             
             LineWidth=3;
             LineSize=3;
@@ -1137,11 +1137,12 @@ vels.COM(2) = u2;
             
             %Check if SLIP states & params meet limit cycle conditions
             slip = this.slip;
-            slipx0 = this.slipx0;
+            slipx0 = slip.x0;
             sliperror = slip.limError(slip.x0',this.runcharic);
             
+            slipTol = 1e-8;
             %If not, first run optimization to solve for SLIP limit cycle
-            if max(sliperror)>1e-4
+            if max(sliperror)>slipTol
                 slipparms = {'kstance'};
                 [slipxstar, slipfinalP] = slip.findLimitCycle(slipx0','runcharic',this.runcharic,'parametersToAlter',slipparms);
                 slip = slip.setParametersFromList(slipparms,slipfinalP);
