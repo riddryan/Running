@@ -11,19 +11,19 @@ classdef SLIP < Runner
         statestovary = [3 4 7 8];
         statestomeasure = [3 4 7 8];
         %rest lengths
-        stancel=1; 
+        stancel=1;
         %rest angles
         
         %Springs
-        kstance = 12.873400000000000;
-        x0 =   [-0.427835182917697;...
-            0.903856767556553;...
-            -1.128700000000000;...
-            1.000000000000000;...
+        kstance = 12.873128756709848;
+        x0 =   [-0.427857226694680;...
+            0.903837668950403;...
+            -1.128671904307318;...
+            0.999992169093619;...
             1.013809789981797;...
             -0.165114140645987;...
-            -0.845697201124561;...
-            -0.582983030382774]
+            -0.845681433083618;...
+            -0.582991283170142];
         
         phases = {'Stance' 'Aerial'};
         
@@ -414,11 +414,22 @@ classdef SLIP < Runner
                 pelvy = points.pelvis(2) - points.stancefoot(2);
                 newstate([1 2])=[pelvx pelvy];
                 
+                ss = SLIPState(newstate);
+                ang = ss.stancefoot.Angle;
+                length = ss.stancefoot.Length;
+                vpelx = ss.pelvis.xDot;
+                vpely = ss.pelvis.yDot;
+                
+                %Conserve Velocity of Pelvis; determine required leg
+                %velocities
+                ss.stancefoot.AngleDot = (sin(ang)*vpelx - cos(ang)*vpely)/length;
+                ss.stancefoot.LengthDot = -cos(ang)*(vpelx + tan(ang)*vpely);
+                
                 %Get consistent velocities w/ constraints
-                Jc = this.getConstraints(newstate,'Stance');
-                nullJc = null(Jc);
-                unew = nullJc * (nullJc \ newstate(this.N/2+1:end)');
-                newstate = [newstate(1:this.N/2) unew'];
+%                 Jc = this.getConstraints(newstate,'Stance');
+%                 nullJc = null(Jc);
+%                 unew = nullJc * (nullJc \ newstate(this.N/2+1:end)');
+%                 newstate = [newstate(1:this.N/2) unew'];
 
         end
         
