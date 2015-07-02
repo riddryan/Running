@@ -7,8 +7,8 @@ classdef SwingSLIP < Runner
         gslope = 0;
         g = 1;
         N = 12;
-        statestovary = [3 5 7:8]; 
-        statestomeasure = [3 4 7:8];   
+        statestovary = []; 
+        statestomeasure = [3 4];   
         %rest lengths
         stancel=1; swingl = .8;
         %rest angles
@@ -29,6 +29,8 @@ classdef SwingSLIP < Runner
         speed = 0.974536675314306;
         steplength = 1.190476190476190;
         airfrac = 0.270305487186912;
+        
+        slip = SLIP;
         
         useHSevent = 0;
         
@@ -1118,26 +1120,28 @@ vels.COM(2) = u2;
                 algorithm = 'sqp';
             end
             
-            %First find the SLIP model & IC to meet speed, step length,
-            %airfrac, limitcycle
-            [xf1] = this.onestep(initialConditionGuess');
-            [slip,slipx0] = this.inherit(xf1);
-            [slipxf,sliptf,slipallx,~,sliptair] = slip.onestep(slipx0);
-            slipx0 = slipallx(1,:)';
-            [speed,steplength,stepfreq,airfrac] = slip.getGaitChar(slipx0,sliptf,slipxf,sliptair);
-            if norm([slipxf(slip.statestomeasure);speed;steplength;airfrac] - ...
-                    [slipx0(slip.statestomeasure);this.speed;this.steplength;this.airfrac])>1e-4 %If not already a limit cycle
-                
-                slip = SLIP;
-                slipx0 = slip.x0;
+            %Check if SLIP states & params meet limit cycle conditions
+            sliperror = this.slip.limError(this.slip.x0',this.runcharic);
+            
+            %If not, first run optimization to solve for SLIP limit cycle
+            if max(sliperror)>1e-4
+                slip = this.slip;
+                slipx0 = this.slip.x0;
                 slipparms = {'kstance'};
                 [slipxstar, slipfinalP] = slip.findLimitCycle(slipx0','runcharic',this.runcharic,'parametersToAlter',slipparms);
                 slip = slip.setParametersFromList(slipparms,slipfinalP);
                 [slipxf,sliptf,slipallx,slipallt,sliptair] = slip.onestep(slipxstar);
-                initialConditionGuess([3 4]) = slipxstar([3 4]);
-                initialConditionGuess([5 6 7 8]) = allx(find(slipallt==sliptair,1,'last'),[3 4 5 6]);
+                initialConditionGuess(3) = slipxstar(3);
+                initialConditionGuess([5 7 8]) = slipallx(find(slipallt==sliptair,1),[3 5 6]);
+                initialConditionGuess([4 6]) = this.stancel;
                 this.kstance = slip.kstance;
             end
+            
+            parametersToAlter = parametersToAlter(~strcmp(parametersToAlter,'kstance'));
+            this.statestovary = [];
+            this.statestomeasure = [3 4];
+            
+            
             
             
             constraintFunction = @(x) this.ConstFcn(x,parametersToAlter,additionalConstraintFunction,initialConditionGuess,addedCostFcn);
