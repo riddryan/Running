@@ -742,7 +742,7 @@ vels.COM(2) = u2;
         end
         
         function error = limError(this,x0,runcharic)
-            xf = this.onestep(x0);
+            [xf,tf,allx,allt,tair,this,phasevec] = this.onestep(x0);
             error = xf(this.statestomeasure) - x0(this.statestomeasure)';
             
             if ~isempty(runcharic.speed)
